@@ -30,7 +30,7 @@ end
 
 function ENT:IsIdle()
 	if self:GetNPCState() == NPC_STATE_IDLE and not self:GetEnemy() then
-		if self:IsCurrentSchedule( IDLE_STAND )  then
+		if self:IsCurrentSchedule( SCHED_IDLE_STAND )  then
 			return true
 		end
 	end
