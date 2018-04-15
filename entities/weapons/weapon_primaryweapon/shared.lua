@@ -111,7 +111,7 @@ function SWEP:WeaponAttack()
       if self.WeaponTable.AmmoType == "buckshot" then strEffect = "ShotgunShellEject" end
       local effectdata = EffectData()
       effectdata:SetOrigin(GAMEMODE.PapperDollEnts[self.Owner:EntIndex()]["slot_primaryweapon"]:GetPos())
-      effectdata:SetAngle(GAMEMODE.PapperDollEnts[self.Owner:EntIndex()]["slot_primaryweapon"]:GetAngles() + Angle(0, 90, 0))
+      effectdata:SetAngles(GAMEMODE.PapperDollEnts[self.Owner:EntIndex()]["slot_primaryweapon"]:GetAngles() + Angle(0, 90, 0))
       effectdata:SetEntity(self)
       effectdata:SetMagnitude(1)
       effectdata:SetScale(1)
