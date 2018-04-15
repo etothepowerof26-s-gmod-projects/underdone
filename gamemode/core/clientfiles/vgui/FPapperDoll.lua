@@ -30,11 +30,15 @@ function PANEL:PerformLayout()
 		local intY = (self:GetTall() * (tblSlotTable.Position.y / 100)) - (self.ItemIconSize / 2)
 		icnItem:SetPos(intX, intY)
 	end
-	self.ArmorRatingLabel:SetPos(3, self:GetTall() - 15)
-	self.ArmorRatingLabel:SetSize(self:GetWide() - 10, 15)
+	if IsValid(self.ArmorRatingLabel) then
+		self.ArmorRatingLabel:SetPos(3, self:GetTall() - 15)
+		self.ArmorRatingLabel:SetSize(self:GetWide() - 10, 15)
+	end
 end
 
 function PANEL:Think()
-	self.ArmorRatingLabel:SetText("Total Armor " .. LocalPlayer():GetArmorRating())
+	if IsValid(self.ArmorRatingLabel) then
+		self.ArmorRatingLabel:SetText("Total Armor " .. LocalPlayer():GetArmorRating())
+	end
 end
 vgui.Register("FPaperDoll", PANEL, "Panel")
