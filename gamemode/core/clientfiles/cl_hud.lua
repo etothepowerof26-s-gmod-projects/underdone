@@ -61,7 +61,7 @@ function GM:HUDPaint()
       end
       timer.Simple(10, function() LocalPlayer().Respawning = false end)
     end
-    draw.DrawText("Respawn in: " .. (RespawnTime or 10) .. " Seconds", "ScoreboardText", ScrW() * 0.5, intDrawBoxY + 50, clrWhite, 1, 1)
+    draw.DrawText("Respawn in: " .. (RespawnTime or 10) .. " Seconds", "ScoreboardDefaultTitle", ScrW() * 0.5, intDrawBoxY + 50, clrWhite, 1, 1)
   end
 end
 
