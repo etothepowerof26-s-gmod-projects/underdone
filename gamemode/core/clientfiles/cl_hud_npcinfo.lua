@@ -30,7 +30,7 @@ end
 
 local function DrawNPCHealthBar(entNPC, posNPCPos)
   local clrBarColor = clrGreen
-  local intHealth = math.Clamp(entNPC:GetNWInt("Health"),0,9999)
+  local intHealth = math.Clamp(entNPC:Health(),0,9999)
   local intMaxHealth = entNPC:GetNWInt("MaxHealth")
   if intHealth <= (intMaxHealth * 0.2) then clrBarColor = clrRed end
   local NpcHealthBar = jdraw.NewProgressBar()
