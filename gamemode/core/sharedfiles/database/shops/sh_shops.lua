@@ -96,3 +96,4 @@ Shop.Inventory["weapon_ranged_wornasr"] = {}
 Shop.Inventory["weapon_ranged_combine_cannon"] = {}
 Shop.Inventory["weapon_ranged_battlerifle"] = {}
 Shop.Inventory["weapon_ranged_combinesniper"] = {}
+Register.Shop(Shop)
