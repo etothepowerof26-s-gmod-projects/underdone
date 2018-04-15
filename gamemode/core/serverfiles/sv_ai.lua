@@ -101,7 +101,7 @@ function GM:OnNPCKilled(npcTarget, entKiller, weapon)
 end
 
 local function NPCAdjustDamage(entVictim, entInflictor, entAttacker, intAmount, tblDamageInfo)
-  if not IsValid(entVictim) or not NPCTable(entVictim:GetNWString("npc")) then return end
+  if not IsValid(entVictim) or not IsValid(entAttacker) or not NPCTable(entVictim:GetNWString("npc")) then return end
   if entAttacker.OverrideDamge then tblDamageInfo:SetDamage(entAttacker.OverrideDamge) end
   if not entAttacker:IsPlayer() and entAttacker:GetOwner():IsPlayer() then
     entAttacker = entAttacker:GetOwner()
