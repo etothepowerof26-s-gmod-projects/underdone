@@ -33,7 +33,7 @@ end
 function ENT:StartTouch(Ent)
   if (IsValid(Ent)) and (Ent:IsPlayer()) then
     if self.Areasound then
-      Ent:SendLua("RunConsoleCommand('stopsounds')")
+      Ent:SendLua("RunConsoleCommand('stopsound')")
       timer.Simple(0.1, function()
         Ent:ConCommand("UD_PlaySound " .. self.Areasound)
       end)
@@ -47,7 +47,7 @@ end
 function ENT:EndTouch(Ent)
   if (IsValid(Ent)) and (Ent:IsPlayer()) then
     Ent.Pvp = false
-    Ent:SendLua("RunConsoleCommand('stopsounds')")
+    Ent:SendLua("RunConsoleCommand('stopsound')")
   end
 end
 
