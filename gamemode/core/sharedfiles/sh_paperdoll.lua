@@ -156,10 +156,12 @@ function GM:BuildModel(tblModelTable)
 	local entReturnEnt = nil
 	local entNewPart = nil
 	for key, tblModelInfo in pairs(tblLoopTable) do
-		if CLIENT then
-			entNewPart = ents.CreateClientProp(tblModelInfo.Model)
+		if SERVER then
+			entNewPart = ents.Create("prop_physics")
+		elseif CLIENT then
+			entNewPart = ents.CreateClientProp("prop_physics")
 		end
-		-- entNewPart:SetModel(tblModelInfo.Model)
+		entNewPart:SetModel(tblModelInfo.Model)
 		if entReturnEnt then entNewPart:SetAngles(entReturnEnt:GetAngles()) end
 		if entReturnEnt then entNewPart:SetAngles(entNewPart:LocalToWorldAngles(tblModelInfo.Angle)) end
 		if not entReturnEnt then entNewPart:SetAngles(tblModelInfo.Angle) end
@@ -169,7 +171,7 @@ function GM:BuildModel(tblModelTable)
 		entNewPart:SetParent(entReturnEnt)
 		if SERVER then entNewPart:SetCollisionGroup(COLLISION_GROUP_WORLD) end
 		if tblModelInfo.Material then entNewPart:SetMaterial(tblModelInfo.Material) end
-		if tblModelInfo.Color then entNewPart:SetColor(tblModelInfo.Color.r, tblModelInfo.Color.g, tblModelInfo.Color.b, tblModelInfo.Color.a) end
+		if tblModelInfo.Color then pentNewPart:SetColor(Color(tblModelInfo.Color.r, tblModelInfo.Color.g, tblModelInfo.Color.b, tblModelInfo.Color.a)) end
 		if tblModelInfo.Scale then
 			local scale = type(tblModelInfo.Scale) == "Vector" and tblModelInfo.Scale or tonumber(tblModelInfo.Scale)
 			if not scale then return ErrorNoHalt("scale is nil") end

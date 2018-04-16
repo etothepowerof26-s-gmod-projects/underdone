@@ -100,7 +100,8 @@ function GM:OnNPCKilled(npcTarget, entKiller, weapon)
 	end
 end
 
-local function NPCAdjustDamage(entVictim, entInflictor, entAttacker, intAmount, tblDamageInfo)
+local function NPCAdjustDamage(entVictim, tblDamageInfo) --entInflictor, entAttacker, intAmount, tblDamageInfo)
+	local entAttacker = tblDamageInfo:GetAttacker()
 	if not IsValid(entVictim) or not IsValid(entAttacker) or not NPCTable(entVictim:GetNWString("npc")) then return end
 	if entAttacker.OverrideDamge then tblDamageInfo:SetDamage(entAttacker.OverrideDamge) end
 	if not entAttacker:IsPlayer() and entAttacker:GetOwner():IsPlayer() then
@@ -145,7 +146,8 @@ local function NPCAdjustDamage(entVictim, entInflictor, entAttacker, intAmount, 
 	end
 	if boolInvincible then tblDamageInfo:SetDamage(0) end
 end
-hook.Add("EntityTakeDamage", "NPCAdjustDamage", NPCAdjustDamage)
+hook.Add("EntityTakeDamage", "UD_NPCAdjustDamage", NPCAdjustDamage)
+
 function GM:ScaleNPCDamage(entVictim, strHitGroup, tblDamageInfo)
 	tblDamageInfo:ScaleDamage(1)
 	local tblNPCTable = NPCTable(entVictim:GetNWString("npc"))

@@ -30,7 +30,6 @@ GM.MapEditor.Models[20] = "models/props/de_inferno/bench_wood.mdl"
 GM.MapEditor.Models[21] = "models/props/cs_militia/Furnace01.mdl"
 GM.MapEditor.Models[22] = "models/props/cs_italy/it_mkt_table3.mdl"
 
-
 if not game.SinglePlayer() then return end
 
 function GM.MapEditor.OpenMapEditor()
@@ -83,7 +82,7 @@ function GM.MapEditor.OpenMapEditor()
 	end
 
 	local function SaveMap() RunConsoleCommand("UD_Dev_EditMap_SaveMap") end
-	local btnSaveButton = CreateGenericImageButton(frmMapEditorFrame, "vgui/spawnmenu/save", "Save Map", SaveMap)
+	local btnSaveButton = CreateGenericImageButton(frmMapEditorFrame, "icon16/disk_multiple.png", "Save Map", SaveMap)
 	btnSaveButton:SetPos(7, 32)
 	btnSaveButton:SetSize(16, 16)
 
@@ -107,7 +106,7 @@ function GM.MapEditor.OpenMapEditor()
 			RunConsoleCommand("UD_Dev_EditMap_RemoveWorldProp", GAMEMODE.MapEditor.CurrentObjectNum)
 		end
 	end
-	local btnRemoveButton = CreateGenericImageButton(frmMapEditorFrame, "icon16/check_off.png", "Remove Object", RemoveObject)
+	local btnRemoveButton = CreateGenericImageButton(frmMapEditorFrame, "icon16/delete.png", "Remove Object", RemoveObject)
 	btnRemoveButton:SetPos(57, 32)
 	btnRemoveButton:SetSize(16, 16)
 
@@ -162,7 +161,7 @@ function GM.MapEditor.AddSpawnPointControls(pnlAddList)
 
 	local btnUpdateServer = vgui.Create("DButton")
 	btnUpdateServer:SetText("Update Server")
-	btnUpdateServer.DoClick = function(btnUpdateServer)
+	btnUpdateServer.DoClick = function()
 		RunConsoleCommand("UD_Dev_EditMap_UpdateSpawnPoint", intSpawnKey, strNPCName, intLevel, intSpawnTime, intRotation)
 	end
 	btnUpdateServer.Paint = function()
@@ -197,7 +196,7 @@ function GM.MapEditor.AddWorldPropControls(pnlAddList)
 
 	local btnUpdateServer = vgui.Create("DButton")
 	btnUpdateServer:SetText("Update Server")
-	btnUpdateServer.DoClick = function(btnUpdateServer)
+	btnUpdateServer.DoClick = function()
 		RunConsoleCommand("UD_Dev_EditMap_UpdateWorldProp", intSpawnKey, strModel, StringatizeVector(vecOffset), intRotation)
 	end
 	btnUpdateServer.Paint = function()

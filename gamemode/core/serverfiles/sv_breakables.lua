@@ -10,17 +10,20 @@ AddItem("models/props_junk/wood_crate002a.mdl", "item_rifleammo_small", 10)
 AddItem("models/props_junk/wood_crate002a.mdl", "item_buckshotammo_small", 10)
 AddItem("models/props_junk/wood_crate002a.mdl", "item_canmeat", 30)
 
-local function PropAdjustDamage(entVictim, entInflictor, entAttacker, intAmount, tblDamageInfo)
+local function PropAdjustDamage(entVictim, tblDamageInfo)
 	if IsValid(entVictim) and entVictim:GetClass() == "prop_physics" then
 		local tblBreakTable = tblBreakables[entVictim:GetModel()]
-		if tblBreakTable and entAttacker:IsPlayer() then
+
+		if tblBreakTable and tblDamageInfo:GetAttacker():IsPlayer() then
 			tblDamageInfo:ScaleDamage(2)
+
 			return
 		end
+
 		tblDamageInfo:SetDamage(0)
 	end
 end
-hook.Add("EntityTakeDamage", "PropAdjustDamage", PropAdjustDamage)
+hook.Add("EntityTakeDamage", "UD_PropAdjustDamage", PropAdjustDamage)
 
 local function OnPropBreak(entBreaker, entProp)
 	if entBreaker:IsValid() and entBreaker:IsPlayer() and entProp:IsValid() then
@@ -46,4 +49,4 @@ local function OnPropBreak(entBreaker, entProp)
 		end
 	end
 end
-hook.Add("PropBreak", "OnPropBreak", OnPropBreak)
+hook.Add("PropBreak", "UD_OnPropBreak", OnPropBreak)

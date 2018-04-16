@@ -157,7 +157,7 @@ if SERVER then
 			local g = tblNPCTable.Color[2]
 			local b = tblNPCTable.Color[3]
 			local a = tblNPCTable.Color[4]
-			entNewMonster:SetColor(r,g,b,a)
+			entNewMonster:SetColor(Color(r,g,b,a))
 		end
 		entNewMonster:Spawn()
 		if tblNPCTable.DeathDistance then

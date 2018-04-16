@@ -19,7 +19,11 @@ local squad_leader = Material("icon16/star.png")
 function GM:HUDPaint()
 	if not GAMEMODE.ConVarShowHUD:GetBool() then return end
 	self.PlayerBox = jdraw.NewPanel()
-	if LocalPlayer():IsMelee() or not IsValid(LocalPlayer():GetActiveWeapon()) then
+
+	local wep = LocalPlayer():GetActiveWeapon()
+	local drawAmmo = not LocalPlayer():IsMelee() and IsValid(wep) and wep.Primary and wep.Primary.ClipSize > 0
+
+	if not drawAmmo then
 		self.PlayerBox:SetDemensions(10, ScrH() - 55, GAMEMODE.PlayerHUDBarWidth, 45)
 	else
 		self.PlayerBox:SetDemensions(10, ScrH() - 73, GAMEMODE.PlayerHUDBarWidth, 63)
@@ -31,7 +35,8 @@ function GM:HUDPaint()
 
 	self:DrawHealthBar()
 	self:DrawLevelBar()
-	if not LocalPlayer():IsMelee() and IsValid(LocalPlayer():GetActiveWeapon()) then self:DrawAmmoBar() end
+
+	if drawAmmo then self:DrawAmmoBar() end
 
 	self:DrawQuestToDoList()
 	local intYOffset = self.PlayerBox.Position.Y
@@ -81,7 +86,7 @@ function GM:DrawQuestToDoList()
 				draw.SimpleTextOutlined("Quest Todo list", "Trebuchet24", intXOffset - 20, intYOffset, clrWhite, 0, 1, 1, clrDrakGray)
 				intYOffset = intYOffset + intPadding + 7
 			end
-			draw.SimpleTextOutlined(tblQuestTable.PrintName, "Trebuchet22", intXOffset, intYOffset, clrWhite, 0, 1, 1, clrDrakGray)
+			draw.SimpleTextOutlined(tblQuestTable.PrintName, "Trebuchet24", intXOffset, intYOffset, clrWhite, 0, 1, 1, clrDrakGray)
 			intYOffset = intYOffset + intPadding + 5
 			intXOffset = intXOffset + 20
 			for strNPC, intAmount in pairs(tblInfo.Kills or {}) do

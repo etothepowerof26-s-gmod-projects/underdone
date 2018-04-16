@@ -43,6 +43,7 @@ function Player:LoadGame()
 	if game.SinglePlayer() or steamID ~= "STEAM_ID_PENDING" then
 		local strFileName = "underdone/" .. steamID .. ".txt"
 		if file.Exists(strFileName, "DATA") then
+			print("LOADING PLAYER ", self)
 			local savedGameData = util.JSONToTable(util.Decompress(file.Read(strFileName)) or "")
 			self:SetNWInt("exp", savedGameData.Exp or 0)
 			self:SetNWInt("SkillPoints", self:GetDeservedSkillPoints())
@@ -69,6 +70,7 @@ function Player:LoadGame()
 			for strBook, boolRead in pairs(savedGameData.Library or {}) do self:AddBookToLibrary(strBook) end
 			for strMaster, intExp in pairs(savedGameData.Masters or {}) do self:SetMaster(strMaster, intExp) end
 		else
+			print("NEW PLAYER / FAILED TO LOAD", self, strFileName)
 			self:NewGame()
 		end
 	end
@@ -90,6 +92,8 @@ function Player:SaveGame()
 	if not self.Loaded then return end
 	if GAMEMODE.StopSaving then return end
 	if not self.Data then return end
+
+	print("SAVING PLAYER", self)
 	local tblSaveTable = table.Copy(self.Data)
 	tblSaveTable.Inventory = {}
 	--Polkm: Space saver loop
@@ -120,6 +124,7 @@ function Player:SaveGame()
 	if strSteamID ~= "STEAM_ID_PENDING" then
 		local strFileName = "underdone/" .. strSteamID .. ".txt"
 		tblSaveTable.Exp = self:GetNWInt("exp")
+		print("WRITING PLAYER DATA", strFileName)
 		file.Write(strFileName, util.Compress(util.TableToJSON(tblSaveTable)))
 	end
 end

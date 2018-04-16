@@ -34,7 +34,7 @@ function Entity:CreateGrip()
 	entGrip:SetPos(self:GetPos())
 	entGrip:SetAngles(self:GetAngles())
 	entGrip:SetCollisionGroup(COLLISION_GROUP_WORLD)
-	entGrip:SetColor(0, 0, 0, 0)
+	entGrip:SetColor(Color(0, 0, 0, 0))
 	entGrip:Spawn()
 	self:SetParent(entGrip)
 	self.Grip = entGrip
@@ -154,7 +154,7 @@ if SERVER then
 					end
 				end
 			end
-			self:SetColor(200, 200, 255, 255)
+			self:SetColor(Color(200, 200, 255, 255))
 			self.BeingSlowed = true
 			SlowEnt()
 		end
@@ -178,12 +178,12 @@ if SERVER then
 						timer.Simple(intIgnitedRate, IgniteEnt, self)
 					else
 						self:Extinguish()
-						self:SetColor(200, 255, 255, 255)
+						self:SetColor(Color(200, 255, 255, 255))
 						self.Ignited = false
 					end
 				end
 			end
-			self:SetColor(200, 0, 0, 255)
+			self:SetColor(Color(200, 0, 0, 255))
 			self.Ignited = true
 			IgniteEnt()
 		end
