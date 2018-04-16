@@ -1,6 +1,7 @@
 local Player = FindMetaTable("Player")
 
 function Player:NewGame()
+	-- TODO: config?
 	self:SetNWInt("exp", 0)
 	self:AddItem("money", 100)
 	self:AddItem("item_smallammo_small", 3)
@@ -25,7 +26,6 @@ function Player:NewGame()
 	self:AddItem("armor_sheild_saw", 1)
 	]]
 	self:SaveGame()
-	print("New Game")
 end
 
 function Player:LoadGame()
@@ -42,27 +42,30 @@ function Player:LoadGame()
 	local steamID = string.Replace(self:SteamID(), ":", "!")
 	if game.SinglePlayer() or steamID ~= "STEAM_ID_PENDING" then
 		local strFileName = "underdone/" .. steamID .. ".txt"
+
 		if file.Exists(strFileName, "DATA") then
-			print("LOADING PLAYER ", self)
 			local savedGameData = util.JSONToTable(util.Decompress(file.Read(strFileName)) or "")
+
 			self:SetNWInt("exp", savedGameData.Exp or 0)
 			self:SetNWInt("SkillPoints", self:GetDeservedSkillPoints())
+
 			if savedGameData.Skills then
 				local tblAllSkillsTable = table.Copy(GAMEMODE.DataBase.Skills)
 				tblAllSkillsTable = table.ClearKeys(tblAllSkillsTable)
 				table.sort(tblAllSkillsTable, function(statA, statB) return statA.Tier < statB.Tier end)
+
 				for _, tblSkill in pairs(tblAllSkillsTable or {}) do
 					if self:CanHaveSkill(tblSkill.Name) and savedGameData.Skills[tblSkill.Name] then
 						self:BuySkill(tblSkill.Name, savedGameData.Skills[tblSkill.Name])
 					end
 				end
 			end
-			self:SetModel(savedGameData.Model or "models/player/Group01/male_02.mdl")
+
 			self.Data.Model = savedGameData.Model or "models/player/Group01/male_02.mdl"
-			--[[if savedGameData.Usergroup then
-				self:SetUserGroup(savedGameData.Usergroup)
-			end]]
+			self:SetModel(savedGameData.Model or "models/player/Group01/male_02.mdl")
+
 			self:GiveItems(savedGameData.Inventory)
+
 			for strItem, intAmount in pairs(savedGameData.Bank or {}) do self:AddItemToBank(strItem, intAmount) end
 			for slot, item in pairs(savedGameData.Paperdoll or {}) do self:UseItem(item) end
 			for strQuest, tblInfo in pairs(savedGameData.Quests or {}) do self:UpdateQuest(strQuest, tblInfo) end
@@ -70,7 +73,6 @@ function Player:LoadGame()
 			for strBook, boolRead in pairs(savedGameData.Library or {}) do self:AddBookToLibrary(strBook) end
 			for strMaster, intExp in pairs(savedGameData.Masters or {}) do self:SetMaster(strMaster, intExp) end
 		else
-			print("NEW PLAYER / FAILED TO LOAD", self, strFileName)
 			self:NewGame()
 		end
 	end
@@ -78,7 +80,8 @@ function Player:LoadGame()
 	-- Finish loading
 	self.Loaded = true
 	self:SetNWBool("Loaded", true)
-	hook.Call("UD_Hook_PlayerLoad", GAMEMODE, self)
+
+	hook.Run("UD_Hook_PlayerLoad", self)
 	for _, ply in pairs(player.GetAll()) do
 		if ply ~= self and ply.Data and ply.Data.Paperdoll then
 			for slot, item in pairs(ply.Data.Paperdoll) do
@@ -93,17 +96,18 @@ function Player:SaveGame()
 	if GAMEMODE.StopSaving then return end
 	if not self.Data then return end
 
-	print("SAVING PLAYER", self)
 	local tblSaveTable = table.Copy(self.Data)
 	tblSaveTable.Inventory = {}
 	--Polkm: Space saver loop
 	for strItem, intAmount in pairs(self.Data.Inventory or {}) do
 		if intAmount > 0 then tblSaveTable.Inventory[strItem] = intAmount end
 	end
+
 	tblSaveTable.Bank = {}
 	for strItem, intAmount in pairs(self.Data.Bank or {}) do
 		if intAmount > 0 then tblSaveTable.Bank[strItem] = intAmount end
 	end
+
 	tblSaveTable.Quests = {}
 	for strQuest, tblInfo in pairs(self.Data.Quests or {}) do
 		if tblInfo.Done then
@@ -112,6 +116,7 @@ function Player:SaveGame()
 			tblSaveTable.Quests[strQuest] = tblInfo
 		end
 	end
+
 	tblSaveTable.Friends = {}
 	for strFriends, tblInfo in pairs(self.Data.Friends or {}) do
 		if tblInfo.Blocked then
@@ -120,11 +125,11 @@ function Player:SaveGame()
 			tblSaveTable.Friends[strFriends] = {}
 		end
 	end
+
 	local strSteamID = string.Replace(self:SteamID(), ":", "!")
 	if strSteamID ~= "STEAM_ID_PENDING" then
 		local strFileName = "underdone/" .. strSteamID .. ".txt"
 		tblSaveTable.Exp = self:GetNWInt("exp")
-		print("WRITING PLAYER DATA", strFileName)
 		file.Write(strFileName, util.Compress(util.TableToJSON(tblSaveTable)))
 	end
 end
