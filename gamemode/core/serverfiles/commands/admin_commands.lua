@@ -1,10 +1,10 @@
-function AdminKick(plyOffender, strReason)
+--[[function AdminKick(plyOffender, strReason)
 	if not plyOffender:IsPlayer() then return end
 	if not strReason or strReason == "" then strReason = "Don't do that again" end
 	plyOffender:Kick(strReason)
 end
 concommand.Add("UD_Admin_Kick", function(ply, command, args)
-	if ply:IsAdmin() then 
+	if ply:IsAdmin() then
 		AdminKick(player.GetByID(tonumber(args[1])), tostring(args[2]))
 	end
 end)
@@ -19,7 +19,7 @@ concommand.Add("UD_Admin_Ban", function(ply, command, args)
 	if ply:IsAdmin() then
 		AdminBan(player.GetByID(tonumber(args[1])), tonumber(args[2]), tostring(args[3]))
 	end
-end)
+end)]]
 
 function GM:ChangeMapTimed(strNewMap, intChangeTime)
 	intChangeTime = intChangeTime or 10
@@ -36,14 +36,13 @@ function GM:ChangeMapTimed(strNewMap, intChangeTime)
 	end
 	timer.Simple(intChangeTime, function() game.ConsoleCommand("changelevel " .. strNewMap .. "\n") end)
 end
-concommand.Add("UD_Admin_ChangeMap", function(ply, command, args) 
-	if ply:IsAdmin() and args[1] then
+concommand.Add("UD_Admin_ChangeMap", function(ply, command, args)
+	if (not IsValid(ply) or ply:IsAdmin()) and args[1] then
 		local strNewMap = args[1]
-		local intChangeTime = args[2] or 10
+		local intChangeTime = tonumber(args[2]) or 10
 		GAMEMODE:ChangeMapTimed(strNewMap, intChangeTime)
 	end
 end)
-
 
 function GM:AdminBackup()
 	for _, ply in pairs(player.GetAll()) do
@@ -74,14 +73,13 @@ function GM:AdminBackup()
 		end
 	end
 end
-concommand.Add("UD_Admin_SaveBackup", function(ply, command, args) 
-	local tblRow = db.GetBySteamID(ply:SteamID())
-	if ply:IsAdmin() then
+concommand.Add("UD_Admin_SaveBackup", function(ply, command, args)
+	if not IsValid(ply) or ply:IsAdmin() then
 		GAMEMODE:AdminBackup()
 	end
 end)
 
-function GM:AdminSetUsergroup(args)
+--[[function GM:AdminSetUsergroup(args)
 	local player = player.GetByID(args[1])
 	player.Data.Usergroup = args[2]
 	player:SetUserGroup(args[2])
@@ -95,3 +93,4 @@ concommand.Add("UD_Admin_SetUserGroup", function(ply, command, args)
 		GAMEMODE:AdminSetUsergroup(args)
 	end
 end)
+]]

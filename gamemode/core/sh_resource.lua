@@ -54,7 +54,7 @@ if SERVER then
 		end
 	end
 	function resource.AddDir( dir, ext )
-		for _, f in pairs( file.Find( "../" .. dir .. "/*" .. (ext or ""), "LUA") or {}) do
+		for _, f in pairs( file.Find( dir .. "/*" .. (ext or ""), "GAME") or {}) do
 			resource.AddFile( dir .. "/" .. f )
 		end
 	end

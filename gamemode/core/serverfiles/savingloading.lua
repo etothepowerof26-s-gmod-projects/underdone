@@ -58,9 +58,9 @@ function Player:LoadGame()
 			end
 			self:SetModel(savedGameData.Model or "models/player/Group01/male_02.mdl")
 			self.Data.Model = savedGameData.Model or "models/player/Group01/male_02.mdl"
-			if savedGameData.Usergroup then
+			--[[if savedGameData.Usergroup then
 				self:SetUserGroup(savedGameData.Usergroup)
-			end
+			end]]
 			self:GiveItems(savedGameData.Inventory)
 			for strItem, intAmount in pairs(savedGameData.Bank or {}) do self:AddItemToBank(strItem, intAmount) end
 			for slot, item in pairs(savedGameData.Paperdoll or {}) do self:UseItem(item) end
