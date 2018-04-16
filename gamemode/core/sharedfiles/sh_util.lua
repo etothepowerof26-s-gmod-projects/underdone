@@ -325,7 +325,7 @@ if CLIENT then
 	function CreateGenericImageButton(pnlParent, strImage, strToolTip, fncFunction)
 		local btnNewButton = vgui.Create("DImageButton", pnlParent)
 		btnNewButton:SetImage(strImage)
-		btnNewButton:SetToolTip(strToolTip)
+		btnNewButton:SetTooltip(strToolTip)
 		btnNewButton:SizeToContents()
 		btnNewButton.DoClick = fncFunction
 		return btnNewButton
@@ -334,6 +334,7 @@ if CLIENT then
 	function CreateGenericButton(pnlParent, strText)
 		local btnNewButton = vgui.Create("DButton", pnlParent)
 		btnNewButton:SetText(strText)
+		btnNewButton:SetTextColor(color_white)
 		btnNewButton.Paint = function(btnNewButton)
 			local clrDrawColor = ColorCopy(clrGray)
 			local intGradDir = 1
