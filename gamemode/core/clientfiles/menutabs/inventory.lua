@@ -29,28 +29,34 @@ function PANEL:Init()
 		GAMEMODE.ActiveMenu = nil
 		GAMEMODE.ActiveMenu = DermaMenu()
 		local ReadSubMenu = GAMEMODE.ActiveMenu:AddSubMenu("Read ...")
+		ReadSubMenu.Panels = {}
 		for strBook, _ in pairs(LocalPlayer().Data.Library or {}) do
-			ReadSubMenu:AddOption(ItemTable(strBook).PrintName, function() RunConsoleCommand("UD_ReadBook", strBook) end)
-			ReadSubMenu.Panels[#ReadSubMenu.Panels]:SetToolTip(ItemTable(strBook).Desc)
+			local tbl = ItemTable(strBook)
+			local pnl = ReadSubMenu:AddOption(tbl.PrintName, function() RunConsoleCommand("UD_ReadBook", strBook) end)
+			ReadSubMenu.Panels[#ReadSubMenu.Panels] = pnl
+			ReadSubMenu.Panels[#ReadSubMenu.Panels]:SetToolTip(tbl.Desc)
 		end
 		local CraftSubMenu = GAMEMODE.ActiveMenu:AddSubMenu("Craft ...")
+		CraftSubMenu.Panels = {}	
 		for strRecipe, _ in pairs(LocalPlayer().Recipes or {}) do
-			CraftSubMenu:AddOption(RecipeTable(strRecipe).PrintName, function()
+			local tbl = RecipeTable(strRecipe)
+			local pnl = CraftSubMenu:AddOption(tbl.PrintName, function()
 				RunConsoleCommand("UD_CraftRecipe", strRecipe)
 			end)
+			CraftSubMenu.Panels[#CraftSubMenu.Panels] = pnl
 			local strToolTip = "Ingredients:"
-			for strItem, intAmount in pairs(RecipeTable(strRecipe).Ingredients) do
+			for strItem, intAmount in pairs(tbl.Ingredients) do
 				strToolTip = strToolTip .. "\n" .. intAmount .. " " .. ItemTable(strItem).PrintName
 			end
 			strToolTip = strToolTip .. "\n\nProducts:"
-			for strItem, intAmount in pairs(RecipeTable(strRecipe).Products) do
+			for strItem, intAmount in pairs(tbl.Products) do
 				strToolTip = strToolTip .. "\n" .. intAmount .. " " .. ItemTable(strItem).PrintName
 			end
 			strToolTip = strToolTip .. "\n\nRequirements:"
-			if RecipeTable(strRecipe).NearFire then
+			if tbl.NearFire then
 				strToolTip = strToolTip .. "\nMust be done near fire"
 			end
-			for strMaster, intLevel in pairs(RecipeTable(strRecipe).RequiredMasters) do
+			for strMaster, intLevel in pairs(tbl.RequiredMasters) do
 				strToolTip = strToolTip .. "\n" .. intLevel .. " " .. MasterTable(strMaster).PrintName
 			end
 			CraftSubMenu.Panels[#CraftSubMenu.Panels]:SetToolTip(strToolTip)
