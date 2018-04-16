@@ -5,9 +5,12 @@ include("shared.lua")
 include("core/sharedfiles/database/items/sh_items_base.lua")
 include("core/sh_resource.lua")
 
--- TODO: authed isn't always called on things such as after a restart, delayed initial spawn?
-function GM:PlayerAuthed(ply)
-	ply:LoadGame()
+function GM:PlayerInitialSpawn(ply)
+	timer.Simple(1, function()
+		if not IsValid(ply) then return end
+
+		ply:LoadGame()
+	end)
 end
 
 -- TODO: likely not needed, shouldn't be called with playerclass?
