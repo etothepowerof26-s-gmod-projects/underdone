@@ -126,7 +126,10 @@ function PANEL:LoadInventory(boolTemp)
 	table.sort(tblAddTable, function(statA, statB) return statA.Index < statB.Index end)
 	for key, stat in pairs(tblAddTable) do
 		if LocalPlayer().Stats and not stat.Hide then
-			if not LocalPlayer().Stats[stat.Name] then ErrorNoHalt("stat with that name doesn't exist: " .. stat.Name) return end
+			if not LocalPlayer().Stats[stat.Name] then
+				print("stat '"..stat.Name.."' doesn't exist for "..tostring(LocalPlayer()))
+				return
+			end
 
 			local lblNewStat = vgui.Create("DLabel")
 			lblNewStat:SetFont("UiBold")
