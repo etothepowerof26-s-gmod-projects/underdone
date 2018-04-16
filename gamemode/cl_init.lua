@@ -12,7 +12,7 @@ surface.CreateFont("MenuLarge", {
 	antialias = true,
 })
 
-surface.CreateFont("MenuLarge", {
+surface.CreateFont("Trebuchet22", {
 	font = "Trebuchet MS",
 	size = 22,
 	weight = 900,
