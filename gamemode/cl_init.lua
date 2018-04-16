@@ -69,6 +69,18 @@ end)
 
 RunConsoleCommand("cl_phys_props_max", "99999")
 
+local bool = false
+local function toggleScreenClicker()
+	bool = not bool
+	gui.EnableScreenClicker(bool)
+end
+
+hook.Add("PlayerBindPress", "UD_ToggleScreenClicker", function(ply, bind, pressed)
+	if bind == "gm_showspare1" and pressed then
+		toggleScreenClicker()
+	end
+end)
+
 --[[
 local intMaxHieght = 75
 local intMinHieght = 5

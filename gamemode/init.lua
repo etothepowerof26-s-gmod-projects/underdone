@@ -6,7 +6,7 @@ include("core/sharedfiles/database/items/sh_items_base.lua")
 include("core/sh_resource.lua")
 
 function GM:PlayerInitialSpawn(ply)
-	timer.Simple(1, function()
+	timer.Simple(3, function() -- TODO: needs to be networked or something
 		if not IsValid(ply) then return end
 
 		ply:LoadGame()
@@ -114,3 +114,4 @@ end
 function GM:ShowHelp(ply)
 	ply:ConCommand("UD_OpenHelp")
 end
+

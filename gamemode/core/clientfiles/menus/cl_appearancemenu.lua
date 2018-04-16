@@ -3,21 +3,21 @@ PANEL = {}
 
 function PANEL:Init()
 	self.Frame = CreateGenericFrame("Appearance Menu", false, false)
-	
+
 	self.LeftList = CreateGenericList(self.Frame, 10, 1, 0)
 	self.RightList = CreateGenericList(self.Frame, 1, 1, 0)
-	
-	self.Frame.btnClose = vgui.Create("DSysButton", self.Frame)
-	self.Frame.btnClose:SetType("close")
+
+	self.Frame.btnClose = vgui.Create("DButton", self.Frame)
+	self.Frame.btnClose:SetFont("Marlett")
+	self.Frame.btnClose:SetText("r")
 	self.Frame.btnClose.DoClick = function(pnlPanel)
 		GAMEMODE.AppearanceMenu.Frame:Close()
 		GAMEMODE.AppearanceMenu = nil
 	end
-	
+
 	self.Frame.btnClose.Paint = function()
 		jdraw.QuickDrawPanel(clrGray, 20,20, self.Frame.btnClose:GetWide() - 1, self.Frame.btnClose:GetTall() - 1)
 	end
-	
 
 	self.ViewPlayerModel = vgui.Create( "DModelPanel" )
 	self.ViewPlayerModel:SetModel( LocalPlayer():GetModel() )
@@ -35,7 +35,7 @@ function PANEL:Init()
 		end
 		self.LeftList:AddItem(PlayerModel)
 	end
-	
+
 	self.Frame:MakePopup()
 	self:PerformLayout()
 end
@@ -44,17 +44,17 @@ function PANEL:PerformLayout()
 	self.Frame:SetPos(self:GetPos())
 	self.Frame:SetSize(self:GetSize())
 	self.Frame.btnClose:SetPos(self.Frame:GetWide() - 5, 0)
-	
+
 	self.LeftList:SetPos(5, 25)
 	self.LeftList:SetSize((self.Frame:GetWide() /2) - 10, self.Frame:GetTall() - 30)
-	
+
 	self.RightList:SetPos((self.Frame:GetWide() / 2) - 5, 25)
 	self.RightList:SetSize((self.Frame:GetWide() /2), self.Frame:GetTall() - 30)
-	
+
 	self.ViewPlayerModel:SetSize( 250, 250 )
 	self.ViewPlayerModel:SetCamPos( Vector( 50, 50, 50 ) )
 	self.ViewPlayerModel:SetLookAt( Vector( 0, 0, 40 ) )
-		
+
 end
 vgui.Register("Appearancemenu", PANEL, "Panel")
 

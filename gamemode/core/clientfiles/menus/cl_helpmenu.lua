@@ -12,8 +12,9 @@ function PANEL:Init()
 		self.Admin = self.TabSheet:NewTab("Admin", "admintab", "gui/admin", "For admins only.")
 	end
 
-	self.Frame.btnClose = vgui.Create("Button", self.Frame)
-	self.Frame.btnClose:SetText("Close")
+	self.Frame.btnClose = vgui.Create("DButton", self.Frame)
+	self.Frame.btnClose:SetFont("Marlett")
+	self.Frame.btnClose:SetText("r")
 	self.Frame.btnClose.DoClick = function(pnlPanel)
 		GAMEMODE.HelpMenu.Frame:Close()
 		GAMEMODE.HelpMenu = nil
