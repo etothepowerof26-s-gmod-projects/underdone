@@ -19,7 +19,7 @@ function PANEL:LoadAuctions()
 				if tblInfo.SellerID == LocalPlayer():SteamID() or game.SinglePlayer() then
 					local ltmAuction = vgui.Create("FListItem")
 					ltmAuction:SetHeaderSize(35)
-					ltmAuction:SetFont("Default")
+					ltmAuction:SetFont("MenuLarge")
 					ltmAuction:SetItemIcon(tblInfo.Item, tblInfo.Amount, 30)
 					ltmAuction:SetNameText(ItemTable(tblInfo.Item).PrintName)
 					ltmAuction:SetDescText(tblInfo.TimeLeft .. " Hours Left")

@@ -1,10 +1,10 @@
 --[[
-	+oooooo+-`    `:oyyys+-`    +oo.       /oo-   .oo+-  ooo+`   `ooo+  
-	NMMhyhmMMm-  omMNyosdMMd:   NMM:       hMM+ `oNMd:  `MMMMy`  yMMMN  
-	NMM:  .NMMo /MMN:    sMMN`  NMM:       hMMo/dMm/`   `MMMmMs`oMmMMN  
-	NMMhyhmMNh. yMMm     -MMM:  NMM:       hMMmNMMo     `MMM:mMhMd/MMN  
-	NMMyoo+/.   /MMN:    sMMN`  NMM:       hMMy:dMMh-   `MMM`:NMN.:MMN  
-	NMM:         +NMNyosdMMd:   NMMdyyyyy. hMM+ `+NMNo` `MMM` ... :MMN  
+	+oooooo+-`    `:oyyys+-`    +oo.       /oo-   .oo+-  ooo+`   `ooo+
+	NMMhyhmMMm-  omMNyosdMMd:   NMM:       hMM+ `oNMd:  `MMMMy`  yMMMN
+	NMM:  .NMMo /MMN:    sMMN`  NMM:       hMMo/dMm/`   `MMMmMs`oMmMMN
+	NMMhyhmMNh. yMMm     -MMM:  NMM:       hMMmNMMo     `MMM:mMhMd/MMN
+	NMMyoo+/.   /MMN:    sMMN`  NMM:       hMMy:dMMh-   `MMM`:NMN.:MMN
+	NMM:         +NMNyosdMMd:   NMMdyyyyy. hMM+ `+NMNo` `MMM` ... :MMN
 	+oo.          `:oyyys+-`    +oooooooo` /oo-   .ooo/  ooo`     .oo+  2009
 ]]
 
@@ -21,7 +21,7 @@ PANEL.Expandable = false
 PANEL.ExpandedSize = nil
 PANEL.HeaderSize = nil
 PANEL.GradientTexture = nil
-PANEL.NameFont = "Default"
+PANEL.NameFont = "MenuLarge"
 
 function PANEL:Init()
 	self.Color = clrGray
@@ -53,7 +53,7 @@ function PANEL:PerformLayout()
 	for key, btnButton in pairs(self.Buttons or {}) do
 		btnButton:SetPos(self:GetWide() - (key * (btnButton:GetWide() + 5)), (self.HeaderSize / 2) - (btnButton:GetTall() / 2))
 	end
-	
+
 	if self.ContentList then
 		self.ContentList:SetSize(self:GetWide() - 10, self:GetTall() - self.HeaderSize - 7)
 		self.ContentList:SetPos(5, self.HeaderSize + 2)

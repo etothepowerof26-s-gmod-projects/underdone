@@ -1,3 +1,30 @@
+-- Recreate old GM12 fonts
+surface.CreateFont("UiBold", {
+	font = "Tahoma",
+	size = 12,
+	weight = 1000,
+})
+
+surface.CreateFont("MenuLarge", {
+	font = "Verdana",
+	size = 15,
+	weight = 600,
+	antialias = true,
+})
+
+surface.CreateFont("MenuLarge", {
+	font = "Trebuchet MS",
+	size = 22,
+	weight = 900,
+})
+
+surface.CreateFont("DefaultFixedOutline", {
+	font = "Lucida Console",
+	size = 10,
+	weight = 0,
+	outline = true,
+})
+
 --------Includes---------
 include('shared.lua')
 include('core/sharedfiles/database/items/sh_items_base.lua')

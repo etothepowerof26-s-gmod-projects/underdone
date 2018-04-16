@@ -10,7 +10,7 @@ local function DrawItemInfo() -- TODO: remake, easy job
 				local strText = ent:GetNWString("PrintName")
 				if ent:GetNWInt("Amount") > 1 then strText = strText .. " x" .. ent:GetNWInt("Amount") end
 				if ent:GetOwner() == LocalPlayer() or not IsValid(ent:GetOwner()) or LocalPlayer():IsInSquad(ent:GetOwner()) then
-					draw.SimpleTextOutlined(strText, "Default", posENTpos.x, posENTpos.y - 10, clrWhite, 1, 1, 1, clrDrakGray)
+					draw.SimpleTextOutlined(strText, "UiBold", posENTpos.x, posENTpos.y - 10, clrWhite, 1, 1, 1, clrDrakGray)
 					ent:SetColor(Color(255, 255, 255, 255))
 				else
 					ent:SetColor(Color(255, 255, 255, 0))
@@ -19,7 +19,7 @@ local function DrawItemInfo() -- TODO: remake, easy job
 			if ent:GetModel() == "models/props/de_inferno/clayoven.mdl" then
 				if ent:GetPos():Distance(LocalPlayer():GetPos()) < 200 then
 					local posENTpos = (ent:GetPos() + Vector(0, 0, 40)):ToScreen()
-					draw.SimpleTextOutlined("Work Bench", "Default", posENTpos.x, posENTpos.y, clrWhite, 1, 1, 1, clrDrakGray)
+					draw.SimpleTextOutlined("Work Bench", "UiBold", posENTpos.x, posENTpos.y, clrWhite, 1, 1, 1, clrDrakGray)
 				end
 			end
 		end

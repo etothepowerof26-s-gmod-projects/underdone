@@ -46,7 +46,7 @@ function PANEL:Init()
 		self.PageLabel:SetText("Page " .. math.Clamp((LocalPlayer():GetNWInt("AuctionPage") + 1) + 1, 1, 100))
 		RunConsoleCommand("UD_SetAuctionPage", math.Clamp(LocalPlayer():GetNWInt("AuctionPage") + 1, 0, 100))
 	end
-	self.PageLabel = CreateGenericLabel(self.PagesPanel, "Default", "Page " .. (LocalPlayer():GetNWInt("AuctionPage") + 1), clrDrakGray)
+	self.PageLabel = CreateGenericLabel(self.PagesPanel, "UiBold", "Page " .. (LocalPlayer():GetNWInt("AuctionPage") + 1), clrDrakGray)
 
 	self:LoadAuctions()
 end
@@ -83,7 +83,7 @@ function PANEL:LoadAuctions()
 			if intCounter >= (LocalPlayer():GetNWInt("AuctionPage") * GAMEMODE.AuctionsPerPage) and intCounter < ((LocalPlayer():GetNWInt("AuctionPage") + 1) * GAMEMODE.AuctionsPerPage) then
 				local ltmAuction = vgui.Create("FListItem")
 				ltmAuction:SetHeaderSize(35)
-				ltmAuction:SetFont("Default")
+				ltmAuction:SetFont("MenuLarge")
 				ltmAuction:SetItemIcon(tblInfo.Item, tblInfo.Amount, 30)
 				ltmAuction:SetNameText(ItemTable(tblInfo.Item).PrintName)
 				ltmAuction:SetDescText("$" .. tblInfo.Price .. "   " .. math.Round(tblInfo.TimeLeft - (intCleanUpTime - intDefaultAuctionTime)) .. " Hours Left")

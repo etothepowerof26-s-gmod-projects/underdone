@@ -24,7 +24,7 @@ function PANEL:CreateHelp()
 end
 
 function PANEL:LoadHelp()
-	self.HelpList:AddItem(CreateGenericLabel(nil, "Default", "Welcome to the underdone Help Menu", clrWhite))
+	self.HelpList:AddItem(CreateGenericLabel(nil, "MenuLarge", "Welcome to the underdone Help Menu", clrWhite))
 	for _, tblTextInfo in pairs(tblFAQ) do
 		self.HelpList:AddItem(CreateGenericLabel(nil, nil, tblTextInfo.Text, tblTextInfo.Color))
 	end

@@ -129,7 +129,7 @@ function PANEL:LoadInventory(boolTemp)
 			if not LocalPlayer().Stats[stat.Name] then ErrorNoHalt("stat with that name doesn't exist: " .. stat.Name) return end
 
 			local lblNewStat = vgui.Create("DLabel")
-			lblNewStat:SetFont("Default")
+			lblNewStat:SetFont("UiBold")
 			lblNewStat:SetColor(clrDrakGray)
 			lblNewStat:SetText(stat.PrintName .. " " .. LocalPlayer().Stats[stat.Name])
 			lblNewStat:SizeToContents()
@@ -145,7 +145,7 @@ function PANEL:ReloadAmmoDisplay()
 	self.AmmoDisplay:Clear()
 	for _, tblInfo in pairs(self.AmmoDisplayTable) do
 		local lblNewAmmoType = vgui.Create("DLabel")
-		lblNewAmmoType:SetFont("Default")
+		lblNewAmmoType:SetFont("UiBold")
 		lblNewAmmoType:SetColor(clrDrakGray)
 		lblNewAmmoType:SetText(tblInfo.PrintName .. " " .. LocalPlayer():GetAmmoCount(tblInfo.Type))
 		lblNewAmmoType:SizeToContents()

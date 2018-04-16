@@ -12,11 +12,11 @@ function PANEL:Init()
 		GAMEMODE.QuestMenu = nil
 	end
 	self.Frame:MakePopup()
-	
+
 	self.QuestList = CreateGenericList(self.Frame, 2, false, true)
 	self.QuestDescription = CreateGenericList(self.Frame, 5, false, true)
 	self.QuestDescription:SetSpacing(1)
-	
+
 	self:PerformLayout()
 end
 
@@ -29,7 +29,7 @@ function PANEL:LoadQuests(tblQuests)
 		if not tblQuestTable.QuestNeeded or (tblQuestTable.QuestNeeded and LocalPlayer():HasCompletedQuest(tblQuestTable.QuestNeeded)) then
 			local ltmQuest = vgui.Create("FListItem")
 			ltmQuest:SetHeaderSize(20)
-			ltmQuest:SetFont("Default")
+			ltmQuest:SetFont("UiBold")
 			ltmQuest:SetNameText(tblQuestTable.PrintName)
 			ltmQuest:SetDescText("level " .. tblQuestTable.Level .. "+")
 			ltmQuest.DoClick = function() self:SellectQuest(strQuest) end
@@ -65,7 +65,7 @@ function PANEL:SellectQuest(strQuest)
 	local tblQuestTable = QuestTable(strQuest)
 	local tblPlayerQuestTable = LocalPlayer():GetQuest(strQuest) or {}
 	if not tblQuestTable or not tblPlayerQuestTable then return end
-	self.QuestDescription:AddItem(CreateGenericLabel(nil, "Default", tblQuestTable.PrintName, clrWhite))
+	self.QuestDescription:AddItem(CreateGenericLabel(nil, "MenuLarge", tblQuestTable.PrintName, clrWhite))
 	self.QuestDescription:AddItem(CreateGenericLabel(nil, nil, tblQuestTable.Story, clrDrakGray))
 	if tblPlayerQuestTable.Done and tblQuestTable.TurnInStory then
 		self.QuestDescription:AddItem(CreateGenericLabel(nil, nil, tblQuestTable.TurnInStory, clrDrakGray))
@@ -104,14 +104,14 @@ function PANEL:SellectQuest(strQuest)
 		icnItem:SetDragable(false)
 		lstItemReward:AddItem(icnItem)
 	end
-	
+
 	self.QuestDescription:InvalidateLayout()
 end
 
 function PANEL:PerformLayout()
 	self.Frame:SetPos(self:GetPos())
 	self.Frame:SetSize(self:GetSize())
-	
+
 	self.QuestList:SetPos(5, 25)
 	self.QuestList:SetSize(self.Frame:GetWide() * 0.4, self.Frame:GetTall() - 30)
 	self.QuestDescription:SetPos(self.QuestList:GetWide() + 10, 25)

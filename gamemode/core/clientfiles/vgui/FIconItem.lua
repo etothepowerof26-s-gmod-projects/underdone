@@ -85,7 +85,7 @@ function PANEL:Paint(w, h)
 			end
 			self.Text = IntAmount .. "" .. strPrefix
 		end
-		surface.SetFont("DebugFixedSmall")
+		surface.SetFont("DefaultFixedOutline")
 		local width, tall = surface.GetTextSize(tostring(self.Text))
 		surface.SetTextColor(255, 255, 255, 255)
 		surface.SetTextPos(w - width - 2, h - tall - 1)

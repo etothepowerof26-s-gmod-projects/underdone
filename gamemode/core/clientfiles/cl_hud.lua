@@ -86,7 +86,7 @@ function GM:DrawQuestToDoList()
 				draw.SimpleTextOutlined("Quest Todo list", "Trebuchet24", intXOffset - 20, intYOffset, clrWhite, 0, 1, 1, clrDrakGray)
 				intYOffset = intYOffset + intPadding + 7
 			end
-			draw.SimpleTextOutlined(tblQuestTable.PrintName, "Trebuchet24", intXOffset, intYOffset, clrWhite, 0, 1, 1, clrDrakGray)
+			draw.SimpleTextOutlined(tblQuestTable.PrintName, "Trebuchet22", intXOffset, intYOffset, clrWhite, 0, 1, 1, clrDrakGray)
 			intYOffset = intYOffset + intPadding + 5
 			intXOffset = intXOffset + 20
 			for strNPC, intAmount in pairs(tblInfo.Kills or {}) do
@@ -174,7 +174,7 @@ function GM:DrawSkillPoints()
 		self.SkillBar = jdraw.NewProgressBar(self.PlayerBox, true)
 		self.SkillBar:SetDemensions(3, -21, 125, 23)
 		self.SkillBar:SetStyle(4, clrTan)
-		self.SkillBar:SetText("Default", "Unused SkillPoints " .. LocalPlayer():GetNWInt("SkillPoints"), clrDrakGray)
+		self.SkillBar:SetText("UiBold", "Unused SkillPoints " .. LocalPlayer():GetNWInt("SkillPoints"), clrDrakGray)
 		jdraw.DrawProgressBar(self.SkillBar)
 	end
 end
@@ -187,7 +187,7 @@ function GM:DrawHealthBar()
 		self.HealthBar:SetDemensions(3, 3, self.PlayerBox.Size.Width - 6, 20)
 		self.HealthBar:SetStyle(4, clrBarColor)
 		self.HealthBar:SetValue(LocalPlayer():Health(), LocalPlayer():GetStat("stat_maxhealth"))
-		self.HealthBar:SetText("Default", "Health " .. LocalPlayer():Health(), clrDrakGray)
+		self.HealthBar:SetText("UiBold", "Health " .. LocalPlayer():Health(), clrDrakGray)
 		jdraw.DrawProgressBar(self.HealthBar)
 	end
 end
@@ -201,7 +201,7 @@ function GM:DrawLevelBar()
 	self.LevelBar:SetDemensions(3, self.HealthBar.Size.Height + 6, self.PlayerBox.Size.Width - 6, 15)
 	self.LevelBar:SetStyle(4, clrBarColor)
 	self.LevelBar:SetValue(LocalPlayer():GetNWInt("exp") - intCurrentLevelExp, intNextLevelExp - intCurrentLevelExp)
-	self.LevelBar:SetText("Default", "Level " .. LocalPlayer():GetLevel(), clrDrakGray)
+	self.LevelBar:SetText("UiBold", "Level " .. LocalPlayer():GetLevel(), clrDrakGray)
 	jdraw.DrawProgressBar(self.LevelBar)
 end
 
@@ -215,7 +215,7 @@ function GM:DrawAmmoBar()
 	self.AmmoBar:SetDemensions(3, self.HealthBar.Size.Height + self.LevelBar.Size.Height + 9, self.PlayerBox.Size.Width - 6, 15)
 	self.AmmoBar:SetStyle(4, clrBarColor)
 	self.AmmoBar:SetValue(intCurrentClip, tblWeaponTable.ClipSize or 1)
-	self.AmmoBar:SetText("Default", "Ammo " .. intCurrentClip .. "  " .. LocalPlayer():GetAmmoCount(strAmmoType), clrDrakGray)
+	self.AmmoBar:SetText("UiBold", "Ammo " .. intCurrentClip .. "  " .. LocalPlayer():GetAmmoCount(strAmmoType), clrDrakGray)
 	jdraw.DrawProgressBar(self.AmmoBar)
 end
 

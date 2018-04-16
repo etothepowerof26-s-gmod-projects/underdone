@@ -290,7 +290,7 @@ hook.Add("HUDPaint", "DrawMapObjects", function()
 			local intPosX, intPosY = object.Postion:ToScreen().x, object.Postion:ToScreen().y
 			local clrDrawColor = clrWhite
 			if GAMEMODE.MapEditor.CurrentObjectNum == key then clrDrawColor = clrBlue end
-			draw.SimpleTextOutlined(key, "Default", intPosX, intPosY, clrDrawColor, 1, 1, 1, Color(0, 0, 0, 255))
+			draw.SimpleTextOutlined(key, "UiBold", intPosX, intPosY, clrDrawColor, 1, 1, 1, Color(0, 0, 0, 255))
 		end
 	end
 end)

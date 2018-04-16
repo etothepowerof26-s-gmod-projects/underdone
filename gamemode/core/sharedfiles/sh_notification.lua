@@ -8,14 +8,14 @@ if CLIENT then
 	local function DrawNotifications()
 		local yOffset = intStartPostion
 		for _, strNocification in pairs(tblNotifications) do
-			surface.SetFont("Default")
+			surface.SetFont("MenuLarge")
 			local wide, high = surface.GetTextSize(strNocification)
 			local pnlNotification = jdraw.NewPanel()
 			pnlNotification:SetDemensions(ScrW() - (wide + 40), yOffset, wide + 30, intHieght)
 			pnlNotification:SetStyle(4, clrTan)
 			pnlNotification:SetBoarder(1, clrDrakGray)
 			jdraw.DrawPanel(pnlNotification)
-			draw.SimpleText(strNocification, "Default", pnlNotification.Position.X + intHieght, pnlNotification.Position.Y + 3, clrDrakGray, 0, 3)
+			draw.SimpleText(strNocification, "MenuLarge", pnlNotification.Position.X + intHieght, pnlNotification.Position.Y + 3, clrDrakGray, 0, 3)
 			yOffset = yOffset - intHieght - intSpacing
 		end
 	end

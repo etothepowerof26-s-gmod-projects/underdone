@@ -171,7 +171,7 @@ function GM:BuildModel(tblModelTable)
 		entNewPart:SetParent(entReturnEnt)
 		if SERVER then entNewPart:SetCollisionGroup(COLLISION_GROUP_WORLD) end
 		if tblModelInfo.Material then entNewPart:SetMaterial(tblModelInfo.Material) end
-		if tblModelInfo.Color then pentNewPart:SetColor(Color(tblModelInfo.Color.r, tblModelInfo.Color.g, tblModelInfo.Color.b, tblModelInfo.Color.a)) end
+		if tblModelInfo.Color then entNewPart:SetColor(Color(tblModelInfo.Color.r, tblModelInfo.Color.g, tblModelInfo.Color.b, tblModelInfo.Color.a)) end
 		if tblModelInfo.Scale then
 			local scale = type(tblModelInfo.Scale) == "Vector" and tblModelInfo.Scale or tonumber(tblModelInfo.Scale)
 			if not scale then return ErrorNoHalt("scale is nil") end

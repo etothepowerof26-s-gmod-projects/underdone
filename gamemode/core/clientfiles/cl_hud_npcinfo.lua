@@ -25,15 +25,15 @@ local function DrawNameText(entNPC, posNPCPos, boolFriendly)
 			strTitle = tbl.PrintName
 		end
 	end
-	draw.SimpleTextOutlined(strTitle, "Default", posNPCPos.x - 8, posNPCPos.y - 20, clrDrawColor, 1, 1, 1, clrDrakGray)
+	draw.SimpleTextOutlined(strTitle, "UiBold", posNPCPos.x - 8, posNPCPos.y - 20, clrDrawColor, 1, 1, 1, clrDrakGray)
 
 	local strDrawText = tblNPCTable.PrintName
 	if not boolFriendly and not entNPC:IsBuilding() then strDrawText = strDrawText .. " lv. " .. intLevel end
 
-	draw.SimpleTextOutlined(strDrawText, "Default", posNPCPos.x - 8, posNPCPos.y - 10, clrDrawColor, 1, 1, 1, clrDrakGray)
+	draw.SimpleTextOutlined(strDrawText, "UiBold", posNPCPos.x - 8, posNPCPos.y - 10, clrDrawColor, 1, 1, 1, clrDrakGray)
 
 	if boolFriendly then
-		surface.SetFont("Default")
+		surface.SetFont("UiBold")
 		local wide1 = surface.GetTextSize(strTitle)
 		local wide2 = surface.GetTextSize(strDrawText)
 		posNPCPos.x = posNPCPos.x + (math.Max(wide1, wide2) / 2) + 5
@@ -51,7 +51,7 @@ local function DrawNPCHealthBar(entNPC, posNPCPos)
 	NpcHealthBar:SetDemensions(posNPCPos.x  - (80 / 2), posNPCPos.y, 80, 11)
 	NpcHealthBar:SetStyle(4, clrBarColor)
 	NpcHealthBar:SetBoarder(1, clrDrakGray)
-	NpcHealthBar:SetText("Default", intHealth, clrDrakGray)
+	NpcHealthBar:SetText("UiBold", intHealth, clrDrakGray)
 	NpcHealthBar:SetValue(intHealth, intMaxHealth)
 	jdraw.DrawProgressBar(NpcHealthBar)
 end

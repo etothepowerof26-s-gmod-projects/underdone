@@ -20,7 +20,7 @@ function PANEL:Init()
 		icnItem.FromInventory = true
 		self.Slots[slotTable.Name] = icnItem
 	end
-	self.ArmorRatingLabel = CreateGenericLabel(self, "Default", "Total Armor " .. LocalPlayer():GetArmorRating(), clrDrakGray)
+	self.ArmorRatingLabel = CreateGenericLabel(self, "UiBold", "Total Armor " .. LocalPlayer():GetArmorRating(), clrDrakGray)
 end
 
 function PANEL:PerformLayout()

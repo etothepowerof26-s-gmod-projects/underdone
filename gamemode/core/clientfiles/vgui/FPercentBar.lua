@@ -13,7 +13,7 @@ function PANEL:Paint()
 	self.PercentBar:SetStyle(4, clrBlue)
 	self.PercentBar:SetBoarder(1, clrDrakGray)
 	self.PercentBar:SetValue(self.Value, self.Max)
-	self.PercentBar:SetText("Default", self.Text, clrDrakGray)
+	self.PercentBar:SetText("UiBold", self.Text, clrDrakGray)
 	jdraw.DrawProgressBar(self.PercentBar)
 end
 

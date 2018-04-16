@@ -14,10 +14,10 @@ local function DrawPlayerInfo()
 		if ply ~= localPly and pos:DistToSqr(localPlyPos) < distSqr then
 			local posPlayerPos = (pos + offset):ToScreen()
 			local strDisplayText = ply:Nick() .. " lv." ..  ply:GetLevel()
-			surface.SetFont("Default")
+			surface.SetFont("UiBold")
 
 			local wide = surface.GetTextSize(strDisplayText)
-			draw.SimpleTextOutlined(strDisplayText, "Default", posPlayerPos.x - 8, posPlayerPos.y, clrWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, clrDrakGray)
+			draw.SimpleTextOutlined(strDisplayText, "UiBold", posPlayerPos.x - 8, posPlayerPos.y, clrWhite, TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER, 1, clrDrakGray)
 
 			local strIcon = ply:IsAdmin() and adminIcon or playerIcon
 			surface.SetDrawColor(255, 255, 255, 255)
