@@ -243,7 +243,7 @@ NPC = AddMultiplier(NPC, 1, 3)
 NPC.DeathDistance = 10
 Register.NPC(NPC)
 
-local NPC = QuickNPC("vortigaunt", "Metro police", "npc_metropolice", "combine", 1000)
+local NPC = QuickNPC("metropolice", "Metro police", "npc_metropolice", "combine", 1000)
 NPC = AddDrop(NPC, "money", 300, 350, 400)
 NPC = AddDrop(NPC, "weapon_melee_skele", 0.5, nil, nil, 50)
 NPC = AddDrop(NPC, "armor_shield_tyrant", 1, nil, nil, 40)
