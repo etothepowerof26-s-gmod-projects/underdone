@@ -70,18 +70,22 @@ end
 
 function PANEL:AddItem(lstAddList, item, amount, strCommand, intCost)
 	local tblItemTable = ItemTable(item)
-	local intListItems = 1
-	if not tblItemTable.Stackable then intListItems = amount or 1 end
-	if strCommand == "sell" and table.HasValue(LocalPlayer().Data.Paperdoll or {}, item) then intListItems = intListItems - 1 end
-	if tblItemTable.QuestNeeded and not LocalPlayer():HasCompletedQuest(tblItemTable.QuestNeeded) then return end
-	for i = 1, intListItems do
-		local icnItem = vgui.Create("FIconItem")
-		icnItem:SetSize(self.ItemIconSize, self.ItemIconSize)
-		icnItem:SetItem(tblItemTable, amount, strCommand or "use", intCost or 0)
-		if strCommand == "buy" and not LocalPlayer():HasItem("money", intCost) then
-			icnItem:SetAlpha(100)
+	if tblShopTable then
+		local intListItems = 1
+		if not tblItemTable.Stackable then intListItems = amount or 1 end
+		if strCommand == "sell" and table.HasValue(LocalPlayer().Data.Paperdoll or {}, item) then intListItems = intListItems - 1 end
+		if tblItemTable.QuestNeeded and not LocalPlayer():HasCompletedQuest(tblItemTable.QuestNeeded) then return end
+		for i = 1, intListItems do
+			local icnItem = vgui.Create("FIconItem")
+			icnItem:SetSize(self.ItemIconSize, self.ItemIconSize)
+			icnItem:SetItem(tblItemTable, amount, strCommand or "use", intCost or 0)
+			if strCommand == "buy" and not LocalPlayer():HasItem("money", intCost) then
+				icnItem:SetAlpha(100)
+			end
+			lstAddList:AddItem(icnItem)
 		end
-		lstAddList:AddItem(icnItem)
+	else
+		ErrorNoHalt("missing item for '" .. tostring(self.Shop) .. "', '" .. tostring(item) .. "'")
 	end
 end
 
