@@ -252,14 +252,14 @@ if CLIENT then
 
 		local tblPaintPanel2 = jdraw.NewPanel()
 		frmNewFrame.tblPaintPanel2 = tblPaintPanel2
-			tblPaintPanel:SetStyle(4, clrGray)
-			tblPaintPanel:SetBorder(1, clrDrakGray)
+			tblPaintPanel2:SetStyle(4, clrGray)
+			tblPaintPanel2:SetBorder(1, clrDrakGray)
 
 		function frmNewFrame:Paint(w, h)
 				self.tblPaintPanel:SetDimensions(0, 0, w, h)
 			jdraw.DrawPanel(self.tblPaintPanel)
 
-				self.tblPaintPanel:SetDimensions(5, 5, w - 10, 15)
+				self.tblPaintPanel2:SetDimensions(5, 5, w - 10, 15)
 			jdraw.DrawPanel(self.tblPaintPanel2)
 		end
 
