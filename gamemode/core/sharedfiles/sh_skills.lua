@@ -61,7 +61,7 @@ function Player:CallSkillHook(strHook, ...)
 	for strSkill, intSkillLevel in pairs(self.Data.Skills or {}) do
 		local tblSkillTable = SkillTable(strSkill)
 		if self:GetSkill(strSkill) > 0 and tblSkillTable.Hooks and tblSkillTable.Hooks[strHook] then
-			tblReturnTable = {tblSkillTable.Hooks[strHook](self, self:GetSkill(strSkill), table.Split(tblReturnTable))}
+			tblReturnTable = {tblSkillTable.Hooks[strHook](self, self:GetSkill(strSkill), unpack(tblReturnTable))}
 		end
 	end
 	return unpack(tblReturnTable)
