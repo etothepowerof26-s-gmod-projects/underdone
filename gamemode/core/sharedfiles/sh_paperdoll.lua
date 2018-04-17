@@ -102,35 +102,36 @@ if CLIENT then
 			local plyPlayer = ents.GetByIndex(intEntID)
 
 			for strSlot, entTarget in pairs(tblPlayerTable or {}) do
-				if IsValid(plyPlayer) then
+				if not IsValid(plyPlayer) then
 					for _, kid in pairs(entTarget.Children or {}) do SafeRemoveEntityDelayed(kid, 0) end
 					SafeRemoveEntityDelayed(entTarget, 0)
-					GAMEMODE.PaperDollEnts[intEntID] = nil
-
-					break
-				end
-
-				local tblItemTable = ItemTable(entTarget.Item)
-				if tblItemTable then
-					local tblAttachment = plyPlayer:GetAttachment(plyPlayer:LookupAttachment(entTarget.Attachment))
-					if not tblAttachment then
-						local vecBonePostion, angBoneAngle = plyPlayer:GetBonePosition(plyPlayer:LookupBone(entTarget.Attachment))
-						tblAttachment = {Pos = vecBonePostion, Ang = angBoneAngle}
-					end
-					if tblAttachment then
-						entTarget:SetAngles(tblAttachment.Ang)
-						entTarget:SetAngles(entTarget:LocalToWorldAngles(tblItemTable.Model[1].Angle))
-						entTarget:SetPos(tblAttachment.Pos)
-						entTarget:SetPos(entTarget:LocalToWorld(tblItemTable.Model[1].Position))
-					end
-					for k, kid in pairs(entTarget.Children or {}) do
-						kid:SetAngles(entTarget:GetAngles())
-						kid:SetAngles(kid:LocalToWorldAngles(tblItemTable.Model[k + 1].Angle))
-						kid:SetPos(entTarget:GetPos())
-						kid:SetPos(kid:LocalToWorld(tblItemTable.Model[k + 1].Position))
-						kid:SetParent(entTarget)
+				else
+					local tblItemTable = ItemTable(entTarget.Item)
+					if tblItemTable then
+						local tblAttachment = plyPlayer:GetAttachment(plyPlayer:LookupAttachment(entTarget.Attachment))
+						if not tblAttachment then
+							local vecBonePostion, angBoneAngle = plyPlayer:GetBonePosition(plyPlayer:LookupBone(entTarget.Attachment))
+							tblAttachment = {Pos = vecBonePostion, Ang = angBoneAngle}
+						end
+						if tblAttachment then
+							entTarget:SetAngles(tblAttachment.Ang)
+							entTarget:SetAngles(entTarget:LocalToWorldAngles(tblItemTable.Model[1].Angle))
+							entTarget:SetPos(tblAttachment.Pos)
+							entTarget:SetPos(entTarget:LocalToWorld(tblItemTable.Model[1].Position))
+						end
+						for k, kid in pairs(entTarget.Children or {}) do
+							kid:SetAngles(entTarget:GetAngles())
+							kid:SetAngles(kid:LocalToWorldAngles(tblItemTable.Model[k + 1].Angle))
+							kid:SetPos(entTarget:GetPos())
+							kid:SetPos(kid:LocalToWorld(tblItemTable.Model[k + 1].Position))
+							kid:SetParent(entTarget)
+						end
 					end
 				end
+			end
+
+			if not IsValid(plyPlayer) then
+				GAMEMODE.PaperDollEnts[intEntID] = nil
 			end
 		end
 	end
