@@ -109,7 +109,7 @@ NPC.Quest = {"quest_killcombinethumper", "quest_arsenalupgrade", "quest_killcomb
 NPC.DeathDistance = 14
 Register.NPC(NPC)
 
-local NPC = QuickNPC("quest_charple", "Some Burnt Guy", "npc_citizen", "human", nil, "models/player/charple01.mdl")
+local NPC = QuickNPC("quest_charple", "Some Burnt Guy", "npc_citizen", "human", nil, "models/player/charple.mdl")
 NPC = AddBool(NPC, false, true, true)
 NPC.Quest = { "quest_cquest1", "quest_cquest2", "quest_detergentq"}
 NPC.Deathdistance = 14
