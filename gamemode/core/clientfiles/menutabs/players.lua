@@ -1,5 +1,5 @@
 --StupidPeopel
---STEAM_0:1:14293896 
+--STEAM_0:1:14293896
 -- ^ nice fix it's completely shit
 PANEL = {}
 
@@ -32,8 +32,8 @@ function PANEL:LoadPlayers()
 		self.SquadPlayerList:Remove()
 		self.SquadPlayerList = nil
 	end
-	if self.SquadPlayerList and self.SquadPlayerList.ContentList then 
-		self.SquadPlayerList.ContentList:Clear() 
+	if self.SquadPlayerList and self.SquadPlayerList.ContentList then
+		self.SquadPlayerList.ContentList:Clear()
 	end
 	for _, player in pairs(player.GetAll()) do
 		self:AddPlayer(self.ServerPlayerList, player)
@@ -53,8 +53,8 @@ function PANEL:AddPlayer(pnlParent, ply)
 	ltiListItem:SetDescText("level " .. ply:GetLevel())
 	ltiListItem:SetColor(clrGray)
 	ltiListItem:SetAvatar(ply, 20)
-	if ply:IsAdmin() then 
-		ltiListItem:SetIcon("gui/admin") 
+	if ply:IsAdmin() then
+		ltiListItem:SetIcon("gui/admin")
 	end
 
 	--Private Messaging
@@ -110,7 +110,7 @@ function PANEL:AddPlayer(pnlParent, ply)
 				dmenu:AddOption("Kick from Squad", fncSquadKick)
 			end
 		end
-		if LocalPlayer():IsAdmin() and LocalPlayer() ~= ply then
+		--[[if LocalPlayer():IsAdmin() and LocalPlayer() ~= ply then
 			dmenu:AddSpacer()
 			dmenu:AddOption("Kick", function() RunConsoleCommand("UD_Admin_Kick", ply:EntIndex()) end)
 			local mnuBanSubMenu = dmenu:AddSubMenu("Ban ...")
@@ -126,7 +126,7 @@ function PANEL:AddPlayer(pnlParent, ply)
 				if intTime <= 0 then strTime = strTime .. "Perma-Ban" end
 				mnuBanSubMenu:AddOption(strTime, function() RunConsoleCommand("UD_Admin_Kick", ply:EntIndex(), intTime) end)
 			end
-		end
+		end]]
 		dmenu:Open()
 
 		GAMEMODE.ActiveMenu = dmenu

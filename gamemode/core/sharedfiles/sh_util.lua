@@ -234,15 +234,11 @@ if CLIENT then
 		if boolClose then
 			frmNewFrame.btnClose:SetFont("Marlett")
 			frmNewFrame.btnClose:SetText("r")
+			frmNewFrame.btnClose:SetColor(Color(200, 200, 200, 255))
 			frmNewFrame.btnClose.Paint = function() end
 
-			frmNewFrame.btnMaxim:SetFont("Marlett")
-			frmNewFrame.btnMaxim:SetText("1")
-			frmNewFrame.btnMaxim.Paint = function() end
-
-			frmNewFrame.btnMinim:SetFont("Marlett")
-			frmNewFrame.btnMinim:SetText("0")
-			frmNewFrame.btnMinim.Paint = function() end
+			frmNewFrame.btnMaxim:SetVisible(false)
+			frmNewFrame.btnMinim:SetVisible(false)
 		end
 
 		local tblPaintPanel = jdraw.NewPanel()
