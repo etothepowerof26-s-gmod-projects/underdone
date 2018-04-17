@@ -41,7 +41,7 @@ function PANEL:PerformLayout()
 	self.TabSheet:SetSize(self:GetSize())
 
 	local w, h = self.TabSheet:GetWide(), self.TabSheet:GetTall()
-	for _, v in pairs(self.Items) do
+	for _, v in pairs(self.TabSheet.Items) do
 		v.Panel:SetSize(w - 10, h - 30)
 		v.Panel:PerformLayout()
 	end
