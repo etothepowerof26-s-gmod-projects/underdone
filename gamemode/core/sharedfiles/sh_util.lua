@@ -327,13 +327,12 @@ if CLIENT then
 				local active = tbsNewTabSheet:GetActiveTab() == self
 				local clrBackColor = active and clrTan or clrGray
 
-				jdraw.QuickDrawPanel(clrBackColor, 0, 0, w, h - 1)
-
-				-- TODO: Probably what's making them look broken
 				if active then
-					draw.RoundedBox(0, 1, h - 4, w - 2, 5, clrBackColor)
+					jdraw.QuickDrawPanel(clrBackColor, 0, 0, w, h - 6)
+					draw.RoundedBox(0, 0, h - 8, w, 2, clrBackColor)
 				else
-					draw.RoundedBox(0, 1, h - 4, w - 2, 2, clrBackColor)
+					jdraw.QuickDrawPanel(clrBackColor, 0, 0, w, h + 2)
+					draw.RoundedBox(0, 0, h - 4, w, 2, clrBackColor)
 				end
 			end
 
