@@ -1,12 +1,12 @@
-GM.ConVarCammeraDistance = CreateClientConVar("ud_cammeradistance", 100, true, false)
-GM.AddativeCammeraDistance = 0
-GM.CammeraDelta = 0.4
+GM.ConVarCameraDistance = CreateClientConVar("ud_cameradistance", 100, true, false)
+GM.AdditiveCameraDistance = 0
+GM.CameraDelta = 0.4
 GM.LastLookPos = nil
 
 local Player = FindMetaTable("Player")
 function Player:GetIdealCamPos()
 	local vecPosition = self:EyePos()
-	local intDistance = GAMEMODE.ConVarCammeraDistance:GetInt() + GAMEMODE.AddativeCammeraDistance
+	local intDistance = math.Clamp(GAMEMODE.ConVarCameraDistance:GetInt(), 0, 1000) + GAMEMODE.AdditiveCameraDistance
 	local intEditorRadiants = GAMEMODE.PaperDollEditor.CurrentCamRotation
 	local intEditorDistance = GAMEMODE.PaperDollEditor.CurrentCamDistance
 	if intEditorRadiants or intEditorDistance then
@@ -31,7 +31,7 @@ function Player:GetIdealCamAngle()
 	local intEditorDistance = GAMEMODE.PaperDollEditor.CurrentCamDistance
 	if intEditorRadiants or intEditorDistance then
 		local vecOldPosition = GAMEMODE.LastLookPos or LocalPlayer():GetEyeTraceNoCursor().HitPos
-		local vecLookPos = LerpVector(GAMEMODE.CammeraDelta * 2, vecOldPosition, LocalPlayer():GetEyeTraceNoCursor().HitPos)
+		local vecLookPos = LerpVector(GAMEMODE.CameraDelta * 2, vecOldPosition, LocalPlayer():GetEyeTraceNoCursor().HitPos)
 		vecLookPos = LocalPlayer():GetPos() + Vector(0, 0, 55)
 		local vecToLookPos = (vecLookPos - LocalPlayer():GetIdealCamPos())
 		GAMEMODE.LastLookPos = vecLookPos
@@ -84,13 +84,13 @@ else
 		client:SetPos(antiStutterPos)
 		if client:IsOnGround() and not game.SinglePlayer() then GAMEMODE:StutteryFix() end
 		--end of fix
-		if not GAMEMODE.CammeraPosition then GAMEMODE.CammeraPosition = client:GetPos() end
-		if not GAMEMODE.CammeraAngle then GAMEMODE.CammeraAngle = Angle(0, 0, 0) end
-		GAMEMODE.CammeraPosition = LerpVector(GAMEMODE.CammeraDelta, GAMEMODE.CammeraPosition, client:GetIdealCamPos())
-		GAMEMODE.CammeraAngle = client:GetIdealCamAngle() or angAngles
+		if not GAMEMODE.CameraPosition then GAMEMODE.CameraPosition = client:GetPos() end
+		if not GAMEMODE.CameraAngle then GAMEMODE.CameraAngle = Angle(0, 0, 0) end
+		GAMEMODE.CameraPosition = LerpVector(GAMEMODE.CameraDelta, GAMEMODE.CameraPosition, client:GetIdealCamPos())
+		GAMEMODE.CameraAngle = client:GetIdealCamAngle() or angAngles
 		local tblView = {}
-		tblView.origin = GAMEMODE.CammeraPosition
-		tblView.angles = GAMEMODE.CammeraAngle
+		tblView.origin = GAMEMODE.CameraPosition
+		tblView.angles = GAMEMODE.CameraAngle
 		tblView.drawviewer = true
 		--if IsValid(LocalPlayer()) and CurTime() > 2 then
 			--tblView.fov = fovFieldOfView * math.Clamp((intLastVelocity + ((LocalPlayer():GetVelocity() - intLastVelocity) / 20)):Length() / 290, 1, 50)

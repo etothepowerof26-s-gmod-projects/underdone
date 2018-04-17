@@ -110,7 +110,7 @@ function PANEL:Init()
 	self.AngleControls = self:AddControl(self:AddAngleControls())
 	self.MatControls = self:AddControl(self:AddMatControls())
 	self.ScaleControls = self:AddControl(self:AddScaleControls())
-	self.CammeraControls = self:AddControl(self:AddCammeraControls())
+	self.CameraControls = self:AddControl(self:AddCameraControls())
 
 
 	self.Frame:MakePopup()
@@ -260,8 +260,8 @@ function PANEL:AddScaleControls()
 	return cpcNewCollapseCat
 end
 
-function PANEL:AddCammeraControls()
-	local cpcNewCollapseCat = CreateGenericCollapse(nil, "Cammera Controls", intGlobalPadding, false)
+function PANEL:AddCameraControls()
+	local cpcNewCollapseCat = CreateGenericCollapse(nil, "Camera Controls", intGlobalPadding, false)
 	local nmsNewRotationSlider = CreateGenericSlider(nil, "Rotation", -180, 180, 3)
 	nmsNewRotationSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentCamRotation = value end
 	cpcNewCollapseCat.List:AddItem(nmsNewRotationSlider)

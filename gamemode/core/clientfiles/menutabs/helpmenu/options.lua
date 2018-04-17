@@ -13,8 +13,8 @@ function PANEL:PerformLayout()
 end
 
 function PANEL:LoadOptions()
-	self.OptinsList:AddItem(CreateGenericLabel(nil, "MenuLarge", "Cammera Options", clrWhite))
-	self.OptinsList:AddItem(CreateGenericSlider(nil, "Cammera Distance", 50, 200, 0, "ud_cammeradistance"))
+	self.OptinsList:AddItem(CreateGenericLabel(nil, "MenuLarge", "Camera Options", clrWhite))
+	self.OptinsList:AddItem(CreateGenericSlider(nil, "Camera Distance", 50, 200, 0, "ud_cameradistance"))
 	self.OptinsList:AddItem(CreateGenericLabel(nil, "MenuLarge", "HUD Options", clrWhite))
 	self.OptinsList:AddItem(CreateGenericCheckBox(nil, "Show HUD", "ud_showhud"))
 	self.OptinsList:AddItem(CreateGenericCheckBox(nil, "Show Crosshair", "ud_showcrosshair"))
