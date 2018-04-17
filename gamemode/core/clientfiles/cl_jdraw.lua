@@ -13,8 +13,13 @@ function jdraw.NewPanel(tblParent, boolCopyStyle)
 	tblNewPanel.Size.Width = 0
 	tblNewPanel.Size.Height = 0
 	function tblNewPanel:SetDimensions(intX, intY, intWidth, intHeight)
-		tblNewPanel.Position.X = tblNewPanel.Position.X + intX
-		tblNewPanel.Position.Y = tblNewPanel.Position.Y + intY
+		if tblParent then
+			tblNewPanel.Position.X = tblParent.Position.X + intX
+			tblNewPanel.Position.Y = tblParent.Position.Y + intY
+		else
+			tblNewPanel.Position.X = intX
+			tblNewPanel.Position.Y = intY
+		end
 		tblNewPanel.Size.Width = intWidth
 		tblNewPanel.Size.Height = intHeight
 	end
