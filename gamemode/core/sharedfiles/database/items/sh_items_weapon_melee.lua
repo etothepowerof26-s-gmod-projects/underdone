@@ -1,7 +1,7 @@
-local function AddModel(tblAddTable, strModel, vecPostion, angAngle, clrColor, strMaterial, vecScale)
+local function AddModel(tblAddTable, strModel, vecPosition, angAngle, clrColor, strMaterial, vecScale)
 	tblAddTable.Model = tblAddTable.Model or {}
 	if type(tblAddTable.Model) ~= "table" then tblAddTable.Model = {} end
-	table.insert(tblAddTable.Model, {Model = strModel, Position = vecPostion, Angle = angAngle, Color = clrColor, Material = strMaterial, Scale = vecScale})
+	table.insert(tblAddTable.Model, {Model = strModel, Position = vecPosition, Angle = angAngle, Color = clrColor, Material = strMaterial, Scale = vecScale})
 	return tblAddTable
 end
 local function AddStats(tblAddTable, intPower, intFireRate)

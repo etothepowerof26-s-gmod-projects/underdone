@@ -1,12 +1,12 @@
 if CLIENT then
 	local tblNotifications = {}
 	local intLastTime = 15
-	local intStartPostion = ScrH() - 100
+	local intStartPosition = ScrH() - 100
 	local intSpacing = 5
 	local intHieght = 20
 
 	local function DrawNotifications()
-		local yOffset = intStartPostion
+		local yOffset = intStartPosition
 		for _, strNocification in pairs(tblNotifications) do
 			surface.SetFont("MenuLarge")
 			local wide, high = surface.GetTextSize(strNocification)

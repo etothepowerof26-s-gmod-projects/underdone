@@ -67,11 +67,11 @@ function GetFlushToGround(entEntity)
 	tblTrace.filter = entEntity
 	local trcNewTrace = util.TraceLine(tblTrace)
 
-	local vecNewPostion = trcNewTrace.HitPos - (trcNewTrace.HitNormal * 512)
-	vecNewPostion = entEntity:NearestPoint(vecNewPostion)
-	vecNewPostion = entEntity:GetPos() - vecNewPostion
-	vecNewPostion = trcNewTrace.HitPos + vecNewPostion
-	return vecNewPostion
+	local vecNewPosition = trcNewTrace.HitPos - (trcNewTrace.HitNormal * 512)
+	vecNewPosition = entEntity:NearestPoint(vecNewPosition)
+	vecNewPosition = entEntity:GetPos() - vecNewPosition
+	vecNewPosition = trcNewTrace.HitPos + vecNewPosition
+	return vecNewPosition
 end
 
 function Player:ApplyBuffTable(tblBuffTable, intMultiplier)
@@ -108,7 +108,7 @@ if SERVER then
 	end
 
 	local origin = Vector(0, 0, 0)
-	function CreateWorldItem(strItem, intAmount, vecPostion)
+	function CreateWorldItem(strItem, intAmount, vecPosition)
 		local tblItemTable = ItemTable(strItem)
 		if not tblItemTable then return NULL end -- type correct
 
@@ -116,7 +116,7 @@ if SERVER then
 		if not IsValid(entWorldProp) then return NULL end
 			entWorldProp.Item = strItem
 			entWorldProp.Amount = intAmount or 1
-			entWorldProp:SetPos(vecPostion or origin)
+			entWorldProp:SetPos(vecPosition or origin)
 		entWorldProp:Spawn()
 
 		entWorldProp:SetNWString("PrintName", tblItemTable.PrintName)

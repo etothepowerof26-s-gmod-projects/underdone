@@ -77,7 +77,7 @@ function GM.MapEditor.OpenMapEditor()
 			elseif GAMEMODE.MapEditor.CurrentObjectSet == GAMEMODE.MapEntities.WorldProps then
 				GAMEMODE.MapEditor.AddWorldPropControls(pnlControlsList)
 			end
-			LocalPlayer():SetEyeAngles((GAMEMODE.MapEditor.CurrentObjectSet[tonumber(intIndex)].Postion - LocalPlayer():GetShootPos()):Angle())
+			LocalPlayer():SetEyeAngles((GAMEMODE.MapEditor.CurrentObjectSet[tonumber(intIndex)].Position - LocalPlayer():GetShootPos()):Angle())
 		end
 	end
 
@@ -286,8 +286,8 @@ end
 hook.Add("HUDPaint", "UD_DrawMapObjects", function()
 	if GAMEMODE.MapEditor.Open then
 		for key, object in pairs(GAMEMODE.MapEditor.CurrentObjectSet or {}) do
-			if not key or not object or not object.Postion then return end
-			local intPosX, intPosY = object.Postion:ToScreen().x, object.Postion:ToScreen().y
+			if not key or not object or not object.Position then return end
+			local intPosX, intPosY = object.Position:ToScreen().x, object.Position:ToScreen().y
 			local clrDrawColor = clrWhite
 			if GAMEMODE.MapEditor.CurrentObjectNum == key then clrDrawColor = clrBlue end
 			draw.SimpleTextOutlined(key, "UiBold", intPosX, intPosY, clrDrawColor, 1, 1, 1, Color(0, 0, 0, 255))

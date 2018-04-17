@@ -15,10 +15,10 @@ end)
 function Player:DropItem(strItem, intAmount)
 	local tblItemTable = ItemTable(strItem)
 	if self:HasItem(strItem, intAmount) and tblItemTable.Dropable then
-		local vecPostion = self:EyePos() + (self:GetAimVector() * 25)
+		local vecPosition = self:EyePos() + (self:GetAimVector() * 25)
 		local trace = self:GetEyeTrace()
-		if trace.HitPos:Distance(self:GetPos()) < 80 then  vecPostion = trace.HitPos end
-		local entDropedItem = CreateWorldItem(strItem, intAmount, vecPostion)
+		if trace.HitPos:Distance(self:GetPos()) < 80 then  vecPosition = trace.HitPos end
+		local entDropedItem = CreateWorldItem(strItem, intAmount, vecPosition)
 		--entDropedItem:SetOwner(self)
 		self:AddItem(strItem, -intAmount)
 		return true

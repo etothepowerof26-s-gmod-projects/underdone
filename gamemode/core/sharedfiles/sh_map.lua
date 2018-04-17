@@ -21,7 +21,7 @@ function GM:UpdateSpawnPoint(intKey, vecPosition, angAngle, strNPC, intLevel, in
 	local tblNPCTable = NPCTable(strNPC)
 	local tblToUpdateSpawn = GAMEMODE.MapEntities.NPCSpawnPoints[intKey]
 	if tblToUpdateSpawn then
-		tblToUpdateSpawn.Postion = vecPosition or tblToUpdateSpawn.Postion
+		tblToUpdateSpawn.Position = vecPosition or tblToUpdateSpawn.Position
 		tblToUpdateSpawn.Angle = angAngle or tblToUpdateSpawn.Angle or Angle(0, 0, 0)
 		tblToUpdateSpawn.NPC = strNPC or tblToUpdateSpawn.NPC or "zombie"
 		tblToUpdateSpawn.Level = intLevel or tblToUpdateSpawn.Level or 5
@@ -30,21 +30,21 @@ function GM:UpdateSpawnPoint(intKey, vecPosition, angAngle, strNPC, intLevel, in
 			tblToUpdateSpawn.Monster:SetAngles(tblToUpdateSpawn.Angle)
 		end
 		if SERVER and game.SinglePlayer() and IsValid(player.GetByID(1)) then
-			SendUsrMsg("UD_UpdateSpawnPoint", player.GetByID(1), {intKey, tblToUpdateSpawn.Postion, tblToUpdateSpawn.Angle, tblToUpdateSpawn.NPC, tblToUpdateSpawn.Level, tblToUpdateSpawn.SpawnTime})
+			SendUsrMsg("UD_UpdateSpawnPoint", player.GetByID(1), {intKey, tblToUpdateSpawn.Position, tblToUpdateSpawn.Angle, tblToUpdateSpawn.NPC, tblToUpdateSpawn.Level, tblToUpdateSpawn.SpawnTime})
 		end
 	else
 		GAMEMODE:CreateSpawnPoint(vecPosition, angAngle, strNPC, intLevel, intSpawnTime)
 	end
 end
 
-function GM:CreateWorldProp(strModel, vecPostion, angAngle, entEntity, boolLoad)
+function GM:CreateWorldProp(strModel, vecPosition, angAngle, entEntity, boolLoad)
 	if SERVER then
 		local tblNewObject = {}
 		tblNewObject.SpawnProp = function()
 			local entNewProp = ents.Create(GetPropClass(strModel))
 			tblNewObject.Entity = entNewProp
 			table.insert(self.MapEntities.WorldProps, tblNewObject)
-			self:UpdateWorldProp(#self.MapEntities.WorldProps, strModel, vecPostion, angAngle, entNewProp)
+			self:UpdateWorldProp(#self.MapEntities.WorldProps, strModel, vecPosition, angAngle, entNewProp)
 			entNewProp:SetSkin(math.random(0, entNewProp:SkinCount()))
 			entNewProp:Spawn()
 		end
@@ -52,7 +52,7 @@ function GM:CreateWorldProp(strModel, vecPostion, angAngle, entEntity, boolLoad)
 		return tblNewObject.Entity
 	elseif CLIENT then
 		table.insert(self.MapEntities.WorldProps, {Entity = entEntity})
-		self:UpdateWorldProp(#self.MapEntities.WorldProps, strModel, vecPostion, angAngle, entEntity)
+		self:UpdateWorldProp(#self.MapEntities.WorldProps, strModel, vecPosition, angAngle, entEntity)
 	end
 end
 function GM:RemoveWorldProp(intKey)
@@ -85,7 +85,7 @@ function GM:UpdateWorldProp(intKey, strModel, vecPosition, angAngle, entEntity, 
 			end
 		end
 		tblToUpdateProp.Model = entProp:GetModel()
-		tblToUpdateProp.Postion = entProp:GetPos()
+		tblToUpdateProp.Position = entProp:GetPos()
 		tblToUpdateProp.Angle = entProp:GetAngles()
 	else
 		GAMEMODE:CreateWorldProp(strModel, vecPosition, angAngle, entEntity)
@@ -98,10 +98,10 @@ if SERVER then
 		if not file.Exists(strFileName, "DATA") then return end
 		local tblDecodedTable = util.JSONToTable(file.Read(strFileName))
 		for _, SpawnPoint in pairs(tblDecodedTable.NPCSpawnPoints or {}) do
-			GAMEMODE:CreateSpawnPoint(SpawnPoint.Postion, SpawnPoint.Angle or Angle(0, 90, 0), SpawnPoint.NPC, SpawnPoint.Level, SpawnPoint.SpawnTime)
+			GAMEMODE:CreateSpawnPoint(SpawnPoint.Position, SpawnPoint.Angle or Angle(0, 90, 0), SpawnPoint.NPC, SpawnPoint.Level, SpawnPoint.SpawnTime)
 		end
 		for k, WorldProp in pairs(tblDecodedTable.WorldProps or {}) do
-			timer.Simple(0.05 * k, function() GAMEMODE:CreateWorldProp(WorldProp.Model, WorldProp.Postion, WorldProp.Angle, nil, true) end)
+			timer.Simple(0.05 * k, function() GAMEMODE:CreateWorldProp(WorldProp.Model, WorldProp.Position, WorldProp.Angle, nil, true) end)
 		end
 	end
 	hook.Add("Initialize", "LoadMapObjects", function() GAMEMODE:LoadMapObjects() end)
@@ -137,7 +137,7 @@ if SERVER then
 		if not tblNPCTable then return end
 		if tblNPCTable.SpawnName == "npc_turret_floor" then return end
 		local entNewMonster = ents.Create(tblNPCTable.SpawnName)
-		entNewMonster:SetPos(tblSpawnPoint.Postion)
+		entNewMonster:SetPos(tblSpawnPoint.Position)
 		entNewMonster:SetAngles(tblSpawnPoint.Angle or Angle(0, 90, 0))
 		entNewMonster:SetKeyValue("spawnflags","512")
 		entNewMonster:DrawShadow(false)
@@ -161,7 +161,7 @@ if SERVER then
 		end
 		entNewMonster:Spawn()
 		if tblNPCTable.DeathDistance then
-			for _, ent in pairs(ents.FindInSphere( tblSpawnPoint.Postion, tblNPCTable.DeathDistance )) do
+			for _, ent in pairs(ents.FindInSphere( tblSpawnPoint.Position, tblNPCTable.DeathDistance )) do
 				if IsValid(ent) and ent:IsPlayer() then
 					ent:Kill()
 				end
@@ -178,7 +178,7 @@ if SERVER then
 			entNewMonster.Resistance = tblNPCTable.Resistance
 		end
 		entNewMonster.Name = tblNPCTable.Name
-		entNewMonster.Position = tblSpawnPoint.Postion
+		entNewMonster.Position = tblSpawnPoint.Position
 		entNewMonster.Race = tblNPCTable.Race
 		entNewMonster.Invincible = tblNPCTable.Invincible
 		entNewMonster.Shop = tblNPCTable.Shop
@@ -261,9 +261,9 @@ if SERVER then
 			if not ply:IsAdmin() or not ply:IsPlayer() then return end
 			local tblPropTable = GAMEMODE.MapEntities.WorldProps[tonumber(args[1])]
 			if args[1] and tblPropTable then
-				local vecNewPostion = tblPropTable.Postion + VectortizeString(args[3])
+				local vecNewPosition = tblPropTable.Position + VectortizeString(args[3])
 				local vecNewAngle = tblPropTable.Angle + Angle(0, tonumber(args[4]), 0)
-				GAMEMODE:UpdateWorldProp(tonumber(args[1]), args[2], vecNewPostion, vecNewAngle)
+				GAMEMODE:UpdateWorldProp(tonumber(args[1]), args[2], vecNewPosition, vecNewAngle)
 			end
 		end)
 

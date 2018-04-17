@@ -8,7 +8,7 @@ end
 
 function GM:TimerSpawnNPC(tblNPCAttack)
 	if not tblNPCAttack then return end
-	local tblSpawnTable = {Postion = tblNPCAttack.Spawnpos, Level =  tblNPCAttack.Level or (tblNPCAttack.AmountSpawned or 1) }
+	local tblSpawnTable = {Position = tblNPCAttack.Spawnpos, Level =  tblNPCAttack.Level or (tblNPCAttack.AmountSpawned or 1) }
 	if (tblNPCAttack.AmountSpawned or 0) < tblNPCAttack.Amount then
 		local NPC = self:CreateNPC(tblNPCAttack.Class, tblSpawnTable)
 		tblNPCAttack.AmountSpawned = (tblNPCAttack.AmountSpawned or 0) + 1

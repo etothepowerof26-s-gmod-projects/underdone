@@ -70,7 +70,7 @@ end
 
 function PANEL:AddItem(lstAddList, item, amount, strCommand, intCost)
 	local tblItemTable = ItemTable(item)
-	if tblShopTable then
+	if tblItemTable then
 		local intListItems = 1
 		if not tblItemTable.Stackable then intListItems = amount or 1 end
 		if strCommand == "sell" and table.HasValue(LocalPlayer().Data.Paperdoll or {}, item) then intListItems = intListItems - 1 end

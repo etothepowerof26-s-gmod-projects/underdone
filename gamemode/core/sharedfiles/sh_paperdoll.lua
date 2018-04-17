@@ -124,8 +124,8 @@ if CLIENT then
 				if tblItemTable then
 					local tblAttachment = plyPlayer:GetAttachment(plyPlayer:LookupAttachment(entTarget.Attachment))
 					if not tblAttachment then
-						local vecBonePostion, angBoneAngle = plyPlayer:GetBonePosition(plyPlayer:LookupBone(entTarget.Attachment))
-						tblAttachment = {Pos = vecBonePostion, Ang = angBoneAngle}
+						local vecBonePosition, angBoneAngle = plyPlayer:GetBonePosition(plyPlayer:LookupBone(entTarget.Attachment))
+						tblAttachment = {Pos = vecBonePosition, Ang = angBoneAngle}
 					end
 					if tblAttachment then
 						entTarget:SetAngles(tblAttachment.Ang)

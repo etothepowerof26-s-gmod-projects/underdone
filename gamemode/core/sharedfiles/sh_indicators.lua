@@ -4,7 +4,7 @@ if CLIENT then
 	local intFadeRate = 1
 	local intGravity = 0.02
 	local intFriction = 1.1
-	
+
 	local function DrawIndacators()
 		for _, tblInfo in pairs(tblIndacators) do
 			local posIndicatorPos = tblInfo.Position:ToScreen()
@@ -14,7 +14,7 @@ if CLIENT then
 			tblInfo.Color.a = math.Clamp(tblInfo.Color.a - intFadeRate, 0, 255) --Apply Fade
 			tblInfo.Velocity.z = tblInfo.Velocity.z - intGravity --Apply Gravity
 			tblInfo.Velocity = tblInfo.Velocity / intFriction --Apply Friction
-			tblInfo.Position = tblInfo.Position + tblInfo.Velocity --Set Postion based on Velocity
+			tblInfo.Position = tblInfo.Position + tblInfo.Velocity --Set Position based on Velocity
 		end
 	end
 	hook.Add("HUDPaint", "DrawIndacators", DrawIndacators)
