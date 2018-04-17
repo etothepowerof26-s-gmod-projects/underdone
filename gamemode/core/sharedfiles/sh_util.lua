@@ -274,7 +274,7 @@ if CLIENT then
 		pnlNewList:EnableVerticalScrollbar(boolScrollz)
 
 		local tblPaintPanel = jdraw.NewPanel()
-		frmNewFrame.tblPaintPanel = tblPaintPanel
+		pnlNewList.tblPaintPanel = tblPaintPanel
 			tblPaintPanel:SetStyle(4, clrGray)
 			tblPaintPanel:SetBorder(1, clrDrakGray)
 
