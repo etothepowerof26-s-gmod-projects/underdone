@@ -13,6 +13,7 @@ concommand.Add("UD_UseItem", function(ply, command, args)
 end)
 
 function Player:DropItem(strItem, intAmount)
+	intAmount = math.floor(intAmount)
 	local tblItemTable = ItemTable(strItem)
 	if self:HasItem(strItem, intAmount) and tblItemTable.Dropable then
 		local vecPosition = self:EyePos() + (self:GetAimVector() * 25)
@@ -31,6 +32,7 @@ concommand.Add("UD_DropItem", function(ply, command, args)
 end)
 
 function Player:GiveItem(strItem, intAmount, plyTarget)
+	intAmount = math.floor(intAmount)
 	local tblItemTable = ItemTable(strItem)
 	if not tblItemTable.Giveable then return false end
 	plyTarget:TransferItem(self, strItem, intAmount)
