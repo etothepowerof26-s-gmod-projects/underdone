@@ -53,7 +53,7 @@ Register.NPC(NPC)
 
 local NPC = QuickNPC("shop_melee", "Patrick", "npc_breen", "human", nil, "models/Humans/Group03/Male_05.mdl")
 NPC = AddBool(NPC, false, true, true)
-NPC.Shop = "shop_weapons"
+NPC.Shop = "shop_melee"
 NPC.DeathDistance = 14
 Register.NPC(NPC)
 
