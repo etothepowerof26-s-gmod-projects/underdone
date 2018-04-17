@@ -96,16 +96,20 @@ if CLIENT then
 	end
 
 	local function DrawPaperDoll()
-		if LocalPlayer() and not LocalPlayer().Data then LocalPlayer().Data = {} end
-		if LocalPlayer() and LocalPlayer().Data and not LocalPlayer().Data.Paperdoll then LocalPlayer().Data.Paperdoll = {} end
+		if LocalPlayer() and not LocalPlayer().Data then LocalPlayer().Data = {Paperdoll = {}} end
+
 		for intEntID, tblPlayerTable in pairs(GAMEMODE.PaperDollEnts) do
 			local plyPlayer = ents.GetByIndex(intEntID)
+
 			for strSlot, entTarget in pairs(tblPlayerTable or {}) do
-				if not plyPlayer or not plyPlayer:IsValid() then
-					for _, kid in pairs(entTarget.Children or {}) do SafeRemoveEntity(kid) end
-					SafeRemoveEntity(entTarget) -- remove entity during render
+				if IsValid(plyPlayer) then
+					for _, kid in pairs(entTarget.Children or {}) do SafeRemoveEntityDelayed(kid, 0) end
+					SafeRemoveEntityDelayed(entTarget, 0)
+					GAMEMODE.PaperDollEnts[intEntID] = nil
+
 					break
 				end
+
 				local tblItemTable = ItemTable(entTarget.Item)
 				if tblItemTable then
 					local tblAttachment = plyPlayer:GetAttachment(plyPlayer:LookupAttachment(entTarget.Attachment))
@@ -130,7 +134,7 @@ if CLIENT then
 			end
 		end
 	end
-	hook.Add("RenderScreenspaceEffects", "DrawPaperDoll", DrawPaperDoll)
+	hook.Add("RenderScreenspaceEffects", "UD_DrawPaperDoll", DrawPaperDoll)
 end
 
 function GM:BuildModel(tblModelTable)
