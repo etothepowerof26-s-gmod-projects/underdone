@@ -18,6 +18,8 @@ local function AddSound(tblAddTable, strShootSound, strReloadSound)
 	return tblAddTable
 end
 
+-- TODO: wtf? unished weapons?
+--[[
 local Item = QuickCreateItemTable(BaseWeapon, "weapon_ranged_plasma", "Plasma Rifle", "Stolen from another game!!", "icons/weapon_pistol")
 Item = AddModel(Item, "models/props_c17/substation_stripebox01a.mdl", Vector(1.95, -1.46, 22.44), Angle(-87.8, 180, -7.68), nil, nil, Vector(0.06, 0.08, 0.31))
 Item = AddModel(Item, "models/props_c17/playground_teetertoter_stan.mdl", Vector(11.71, -0.24, -1.95), Angle(90, 0, 0), nil, nil, Vector(0.96, 1.01, 0.5))
@@ -74,7 +76,7 @@ Item.Weight = 1 --Edit Weight
 Item.SellPrice = 15
 Item.HoldType = "shotgun"
 Item.AmmoType = "smg1"
-Register.Item(Item)
+Register.Item(Item)]]
 
 local Item = QuickCreateItemTable(BaseWeapon, "weapon_ranged_junkpistol", "Junky Pistol", "Looks like its all rusted.", "icons/weapon_pistol")
 Item = AddModel(Item, "models/Weapons/W_pistol.mdl", Vector(-3, 0, 3.5), Angle(0, 180, 0))
