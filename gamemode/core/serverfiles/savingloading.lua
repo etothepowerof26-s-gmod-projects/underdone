@@ -69,7 +69,6 @@ function Player:LoadGame()
 			for strItem, intAmount in pairs(savedGameData.Bank or {}) do self:AddItemToBank(strItem, intAmount) end
 			for slot, item in pairs(savedGameData.Paperdoll or {}) do self:UseItem(item) end
 			for strQuest, tblInfo in pairs(savedGameData.Quests or {}) do self:UpdateQuest(strQuest, tblInfo) end
-			for strFriends, tblInfo in pairs(savedGameData.Friends or {}) do self:AddFriend(strFriends, tblInfo.Blocked) end
 			for strBook, boolRead in pairs(savedGameData.Library or {}) do self:AddBookToLibrary(strBook) end
 			for strMaster, intExp in pairs(savedGameData.Masters or {}) do self:SetMaster(strMaster, intExp) end
 		else
@@ -114,15 +113,6 @@ function Player:SaveGame()
 			tblSaveTable.Quests[strQuest] = {Done = true}
 		else
 			tblSaveTable.Quests[strQuest] = tblInfo
-		end
-	end
-
-	tblSaveTable.Friends = {}
-	for strFriends, tblInfo in pairs(self.Data.Friends or {}) do
-		if tblInfo.Blocked then
-			tblSaveTable.Friends[strFriends] = {Blocked = true}
-		else
-			tblSaveTable.Friends[strFriends] = {}
 		end
 	end
 

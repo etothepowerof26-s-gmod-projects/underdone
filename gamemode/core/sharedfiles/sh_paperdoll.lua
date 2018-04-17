@@ -1,19 +1,5 @@
 local Player = FindMetaTable("Player")
 
-concommand.Add("udk_edit_items_giveitem", function(ply, command, args)
-	local tblItemTable = ItemTable(args[1])
-	if tblItemTable.Use then
-		tblItemTable:Use(ply, tblItemTable)
-	end
-end)
-
-concommand.Add("udk_edit_items_clearpaperdoll", function(ply, command, args)
-	for strSlot, strItem in pairs(ply.Data.Paperdoll or {}) do
-		local tblItemTable = ItemTable(strItem)
-		if tblItemTable.Use then tblItemTable:Use(ply, tblItemTable) end
-	end
-end)
-
 function Player:HasSet(strSet)
 	if not IsValid(self) then return false end
 	local tblSetTable = EquipmentSetTable(strSet)
@@ -117,7 +103,7 @@ if CLIENT then
 			for strSlot, entTarget in pairs(tblPlayerTable or {}) do
 				if not plyPlayer or not plyPlayer:IsValid() then
 					for _, kid in pairs(entTarget.Children or {}) do SafeRemoveEntity(kid) end
-					SafeRemoveEntity(entTarget)
+					SafeRemoveEntity(entTarget) -- remove entity during render
 					break
 				end
 				local tblItemTable = ItemTable(entTarget.Item)

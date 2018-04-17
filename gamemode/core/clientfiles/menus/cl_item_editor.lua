@@ -47,7 +47,9 @@ tblUsableMats[33] = "Models/effects/vol_lightmask02.vtf"
 tblUsableMats[34] = "Models/Combine_Helicopter/helicopter_bomb01.vtf"
 tblUsableMats[35] = "Models/Combine_Helicopter/helicopter_bomb_off01.vtf"
 
-PANEL = {}
+if not game.SinglePlayer() then return end
+
+local PANEL = {}
 function PANEL:Init()
 	self.Frame = CreateGenericFrame("Item Editor", true, true)
 	self.Frame.btnClose.DoClick = function(pnlPanel)
@@ -60,7 +62,7 @@ function PANEL:Init()
 	self.ToolBar = CreateGenericList(self.Frame, intGlobalPadding, true, false)
 	self:AddToolButton("icon16/folder_go.png", "Load Item", function()
 		local function fncGivePlayerItem(strItem)
-			RunConsoleCommand("udk_edit_items_giveitem", strItem)
+			RunConsoleCommand("ud_edit_items_giveitem", strItem)
 		end
 		local mnuLoadItems = DermaMenu()
 		local smnWeapons = mnuLoadItems:AddSubMenu("Weapons")
@@ -98,7 +100,7 @@ function PANEL:Init()
 		mnuLoadItems:Open()
 	end)
 	self:AddToolButton("icon16/cross.png", "Clear Paperdoll", function()
-		RunConsoleCommand("udk_edit_items_clearpaperdoll")
+		RunConsoleCommand("ud_edit_items_clearpaperdoll")
 	end)
 	self:AddToolButton("icon16/page.png", "Copy Dementions to clip board", function() self:PrintNewDementions() end)
 	self.SlotSwitch, self.ObjectSwitch = self:AddSlotControls()
@@ -287,8 +289,22 @@ function PANEL:PrintNewDementions()
 end
 vgui.Register("editor_items", PANEL, "Panel")
 
-concommand.Add("udk_edit_items", function(ply, command, args)
+concommand.Add("ud_edit_items", function(ply, command, args)
 	GAMEMODE.ItemEditor = GAMEMODE.ItemEditor or vgui.Create("editor_items")
 	GAMEMODE.ItemEditor:SetSize(390, 450)
 	GAMEMODE.ItemEditor:SetPos(50, 50)
+end)
+
+concommand.Add("ud_edit_items_giveitem", function(ply, command, args)
+	local tblItemTable = ItemTable(args[1])
+	if tblItemTable.Use then
+		tblItemTable:Use(ply, tblItemTable)
+	end
+end)
+
+concommand.Add("ud_edit_items_clearpaperdoll", function(ply, command, args)
+	for strSlot, strItem in pairs(ply.Data.Paperdoll or {}) do
+		local tblItemTable = ItemTable(strItem)
+		if tblItemTable.Use then tblItemTable:Use(ply, tblItemTable) end
+	end
 end)

@@ -6,14 +6,13 @@ concommand.Add("UD_PrivateMessage", function(ply, command, args)
 	local plyTargetPlayer = player.GetByID(tonumber(table.remove(args, 1)))
 	if not IsValid(plyTargetPlayer) then return end
 
-	if ply:HasBlocked(plyTargetPlayer) or plyTargetPlayer:HasBlocked(ply) then return end
-
 	local msg = table.concat(args, " ")
 
 	-- believe it or not, this isn't for spying, we don't care, it's just to catch spammers
 	-- and advertisers
 	MsgN(string.format("pm %s -> %s: %s", ply:Nick(), plyTargetPlayer:Nick(), msg))
 	plyTargetPlayer:ChatPrint(string.format("[PM] %s: %s", ply:Nick(), msg))
+	ply:ChatPrint(string.format("[PM] To %s: %s", plyTargetPlayer:Nick(), msg))
 end)
 
 local distSqr = 100^2

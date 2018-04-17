@@ -283,7 +283,7 @@ function GM.MapEditor.CreateGenericSlider(pnlAddList, strName, intRange, intDeci
 	return nmsNewSlider
 end
 
-hook.Add("HUDPaint", "DrawMapObjects", function()
+hook.Add("HUDPaint", "UD_DrawMapObjects", function()
 	if GAMEMODE.MapEditor.Open then
 		for key, object in pairs(GAMEMODE.MapEditor.CurrentObjectSet or {}) do
 			if not key or not object or not object.Postion then return end
@@ -295,7 +295,7 @@ hook.Add("HUDPaint", "DrawMapObjects", function()
 	end
 end)
 
-hook.Add("GUIMouseReleased", "TurnEditorCamGUIMouseReleased", function(mousecode)
+hook.Add("GUIMouseReleased", "UD_TurnEditorCamGUIMouseReleased", function(mousecode)
 	if GAMEMODE.MapEditor.Open then
 		LocalPlayer():SetEyeAngles((LocalPlayer():GetEyeTrace().HitPos - LocalPlayer():GetShootPos()):Angle())
 	end
