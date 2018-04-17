@@ -48,9 +48,9 @@ local function DrawNPCHealthBar(entNPC, posNPCPos)
 	if intHealth <= (intMaxHealth * 0.2) then clrBarColor = clrRed end
 
 	local NpcHealthBar = jdraw.NewProgressBar()
-	NpcHealthBar:SetDemensions(posNPCPos.x  - (80 / 2), posNPCPos.y, 80, 11)
+	NpcHealthBar:SetDimensions(posNPCPos.x  - (80 / 2), posNPCPos.y, 80, 11)
 	NpcHealthBar:SetStyle(4, clrBarColor)
-	NpcHealthBar:SetBoarder(1, clrDrakGray)
+	NpcHealthBar:SetBorder(1, clrDrakGray)
 	NpcHealthBar:SetText("UiBold", intHealth, clrDrakGray)
 	NpcHealthBar:SetValue(intHealth, intMaxHealth)
 	jdraw.DrawProgressBar(NpcHealthBar)

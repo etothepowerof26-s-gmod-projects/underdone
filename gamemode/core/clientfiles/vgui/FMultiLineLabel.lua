@@ -1,20 +1,5 @@
---[[
-										 `.--.
-	sMMMMMMMNds.    -yNMMMMMMdo`    sMMM         dMMd   `sMMNs` -MMMMs    .mMMMs
-	sMMM+++sMMMM-  sMMMh/--+NMMN-   sMMM         dMMd  :NMMh.   -MMMMM+  `mMMMMs
-	sMMM    hMMM/ /MMMh     -NMMm`  sMMM         dMMd`hMMm:     -MMMmMM/ hMmMMMs
-	sMMMssymMMMy  sMMM+      dMMM-  sMMM         dMMNNMMN-      -MMM+hMNyMN-MMMs
-	sMMMddddyo.   +MMMs     `NMMN.  sMMM         dMMNodMMMo`    -MMM+`mMMM: MMMs
-	sMMM          `hMMMs. `:dMMM+   sMMM------.  dMMd  +NMMm:   -MMM+ .ss+  MMMs
-	sMMM            +mMMMMMMMMy-    sMMMMMMMMMd  dMMd   .hMMMy` -MMM+       MMMs
-	.---              `:/++/-       .---------.  .--.     ----. `---`       ---.  2009
-]]
-
 local PANEL = {}
-PANEL.Text = nil
-PANEL.Font = nil
-PANEL.Color = nil
-PANEL.FixedHieght = nil
+-- TODO: remake
 PANEL.EnterText = {}
 PANEL.EnterText["/n"] = "/n"
 PANEL.EnterText["\n"] = "\n"
@@ -96,19 +81,3 @@ function PANEL:GetFixed()
 	return self.FixedHieght
 end
 vgui.Register("FMultiLabel", PANEL)
-
-function MultiExample()
-	local f_Panel = vgui.Create("DFrame")
-	f_Panel:SetSize(200,400)
-	f_Panel:Center()
-	f_Panel:SetTitle("Example")
-	f_Panel:SetDraggable(true)
-	f_Panel:ShowCloseButton(true)
-	f_Panel:MakePopup()
-		local MultiLine = vgui.Create("FMultiLabel")
-		MultiLine:SetParent(f_Panel)
-		MultiLine:SetPos(5,25)
-		MultiLine:SetSize(190,375)
-		MultiLine:SetText("Hey look at this thing /n /n yeah look at it indeed it looks realy cool look how its warping all this text /n /n and /n /n even /n /n making /n /n spaces!")
-end
-concommand.Add("MultiExample", MultiExample)

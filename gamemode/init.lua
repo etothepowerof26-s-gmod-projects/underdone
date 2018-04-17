@@ -18,6 +18,10 @@ end
 function GM:PlayerSpawn(ply)
 	hook.Run("PlayerLoadout", ply)
 	ply:SetModel(ply.Data and ply.Data.Model or "models/player/Group01/male_02.mdl")
+
+	-- Stops status effects continuing after respawn
+	timer.Remove("UD_Stun" .. ply:EntIndex())
+	timer.Remove("UD_Burn" .. ply:EntIndex())
 end
 
 function GM:PlayerLoadout(ply)

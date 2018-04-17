@@ -24,12 +24,12 @@ function GM:HUDPaint()
 	local drawAmmo = not LocalPlayer():IsMelee() and IsValid(wep) and wep.Primary and wep.Primary.ClipSize > 0
 
 	if not drawAmmo then
-		self.PlayerBox:SetDemensions(10, ScrH() - 55, GAMEMODE.PlayerHUDBarWidth, 45)
+		self.PlayerBox:SetDimensions(10, ScrH() - 55, GAMEMODE.PlayerHUDBarWidth, 45)
 	else
-		self.PlayerBox:SetDemensions(10, ScrH() - 73, GAMEMODE.PlayerHUDBarWidth, 63)
+		self.PlayerBox:SetDimensions(10, ScrH() - 73, GAMEMODE.PlayerHUDBarWidth, 63)
 	end
 	self.PlayerBox:SetStyle(4, clrTan)
-	self.PlayerBox:SetBoarder(1, clrDrakGray)
+	self.PlayerBox:SetBorder(1, clrDrakGray)
 	self:DrawSkillPoints()
 	jdraw.DrawPanel(self.PlayerBox)
 
@@ -172,7 +172,7 @@ end
 function GM:DrawSkillPoints()
 	if LocalPlayer():GetNWInt("SkillPoints") > 0 then
 		self.SkillBar = jdraw.NewProgressBar(self.PlayerBox, true)
-		self.SkillBar:SetDemensions(3, -21, 125, 23)
+		self.SkillBar:SetDimensions(3, -21, 125, 23)
 		self.SkillBar:SetStyle(4, clrTan)
 		self.SkillBar:SetText("UiBold", "Unused SkillPoints " .. LocalPlayer():GetNWInt("SkillPoints"), clrDrakGray)
 		jdraw.DrawProgressBar(self.SkillBar)
@@ -184,7 +184,7 @@ function GM:DrawHealthBar()
 	if LocalPlayer():GetStat("stat_maxhealth") then
 		if LocalPlayer():Health() <= (LocalPlayer():GetStat("stat_maxhealth") * 0.2) then clrBarColor = clrRed end
 		self.HealthBar = jdraw.NewProgressBar(self.PlayerBox, true)
-		self.HealthBar:SetDemensions(3, 3, self.PlayerBox.Size.Width - 6, 20)
+		self.HealthBar:SetDimensions(3, 3, self.PlayerBox.Size.Width - 6, 20)
 		self.HealthBar:SetStyle(4, clrBarColor)
 		self.HealthBar:SetValue(LocalPlayer():Health(), LocalPlayer():GetStat("stat_maxhealth"))
 		self.HealthBar:SetText("UiBold", "Health " .. LocalPlayer():Health(), clrDrakGray)
@@ -198,7 +198,7 @@ function GM:DrawLevelBar()
 	local intNextLevelExp = toExp(playerlevel + 1)
 	local clrBarColor = clrOrange
 	self.LevelBar = jdraw.NewProgressBar(self.PlayerBox, true)
-	self.LevelBar:SetDemensions(3, self.HealthBar.Size.Height + 6, self.PlayerBox.Size.Width - 6, 15)
+	self.LevelBar:SetDimensions(3, self.HealthBar.Size.Height + 6, self.PlayerBox.Size.Width - 6, 15)
 	self.LevelBar:SetStyle(4, clrBarColor)
 	self.LevelBar:SetValue(LocalPlayer():GetNWInt("exp") - intCurrentLevelExp, intNextLevelExp - intCurrentLevelExp)
 	self.LevelBar:SetText("UiBold", "Level " .. LocalPlayer():GetLevel(), clrDrakGray)
@@ -212,7 +212,7 @@ function GM:DrawAmmoBar()
 	local strAmmoType = tblWeaponTable.AmmoType or "none"
 	local clrBarColor = clrBlue
 	self.AmmoBar = jdraw.NewProgressBar(self.PlayerBox, true)
-	self.AmmoBar:SetDemensions(3, self.HealthBar.Size.Height + self.LevelBar.Size.Height + 9, self.PlayerBox.Size.Width - 6, 15)
+	self.AmmoBar:SetDimensions(3, self.HealthBar.Size.Height + self.LevelBar.Size.Height + 9, self.PlayerBox.Size.Width - 6, 15)
 	self.AmmoBar:SetStyle(4, clrBarColor)
 	self.AmmoBar:SetValue(intCurrentClip, tblWeaponTable.ClipSize or 1)
 	self.AmmoBar:SetText("UiBold", "Ammo " .. intCurrentClip .. "  " .. LocalPlayer():GetAmmoCount(strAmmoType), clrDrakGray)

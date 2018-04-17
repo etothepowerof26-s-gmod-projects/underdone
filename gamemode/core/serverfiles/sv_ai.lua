@@ -114,7 +114,7 @@ local function NPCAdjustDamage(entVictim, tblDamageInfo) --entInflictor, entAtta
 		tblDamageInfo:SetDamage(math.Round(tblDamageInfo:GetDamage() * (1 / entVictim:GetNWInt("level"))))
 		if math.random(1, math.Round(20 / (1 + (entAttacker:GetStat("stat_luck") / 50)))) == 1 then
 			tblDamageInfo:SetDamage(math.Round(tblDamageInfo:GetDamage() * 2))
-			entAttacker:CreateIndacator("Crit!", tblDamageInfo:GetDamagePosition(), "blue", true)
+			entAttacker:CreateIndicator("Crit!", tblDamageInfo:GetDamagePosition(), "blue", true)
 			clrDisplayColor = "blue"
 		end
 		if entVictim:IsNPC() then
@@ -134,7 +134,7 @@ local function NPCAdjustDamage(entVictim, tblDamageInfo) --entInflictor, entAtta
 			entAttacker.EntityDamageData = {}
 		end
 		entAttacker.EntityDamageData[entVictim] = (entAttacker.EntityDamageData[entVictim] or 0) + math.Clamp(tblDamageInfo:GetDamage(),0,entVictim:Health())
-		entAttacker:CreateIndacator(tblDamageInfo:GetDamage(), tblDamageInfo:GetDamagePosition(), clrDisplayColor, true)
+		entAttacker:CreateIndicator(tblDamageInfo:GetDamage(), tblDamageInfo:GetDamagePosition(), clrDisplayColor, true)
 		if entVictim:Health() <= tblDamageInfo:GetDamage() then
 			entVictim:Remove()
 		end

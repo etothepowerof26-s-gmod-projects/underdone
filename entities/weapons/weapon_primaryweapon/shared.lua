@@ -46,7 +46,7 @@ function SWEP:Reload()
 	if strAmmoType ~= "none" and self:Clip1() < self.WeaponTable.ClipSize and intCurrentAmmo > 0 then
 		self:SetNWBool("reloading", true)
 		self:SetNextPrimaryFire(CurTime() + self.WeaponTable.ReloadTime)
-		if (game.SinglePlayer() and SERVER) or (!game.SinglePlayer() and CLIENT) then
+		if (game.SinglePlayer() and SERVER) or (not game.SinglePlayer() and CLIENT) then
 			if self.WeaponTable.ReloadSound then self:EmitSound(self.WeaponTable.ReloadSound) end
 		end
 		timer.Simple(self.WeaponTable.ReloadTime, function()
@@ -110,8 +110,8 @@ function SWEP:WeaponAttack()
 			local strEffect = "ShellEject"
 			if self.WeaponTable.AmmoType == "buckshot" then strEffect = "ShotgunShellEject" end
 			local effectdata = EffectData()
-			effectdata:SetOrigin(GAMEMODE.PapperDollEnts[self.Owner:EntIndex()]["slot_primaryweapon"]:GetPos())
-			effectdata:SetAngles(GAMEMODE.PapperDollEnts[self.Owner:EntIndex()]["slot_primaryweapon"]:GetAngles() + Angle(0, 90, 0))
+			effectdata:SetOrigin(GAMEMODE.PaperDollEnts[self.Owner:EntIndex()]["slot_primaryweapon"]:GetPos())
+			effectdata:SetAngles(GAMEMODE.PaperDollEnts[self.Owner:EntIndex()]["slot_primaryweapon"]:GetAngles() + Angle(0, 90, 0))
 			effectdata:SetEntity(self)
 			effectdata:SetMagnitude(1)
 			effectdata:SetScale(1)
@@ -121,7 +121,7 @@ function SWEP:WeaponAttack()
 		if SERVER then
 			self.Owner:SlowDown((1 / intFireRate))
 		end
-		if (game.SinglePlayer() and SERVER) or (!game.SinglePlayer() and CLIENT) and self.WeaponTable.Sound then
+		if (game.SinglePlayer() and SERVER) or (not game.SinglePlayer() and CLIENT) and self.WeaponTable.Sound then
 			self:EmitSound(self.WeaponTable.Sound)
 		end
 		self:SetNextPrimaryFire(CurTime() + (1 / intFireRate))

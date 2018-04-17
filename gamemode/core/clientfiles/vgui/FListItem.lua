@@ -38,7 +38,7 @@ function PANEL:Init()
 	if mousecode == MOUSE_RIGHT then pcall(self.DoRightClick,self) end
 	if mousecode == MOUSE_LEFT then pcall(self.DoClick,self) end end
 	-------------------------
-	self.DoClick = function() self:SetExpanded(!self:GetExpanded()) end
+	self.DoClick = function() self:SetExpanded(not self:GetExpanded()) end
 	self.DoRightClick = function() end
 	-------------------------
 	self.GradientTexture = surface.GetTextureID("VGUI/gradient-d")
@@ -75,9 +75,9 @@ function PANEL:Paint()
 		clrBackGroundColor = self.Color
 	end
 	local tblPaintPanle = jdraw.NewPanel()
-	tblPaintPanle:SetDemensions(0, 0, self:GetWide(), self:GetTall())
+	tblPaintPanle:SetDimensions(0, 0, self:GetWide(), self:GetTall())
 	tblPaintPanle:SetStyle(4, clrBackGroundColor)
-	tblPaintPanle:SetBoarder(1, clrDrakGray)
+	tblPaintPanle:SetBorder(1, clrDrakGray)
 	jdraw.DrawPanel(tblPaintPanle)
 	--Text
 	surface.SetFont(self.NameFont)
@@ -189,9 +189,9 @@ function PANEL:AddContent(objItem)
 		self.ContentList:EnableVerticalScrollbar(true)
 		self.ContentList.Paint = function()
 			local tblPaintPanle = jdraw.NewPanel()
-			tblPaintPanle:SetDemensions(0, 0, self.ContentList:GetWide(), self.ContentList:GetTall())
+			tblPaintPanle:SetDimensions(0, 0, self.ContentList:GetWide(), self.ContentList:GetTall())
 			tblPaintPanle:SetStyle(4, clrGray)
-			tblPaintPanle:SetBoarder(1, clrDrakGray)
+			tblPaintPanle:SetBorder(1, clrDrakGray)
 			jdraw.DrawPanel(tblPaintPanle)
 		end
 	end

@@ -75,7 +75,7 @@ function Skill:BulletCallBack(plyPlayer, intSkill, trcTrace, tblDamageInfo)
 			local intHealthtoSteal = math.ceil(entEntity:Health() * (intPercent / 100))
 			tblDamageInfo:SetDamage(tblDamageInfo:GetDamage() + intHealthtoSteal)
 			plyPlayer:SetHealth(math.Clamp(plyPlayer:Health() + intHealthtoSteal, 0, plyPlayer:GetMaximumHealth()))
-			plyPlayer:CreateIndacator("+_" .. intHealthtoSteal .. "HP", plyPlayer:GetPos() + Vector(0, 0, 70), "purple")
+			plyPlayer:CreateIndicator("+_" .. intHealthtoSteal .. "HP", plyPlayer:GetPos() + Vector(0, 0, 70), "purple")
 		end
 	end
 end

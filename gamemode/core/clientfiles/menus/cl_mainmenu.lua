@@ -36,14 +36,15 @@ end
 function PANEL:PerformLayout()
 	self.Frame:SetPos(self:GetPos())
 	self.Frame:SetSize(self:GetSize())
-		self.TabSheet:SetPos(0,0)
-		self.TabSheet:SetSize(self:GetSize())
-			if self.TabSheet.TabPanels then
-				for _, panel in pairs(self.TabSheet.TabPanels) do
-					panel:SetSize(self.TabSheet:GetWide() - 10, self.TabSheet:GetTall() - 30)
-					panel:PerformLayout()
-				end
-			end
+
+	self.TabSheet:SetPos(0, 0)
+	self.TabSheet:SetSize(self:GetSize())
+
+	local w, h = self.TabSheet:GetWide(), self.TabSheet:GetTall()
+	for _, v in pairs(self.Items) do
+		v.Panel:SetSize(w - 10, h - 30)
+		v.Panel:PerformLayout()
+	end
 end
 vgui.Register("mainmenu", PANEL, "Panel")
 

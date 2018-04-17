@@ -26,12 +26,16 @@ function PANEL:Init()
 	self.ViewPlayerModel:SetFOV( 90 )
 	self.RightList:AddItem(self.ViewPlayerModel)
 
-	for _,Model in pairs(GAMEMODE.PlayerModel or {}) do
+	for model in pairs(GAMEMODE.PlayerModels or {}) do
 		local PlayerModel = vgui.Create("SpawnIcon")
-		PlayerModel:SetModel(Model[1])
+		PlayerModel:SetModel(model)
 		PlayerModel.OnMousePressed = function()
-			RunConsoleCommand("UD_UserChangeModel", Model[1])
-			timer.Simple(0.25, function() self.ViewPlayerModel:SetModel(LocalPlayer():GetModel()) end)
+			RunConsoleCommand("UD_UserChangeModel", model)
+
+			timer.Simple(0.25, function()
+				if not IsValid(self) then return end
+				self.ViewPlayerModel:SetModel(LocalPlayer():GetModel())
+			end)
 		end
 		self.LeftList:AddItem(PlayerModel)
 	end
@@ -62,7 +66,7 @@ concommand.Add("UD_OpenAppearanceMenu", function(ply, command, args)
 	local npc = ply:GetEyeTrace().Entity
 	local tblNPCTable = NPCTable(npc:GetNWString("npc"))
 	if not IsValid(npc) or not tblNPCTable or not tblNPCTable.Appearance then return end
-	//if ply:GetPos():Distance(npc:GetPos()) > 100 then return end
+	-- if ply:GetPos():Distance(npc:GetPos()) > 100 then return end
 	GAMEMODE.AppearanceMenu = GAMEMODE.AppearanceMenu or vgui.Create("Appearancemenu")
 	GAMEMODE.AppearanceMenu:SetSize(520, 459)
 	GAMEMODE.AppearanceMenu:Center()

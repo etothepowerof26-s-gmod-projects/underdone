@@ -58,7 +58,7 @@ function Player:SetPaperDoll(strSlot, strItem)
 				self:UseItem(strChkItem)
 			end
 		end
-		SendUsrMsg("UD_UpdatePapperDoll", player.GetAll(), {self, strSlot, self:GetSlot(strSlot)})
+		SendUsrMsg("UD_UpdatePaperDoll", player.GetAll(), {self, strSlot, self:GetSlot(strSlot)})
 		self:SaveGame()
 	end
 end
@@ -69,31 +69,31 @@ function Player:GetSlot(strSlot)
 end
 
 if CLIENT then
-	GM.PapperDollEnts = {}
-	function UpdatePapperDollUsrMsg(usrMsg)
+	GM.PaperDollEnts = {}
+	function UpdatePaperDollUsrMsg(usrMsg)
 		local plyPlayer = usrMsg:ReadEntity()
 		if not IsValid(plyPlayer) then return end
 		local strSlot = usrMsg:ReadString()
 		local strItem = usrMsg:ReadString()
 		if strItem == "" then strItem = nil end
 		plyPlayer:SetPaperDoll(strSlot, strItem)
-		plyPlayer:PapperDollBuildSlot(strSlot, strItem)
+		plyPlayer:PaperDollBuildSlot(strSlot, strItem)
 		if plyPlayer == LocalPlayer() and GAMEMODE.MainMenu then
 			GAMEMODE.MainMenu.InventoryTab:LoadInventory()
 		end
 	end
-	usermessage.Hook("UD_UpdatePapperDoll", UpdatePapperDollUsrMsg)
+	usermessage.Hook("UD_UpdatePaperDoll", UpdatePaperDollUsrMsg)
 
-	function Player:PapperDollBuildSlot(strSlot, strItem)
+	function Player:PaperDollBuildSlot(strSlot, strItem)
 		if not self:Alive() then return end
-		GAMEMODE.PapperDollEnts[self:EntIndex()] = GAMEMODE.PapperDollEnts[self:EntIndex()] or {}
-		local tblPlayerTable = GAMEMODE.PapperDollEnts[self:EntIndex()]
+		GAMEMODE.PaperDollEnts[self:EntIndex()] = GAMEMODE.PaperDollEnts[self:EntIndex()] or {}
+		local tblPlayerTable = GAMEMODE.PaperDollEnts[self:EntIndex()]
 		tblPlayerTable = tblPlayerTable or {}
-		local entPapperDollEnt = tblPlayerTable[strSlot]
-		if entPapperDollEnt and entPapperDollEnt:IsValid() then
-			for _, kid in pairs(entPapperDollEnt.Children or {}) do SafeRemoveEntity(kid) end
-			SafeRemoveEntity(entPapperDollEnt)
-			GAMEMODE.PapperDollEnts[self:EntIndex()][strSlot] = nil
+		local entPaperDollEnt = tblPlayerTable[strSlot]
+		if entPaperDollEnt and entPaperDollEnt:IsValid() then
+			for _, kid in pairs(entPaperDollEnt.Children or {}) do SafeRemoveEntity(kid) end
+			SafeRemoveEntity(entPaperDollEnt)
+			GAMEMODE.PaperDollEnts[self:EntIndex()][strSlot] = nil
 		end
 		if strItem and strSlot then
 			local tblItemTable = ItemTable(strItem)
@@ -104,15 +104,15 @@ if CLIENT then
 				entNewPart:SetParent(self)
 				entNewPart.Item = strItem
 				entNewPart.Attachment = tblSlotTable.Attachment
-				GAMEMODE.PapperDollEnts[self:EntIndex()][strSlot] = entNewPart
+				GAMEMODE.PaperDollEnts[self:EntIndex()][strSlot] = entNewPart
 			end
 		end
 	end
 
-	local function DrawPapperDoll()
+	local function DrawPaperDoll()
 		if LocalPlayer() and not LocalPlayer().Data then LocalPlayer().Data = {} end
 		if LocalPlayer() and LocalPlayer().Data and not LocalPlayer().Data.Paperdoll then LocalPlayer().Data.Paperdoll = {} end
-		for intEntID, tblPlayerTable in pairs(GAMEMODE.PapperDollEnts) do
+		for intEntID, tblPlayerTable in pairs(GAMEMODE.PaperDollEnts) do
 			local plyPlayer = ents.GetByIndex(intEntID)
 			for strSlot, entTarget in pairs(tblPlayerTable or {}) do
 				if not plyPlayer or not plyPlayer:IsValid() then
@@ -144,7 +144,7 @@ if CLIENT then
 			end
 		end
 	end
-	hook.Add("RenderScreenspaceEffects", "DrawPapperDoll", DrawPapperDoll)
+	hook.Add("RenderScreenspaceEffects", "DrawPaperDoll", DrawPaperDoll)
 end
 
 function GM:BuildModel(tblModelTable)

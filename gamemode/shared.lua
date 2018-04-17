@@ -1,30 +1,29 @@
-GM.Name     = "underdone"
-GM.Author     = "Polkm"
-GM.Email     = "polkmpolkmpolkm@gmail.com"
-GM.Website     = "@Polkm1"
-GM.MaxSlots    = 20
+GM.Name        = "underdone"
+GM.Author      = "Polkm, Zeni, Tewntysx, Q2F2"
+GM.Email       = "n/a"
+GM.Website     = "https://github.com/Zeni44/underdone"
 
 GM.MonsterViewDistance = 200
-GM.RelationHate = 1
-GM.RelationFear = 2
-GM.RelationLike = 3
-GM.RelationNeutral = 4
-GM.AuctionsPerPage = 20
+GM.RelationHate        = 1
+GM.RelationFear        = 2
+GM.RelationLike        = 3
+GM.RelationNeutral     = 4
+GM.AuctionsPerPage     = 20
 
-Register = {}
+Register    = {}
 GM.DataBase = {}
 
-clrGray = Color(97, 95, 90, 255)
-clrDrakGray = Color(43, 42, 39, 255)
-clrGreen = Color(194, 255, 72, 255)
-clrOrange = Color(255, 137, 44, 255)
-clrPurple = Color(135, 81, 201, 255)
-clrBlue = Color(59, 142, 209, 255)
-clrRed = Color(191, 75, 37, 255)
-clrTan = Color(178, 161, 126, 255)
-clrCream = Color(245, 255, 154, 255)
-clrMooca = Color(107, 97, 78, 255)
-clrWhite = Color(242, 242, 242, 255)
+clrGray     = Color(097, 095, 090, 255)
+clrDrakGray = Color(043, 042, 039, 255)
+clrGreen    = Color(194, 255, 072, 255)
+clrOrange   = Color(255, 137, 044, 255)
+clrPurple   = Color(135, 081, 201, 255)
+clrBlue     = Color(059, 142, 209, 255)
+clrRed      = Color(191, 075, 037, 255)
+clrTan      = Color(178, 161, 126, 255)
+clrCream    = Color(245, 255, 154, 255)
+clrMooca    = Color(107, 097, 078, 255)
+clrWhite    = Color(242, 242, 242, 255)
 
 GM.DataBase.Items = {}
 function Register.Item(tblItem) GM.DataBase.Items[tblItem.Name] = tblItem end
@@ -75,42 +74,41 @@ GM.DataBase.Events = {}
 function Register.Event(tblEvent) GM.DataBase.Events[tblEvent.Name] = tblEvent end
 function EventTable(strEvent) return GAMEMODE.DataBase.Events[strEvent] end
 
+GM.PlayerModels = {}
 function AddPlayerModel(strModel)
-	table.insert(GM.PlayerModel, {strModel})
+	GM.PlayerModels[strModel] = true
 end
 
-GM.PlayerModel = {}
----------Models----------
 -- Citizen
-AddPlayerModel( "models/player/group01/male_01.mdl" )
-AddPlayerModel( "models/player/group01/male_02.mdl" )
-AddPlayerModel( "models/player/group01/male_03.mdl" )
-AddPlayerModel( "models/player/group01/male_04.mdl" )
-AddPlayerModel( "models/player/group01/male_05.mdl" )
-AddPlayerModel( "models/player/group01/male_06.mdl" )
-AddPlayerModel( "models/player/group01/male_07.mdl" )
-AddPlayerModel( "models/player/group01/male_08.mdl" )
-AddPlayerModel( "models/player/group01/male_09.mdl" )
-AddPlayerModel( "models/player/group01/female_01.mdl" )
-AddPlayerModel( "models/player/group01/female_02.mdl" )
-AddPlayerModel( "models/player/group01/female_03.mdl" )
-AddPlayerModel( "models/player/group01/female_04.mdl" )
-AddPlayerModel( "models/player/group01/female_06.mdl" )
-AddPlayerModel( "models/player/group01/female_07.mdl" )
+AddPlayerModel("models/player/group01/male_01.mdl")
+AddPlayerModel("models/player/group01/male_02.mdl")
+AddPlayerModel("models/player/group01/male_03.mdl")
+AddPlayerModel("models/player/group01/male_04.mdl")
+AddPlayerModel("models/player/group01/male_05.mdl")
+AddPlayerModel("models/player/group01/male_06.mdl")
+AddPlayerModel("models/player/group01/male_07.mdl")
+AddPlayerModel("models/player/group01/male_08.mdl")
+AddPlayerModel("models/player/group01/male_09.mdl")
+AddPlayerModel("models/player/group01/female_01.mdl")
+AddPlayerModel("models/player/group01/female_02.mdl")
+AddPlayerModel("models/player/group01/female_03.mdl")
+AddPlayerModel("models/player/group01/female_04.mdl")
+AddPlayerModel("models/player/group01/female_06.mdl")
+AddPlayerModel("models/player/group01/female_07.mdl")
 
 -- Rebel
-AddPlayerModel( "models/player/group03/male_01.mdl" )
-AddPlayerModel( "models/player/group03/male_02.mdl" )
-AddPlayerModel( "models/player/group03/male_03.mdl" )
-AddPlayerModel( "models/player/group03/male_04.mdl" )
-AddPlayerModel( "models/player/group03/male_05.mdl" )
-AddPlayerModel( "models/player/group03/male_06.mdl" )
-AddPlayerModel( "models/player/group03/male_07.mdl" )
-AddPlayerModel( "models/player/group03/male_08.mdl" )
-AddPlayerModel( "models/player/group03/male_09.mdl" )
-AddPlayerModel( "models/player/group03/female_01.mdl" )
-AddPlayerModel( "models/player/group03/female_02.mdl" )
-AddPlayerModel( "models/player/group03/female_03.mdl" )
-AddPlayerModel( "models/player/group03/female_04.mdl" )
-AddPlayerModel( "models/player/group03/female_06.mdl" )
-AddPlayerModel( "models/player/group03/female_07.mdl" )
+AddPlayerModel("models/player/group03/male_01.mdl")
+AddPlayerModel("models/player/group03/male_02.mdl")
+AddPlayerModel("models/player/group03/male_03.mdl")
+AddPlayerModel("models/player/group03/male_04.mdl")
+AddPlayerModel("models/player/group03/male_05.mdl")
+AddPlayerModel("models/player/group03/male_06.mdl")
+AddPlayerModel("models/player/group03/male_07.mdl")
+AddPlayerModel("models/player/group03/male_08.mdl")
+AddPlayerModel("models/player/group03/male_09.mdl")
+AddPlayerModel("models/player/group03/female_01.mdl")
+AddPlayerModel("models/player/group03/female_02.mdl")
+AddPlayerModel("models/player/group03/female_03.mdl")
+AddPlayerModel("models/player/group03/female_04.mdl")
+AddPlayerModel("models/player/group03/female_06.mdl")
+AddPlayerModel("models/player/group03/female_07.mdl")

@@ -64,7 +64,7 @@ function Player:CallSkillHook(strHook, ...)
 			tblReturnTable = {tblSkillTable.Hooks[strHook](self, self:GetSkill(strSkill), table.Split(tblReturnTable))}
 		end
 	end
-	return table.Split(tblReturnTable)
+	return unpack(tblReturnTable)
 end
 
 if SERVER then

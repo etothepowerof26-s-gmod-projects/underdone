@@ -1,7 +1,7 @@
 -- Polkm 2015
 local PANEL = {}
 local matGlossIcon = Material("icons/icon_gloss")
-local matBoarderIcon = Material("icons/icon_boarder2")
+local matBorderIcon = Material("icons/icon_border2")
 local matGradiantDown = Material("gui/gradient_down")
 PANEL.Icon = nil
 PANEL.Text = nil
@@ -62,7 +62,7 @@ function PANEL:Paint(w, h)
 	local texDrawTexture = self.Icon or matGradiantDown
 	surface.SetDrawColor(0, 0, 0, 50)
 	if texDrawTexture == self.Icon then
-		surface.SetDrawColor(table.Split(self.Color or Color(255, 255, 255, 255)))
+		surface.SetDrawColor(self.Color or Color(255, 255, 255, 255))
 	end
 	surface.SetMaterial(texDrawTexture)
 	surface.DrawTexturedRect(0, 0, w, h)
@@ -72,7 +72,7 @@ function PANEL:Paint(w, h)
 		surface.DrawTexturedRect(0, 0, w, h)
 	end
 	surface.SetDrawColor(255, 255, 255, 255)
-	surface.SetMaterial(matBoarderIcon)
+	surface.SetMaterial(matBorderIcon)
 	surface.DrawTexturedRect(0, 0, w, h)
 
 	if self.Text then
@@ -277,7 +277,7 @@ function PANEL:SetSlot(tblSlotTable)
 		if tblSlotTable.PrintName then strToolTip = Format("%s", tblSlotTable.PrintName) end
 		if tblSlotTable.Desc then strToolTip = Format("%s\n%s", strToolTip, tblSlotTable.Desc) end
 	end
-	self.IsPapperDollSlot = true
+	self.IsPaperDollSlot = true
 	self:SetDragable(false)
 	self:SetIcon(nil)
 	self:SetTooltip(strToolTip)

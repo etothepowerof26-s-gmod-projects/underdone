@@ -182,15 +182,15 @@ if SERVER then
 			local intTotal = math.Clamp(intCurrentExp + intAmount, toExp(intPreExpLevel), intCurrentExp + intAmount)
 			self:SetNWInt("exp", tonumber(intTotal))
 			if boolShowExp then
-				self:CreateIndacator("+_" .. intAmount .. "_Exp", self:GetPos() + Vector(0, 0, 70), "green")
+				self:CreateIndicator("+_" .. intAmount .. "_Exp", self:GetPos() + Vector(0, 0, 70), "green")
 			end
 			local intPostExpLevel = self:GetLevel()
 			if intPreExpLevel < intPostExpLevel then
 				hook.Call("UD_Hook_PlayerLevelUp", GAMEMODE, self, intPostExpLevel - intPreExpLevel)
 				self:SetHealth(self:GetMaximumHealth())
-				self:CreateIndacator("+1_Level", self:GetPos() + Vector(0, 0, 70), "green", true)
+				self:CreateIndicator("+1_Level", self:GetPos() + Vector(0, 0, 70), "green", true)
 				for i = 1, self:GetLevel() do
-					self:CreateIndacator(tblComplements[math.random(1, #tblComplements)], self:GetPos() + Vector(0, 0, 70), tblColors[math.random(1, #tblColors)], true)
+					self:CreateIndicator(tblComplements[math.random(1, #tblComplements)], self:GetPos() + Vector(0, 0, 70), tblColors[math.random(1, #tblColors)], true)
 				end
 			end
 		end
@@ -235,9 +235,9 @@ if SERVER then
 			dmg:SetDamage(math.Clamp(math.Round(dmg:GetDamage() + math.random(-1, 1)), 0, 9999))
 			if tblNPCTable.Race == "human" then dmg:SetDamage(0) end
 			if dmg:GetDamage() > 0 then
-				entVictim:CreateIndacator(dmg:GetDamage(), dmg:GetDamagePosition(), clrDisplayColor)
+				entVictim:CreateIndicator(dmg:GetDamage(), dmg:GetDamagePosition(), clrDisplayColor)
 			else
-				entVictim:CreateIndacator("Miss!", dmg:GetDamagePosition(), "orange")
+				entVictim:CreateIndicator("Miss!", dmg:GetDamagePosition(), "orange")
 			end
 		end
 	end

@@ -7,8 +7,8 @@ local Player = FindMetaTable("Player")
 function Player:GetIdealCamPos()
 	local vecPosition = self:EyePos()
 	local intDistance = GAMEMODE.ConVarCammeraDistance:GetInt() + GAMEMODE.AddativeCammeraDistance
-	local intEditorRadiants = GAMEMODE.PapperDollEditor.CurrentCamRotation
-	local intEditorDistance = GAMEMODE.PapperDollEditor.CurrentCamDistance
+	local intEditorRadiants = GAMEMODE.PaperDollEditor.CurrentCamRotation
+	local intEditorDistance = GAMEMODE.PaperDollEditor.CurrentCamDistance
 	if intEditorRadiants or intEditorDistance then
 		intDistance = intDistance + (intEditorDistance or 0)
 		local intAddedHeight = 5
@@ -27,8 +27,8 @@ function Player:GetIdealCamPos()
 	return vecPosition
 end
 function Player:GetIdealCamAngle()
-	local intEditorRadiants = GAMEMODE.PapperDollEditor.CurrentCamRotation
-	local intEditorDistance = GAMEMODE.PapperDollEditor.CurrentCamDistance
+	local intEditorRadiants = GAMEMODE.PaperDollEditor.CurrentCamRotation
+	local intEditorDistance = GAMEMODE.PaperDollEditor.CurrentCamDistance
 	if intEditorRadiants or intEditorDistance then
 		local vecOldPosition = GAMEMODE.LastLookPos or LocalPlayer():GetEyeTraceNoCursor().HitPos
 		local vecLookPos = LerpVector(GAMEMODE.CammeraDelta * 2, vecOldPosition, LocalPlayer():GetEyeTraceNoCursor().HitPos)

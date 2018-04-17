@@ -1,10 +1,10 @@
---This code is a mess but its basicly a dump for useful functions we cant live with out.
+-- This code is a mess but its basicly a dump for useful functions we cant live with out.
 local Entity = FindMetaTable("Entity")
 local Player = FindMetaTable("Player")
 
 function toExp(intLevel)
-	local intExp = tonumber(intLevel) or 0
-	if intExp <= 1 then intExp = 0 end
+	local intExp = math.max(0, tonumber(intLevel) or 0)
+
 	intExp = intExp * 6
 	intExp = math.pow(intExp, 2)
 	intExp = math.floor(intExp)
@@ -12,8 +12,8 @@ function toExp(intLevel)
 end
 
 function toLevel(intExp)
-	if not intExp then return end
 	local intLevel = math.sqrt(tonumber(intExp) or 0)
+
 	intLevel = intLevel / 6
 	intLevel = math.Clamp(intLevel, 1, intLevel)
 	intLevel = math.floor(intLevel)
@@ -30,11 +30,12 @@ end
 
 function Entity:CreateGrip()
 	local entGrip = ents.Create("prop_physics")
-	entGrip:SetModel("models/props_junk/cardboard_box004a.mdl")
-	entGrip:SetPos(self:GetPos())
-	entGrip:SetAngles(self:GetAngles())
-	entGrip:SetCollisionGroup(COLLISION_GROUP_WORLD)
-	entGrip:SetColor(Color(0, 0, 0, 0))
+		entGrip:SetModel("models/props_junk/cardboard_box004a.mdl")
+		entGrip:SetPos(self:GetPos())
+		entGrip:SetAngles(self:GetAngles())
+		entGrip:SetCollisionGroup(COLLISION_GROUP_WORLD)
+		entGrip:SetRenderMode(RENDERMODE_TRANSALPHA)
+		entGrip:SetColor(Color(0, 0, 0, 0))
 	entGrip:Spawn()
 	self:SetParent(entGrip)
 	self.Grip = entGrip
@@ -56,15 +57,16 @@ end
 
 function VectortizeString(strVectorString)
 	local tblDecodeTable = string.Explode("!", strVectorString)
-	return Vector(tblDecodeTable[1], tblDecodeTable[2], tblDecodeTable[3])
+	return Vector(tblDecodeTable[1] or 0, tblDecodeTable[2] or 0, tblDecodeTable[3] or 0)
 end
 
 function GetFlushToGround(entEntity)
-	local tblTrace = {}
-	tblTrace.start = entEntity:GetPos()
+	local tblTrace  = {}
+	tblTrace.start  = entEntity:GetPos()
 	tblTrace.endpos = entEntity:GetPos() + (entEntity:GetAngles():Up() * -500)
 	tblTrace.filter = entEntity
 	local trcNewTrace = util.TraceLine(tblTrace)
+
 	local vecNewPostion = trcNewTrace.HitPos - (trcNewTrace.HitNormal * 512)
 	vecNewPostion = entEntity:NearestPoint(vecNewPostion)
 	vecNewPostion = entEntity:GetPos() - vecNewPostion
@@ -73,33 +75,25 @@ function GetFlushToGround(entEntity)
 end
 
 function Player:ApplyBuffTable(tblBuffTable, intMultiplier)
-	if not SERVER then return end
-	for strSkill, intAmount in pairs(tblBuffTable or {}) do
+	if not SERVER or not tblBuffTable then return end
+
+	for strSkill, intAmount in pairs(tblBuffTable) do
 		self:AddStat(strSkill, intAmount * (intMultiplier or 1))
 	end
-end
-
-function table.Split(tblTable)
-	if tblTable.r and tblTable.g and tblTable.b then
-		return tblTable.r, tblTable.g, tblTable.b, tblTable.a
-	end
-	return tblTable[1], tblTable[2], tblTable[3], tblTable[4], tblTable[5], tblTable[6], tblTable[7]
 end
 
 function ColorCopy(clrToCopy, intAlpha)
 	return Color(clrToCopy.r, clrToCopy.g, clrToCopy.b, intAlpha or clrToCopy.a)
 end
 
-function GM:NotificateAll(strText)
-	for _,ply in pairs(player.GetAll()) do
-		if IsValid(ply) then
-			ply:CreateNotification(strText)
-		end
+function GM:NotifyAll(strText)
+	for _, ply in ipairs(player.GetAll()) do
+		ply:CreateNotification(strText)
 	end
 end
 
 if SERVER then
-	function SendUsrMsg(strName, plyTarget, tblArgs)
+	function SendUsrMsg(strName, plyTarget, tblArgs) -- TODO: Replace with net
 		umsg.Start(strName, plyTarget)
 		for _, value in pairs(tblArgs or {}) do
 			if type(value) == "string" then umsg.String(value)
@@ -113,80 +107,116 @@ if SERVER then
 		umsg.End()
 	end
 
+	local origin = Vector(0, 0, 0)
 	function CreateWorldItem(strItem, intAmount, vecPostion)
 		local tblItemTable = ItemTable(strItem)
-		if tblItemTable then
-			local entWorldProp = GAMEMODE:BuildModel(tblItemTable.Model)
+		if not tblItemTable then return NULL end -- type correct
+
+		local entWorldProp = GAMEMODE:BuildModel(tblItemTable.Model)
+		if not IsValid(entWorldProp) then return NULL end
 			entWorldProp.Item = strItem
 			entWorldProp.Amount = intAmount or 1
-			entWorldProp:Spawn()
-			entWorldProp:SetPos(vecPostion or Vector(0, 0, 0))
-			if not tblItemTable.QuestItem then
-				timer.Simple(15 ,function() if IsValid(entWorldProp) then entWorldProp:SetOwner(nil) end end)
-			end
-			SafeRemoveEntityDelayed(entWorldProp, 45)
-			entWorldProp:SetNWString("PrintName", tblItemTable.PrintName)
-			entWorldProp:SetNWInt("Amount", entWorldProp.Amount)
-			if not util.IsValidProp(entWorldProp:GetModel()) then
-				entWorldProp:CreateGrip()
-			end
-			return entWorldProp
+			entWorldProp:SetPos(vecPostion or origin)
+		entWorldProp:Spawn()
+
+		entWorldProp:SetNWString("PrintName", tblItemTable.PrintName)
+		entWorldProp:SetNWInt("Amount", entWorldProp.Amount)
+
+		if not util.IsValidProp(entWorldProp:GetModel()) then
+			entWorldProp:CreateGrip()
 		end
+
+		if not tblItemTable.QuestItem then
+			-- After 15 seconds the item can be picked up by anyone
+			-- TODO: config?
+			timer.Simple(15 ,function()
+				if IsValid(entWorldProp) then
+					entWorldProp:SetOwner(nil)
+				end
+			end)
+		end
+
+		-- Clean up if nobody wants it after a minute
+		SafeRemoveEntityDelayed(entWorldProp, 60) -- TODO: config?
+
+		return entWorldProp
 	end
 
 	function Entity:Stun(intTime, intSeverity)
-		if self.Resistance then if self.Resistance == "Ice" then return end end
-		if not self.BeingSlowed then
-			intTime = intTime or 3
-			local intTotalTime = 0
-			local intSlowRate = 0.1
-			local startingcolor = self:GetColor()
-			local function SlowEnt()
-				if self and self:IsValid() then
-					if intTotalTime < intTime then
-						self:SetPlaybackRate(intSeverity or 0.1)
-						intTotalTime = intTotalTime + intSlowRate
-						timer.Simple(intSlowRate, SlowEnt, self)
-					else
-						self:SetPlaybackRate(1)
-						self:SetColor(self:GetColor())
-						self.BeingSlowed = false
-					end
+		if self.Resistance and self.Resistance == "Ice" then return end
+		if self.UD_BeingSlowed then return end
+
+		intTime = intTime or 3
+		intSeverity = intSeverity or 0.1
+
+		local intTotalTime = 0
+		local intSlowRate = 0.1
+		self.UD_originalColor = self.UD_originalColor or self:GetColor()
+
+		local function _statusEffect()
+			if not IsValid(self) then return end
+
+			if intTotalTime < intTime then
+				self:SetPlaybackRate(intSeverity)
+
+				intTotalTime = intTotalTime + intSlowRate
+				timer.Create("UD_Stun" .. self:EntIndex(), intSlowRate, 1, _statusEffect)
+			else
+				self:SetPlaybackRate(1)
+				self.UD_BeingSlowed = false
+
+				if self.UD_originalColor then
+					self:SetColor(self.UD_originalColor)
+					self.UD_originalColor = nil
 				end
 			end
-			self:SetColor(Color(200, 200, 255, 255))
-			self.BeingSlowed = true
-			SlowEnt()
 		end
+
+		self:SetColor(Color(200, 200, 255, 255))
+		self.UD_BeingSlowed = true
+		_statusEffect()
 	end
 
 	function Entity:IgniteFor(intTime, intDamage, plyPlayer)
-		if self.Resistance then if self.Resistance == "Fire" then return end end
-		if not self.Ignited then
-			intTime = intTime or 3
-			local intTotalTime = 0
-			local intIgnitedRate = 0.35
-			local function IgniteEnt()
-				if self and self:IsValid() then
-					if intTotalTime < intTime then
-						plyPlayer:CreateIndacator(intDamage, self:GetPos(), "red", true)
-						local StartingHealth = self:Health() -- Hacky way around self:Ignite dropping npc down to 40 health
-						self:SetNWInt("Health", self:Health())
-						intTotalTime = intTotalTime + intIgnitedRate
-						self:Ignite(intTime,0) -- Used for the effect
-						self:SetHealth(StartingHealth - intDamage) -- Starts taking damage
-						timer.Simple(intIgnitedRate, IgniteEnt, self)
-					else
-						self:Extinguish()
-						self:SetColor(Color(200, 255, 255, 255))
-						self.Ignited = false
-					end
+		if self.Resistance and self.Resistance == "Fire" then return end
+		if self.UD_BeingBurned then return end
+
+		intTime = intTime or 3
+		intDamage = intDamage or 1
+
+		local intTotalTime = 0
+		local intIgnitedRate = 0.35
+		self.UD_originalColor = self.UD_originalColor or self:GetColor()
+
+		local function _statusEffect()
+			if not IsValid(self) then return end
+
+			if intTotalTime < intTime then
+				if IsValid(plyPlayer) then
+					plyPlayer:CreateIndicator(intDamage, self:GetPos(), "red", true)
+				end
+
+				local startingHealth = self:Health() -- Hacky way around self:Ignite dropping npc down to 40 health
+				self:SetNWInt("Health", self:Health())
+				self:Ignite(intTime, 0) -- Used for the effect
+				self:SetHealth(startingHealth - intDamage) -- Starts taking damage
+
+				intTotalTime = intTotalTime + intIgnitedRate
+				timer.Create("UD_Burn" .. self:EntIndex(), intIgnitedRate, 1, _statusEffect)
+			else
+				self:Extinguish()
+				self.UD_BeingBurned = false
+
+				if self.UD_originalColor then
+					self:SetColor(self.UD_originalColor)
+					self.UD_originalColor = nil
 				end
 			end
-			self:SetColor(Color(200, 0, 0, 255))
-			self.Ignited = true
-			IgniteEnt()
 		end
+
+		self:SetColor(Color(200, 0, 0, 255))
+		self.UD_BeingBurned = true
+		_statusEffect()
 	end
 
 	function GM:RemoveAll(strClass, intTime)
@@ -200,6 +230,7 @@ if CLIENT then
 		frmNewFrame:SetTitle(strTitle)
 		frmNewFrame:SetDraggable(boolDrag)
 		frmNewFrame:ShowCloseButton(boolClose)
+
 		if boolClose then
 			frmNewFrame.btnClose:SetFont("Marlett")
 			frmNewFrame.btnClose:SetText("r")
@@ -213,19 +244,25 @@ if CLIENT then
 			frmNewFrame.btnMinim:SetText("0")
 			frmNewFrame.btnMinim.Paint = function() end
 		end
-		frmNewFrame:SetAlpha(255)
-		frmNewFrame.Paint = function()
-			local tblPaintPanel = jdraw.NewPanel()
-			tblPaintPanel:SetDemensions(0, 0, frmNewFrame:GetWide(), frmNewFrame:GetTall())
+
+		local tblPaintPanel = jdraw.NewPanel()
+		frmNewFrame.tblPaintPanel = tblPaintPanel
 			tblPaintPanel:SetStyle(4, clrTan)
-			tblPaintPanel:SetBoarder(1, clrDrakGray)
-			jdraw.DrawPanel(tblPaintPanel)
-			local tblPaintPanel = jdraw.NewPanel()
-			tblPaintPanel:SetDemensions(5, 5, frmNewFrame:GetWide() - 10, 15)
+			tblPaintPanel:SetBorder(1, clrDrakGray)
+
+		local tblPaintPanel2 = jdraw.NewPanel()
+		frmNewFrame.tblPaintPanel2 = tblPaintPanel2
 			tblPaintPanel:SetStyle(4, clrGray)
-			tblPaintPanel:SetBoarder(1, clrDrakGray)
-			jdraw.DrawPanel(tblPaintPanel)
+			tblPaintPanel:SetBorder(1, clrDrakGray)
+
+		function frmNewFrame:Paint(w, h)
+				self.tblPaintPanel:SetDimensions(0, 0, w, h)
+			jdraw.DrawPanel(self.tblPaintPanel)
+
+				self.tblPaintPanel:SetDimensions(5, 5, w - 10, 15)
+			jdraw.DrawPanel(self.tblPaintPanel2)
 		end
+
 		return frmNewFrame
 	end
 
@@ -235,13 +272,17 @@ if CLIENT then
 		pnlNewList:SetPadding(intSpacing)
 		pnlNewList:EnableHorizontal(boolHorz)
 		pnlNewList:EnableVerticalScrollbar(boolScrollz)
-		pnlNewList.Paint = function()
-			local tblPaintPanel = jdraw.NewPanel()
-			tblPaintPanel:SetDemensions(0, 0, pnlNewList:GetWide(), pnlNewList:GetTall())
+
+		local tblPaintPanel = jdraw.NewPanel()
+		frmNewFrame.tblPaintPanel = tblPaintPanel
 			tblPaintPanel:SetStyle(4, clrGray)
-			tblPaintPanel:SetBoarder(1, clrDrakGray)
-			jdraw.DrawPanel(tblPaintPanel)
+			tblPaintPanel:SetBorder(1, clrDrakGray)
+
+		function pnlNewList:Paint(w, h)
+				self.tblPaintPanel:SetDimensions(0, 0, w, h)
+			jdraw.DrawPanel(self.tblPaintPanel)
 		end
+
 		return pnlNewList
 	end
 
@@ -250,45 +291,55 @@ if CLIENT then
 		lblNewLabel:SetFont(strFont or "Default")
 		lblNewLabel:SetText(strText or "Default")
 		lblNewLabel:SetColor(clrColor or clrWhite)
+
 		return lblNewLabel
 	end
 
+	local weight_format = "Weight %d/%d"
 	function CreateGenericWeightBar(pnlParent, intWeight, intMaxWeight)
 		local fpbWeightBar = vgui.Create("FPercentBar", pnlParent)
 		fpbWeightBar:SetMax(intMaxWeight)
 		fpbWeightBar:SetValue(intWeight)
-		fpbWeightBar:SetText("Weight " .. intWeight .. "/" ..  intMaxWeight)
-		fpbWeightBar.Update = function(pnlSelf, intNewValue)
-			fpbWeightBar:SetValue(tonumber(intNewValue))
-			fpbWeightBar:SetText("Weight " .. tostring(intNewValue) .. "/" ..  intMaxWeight)
+		fpbWeightBar:SetText(string.format(weight_format, intWeight, intMaxWeight))
+
+		function fpbWeightBar:Update(intNewValue)
+			intNewValue = tonumber(intNewValue) or 0
+
+			fpbWeightBar:SetValue(intNewValue)
+			fpbWeightBar:SetText(string.format(weight_format, intNewValue, self:GetMax()))
 		end
+
 		return fpbWeightBar
 	end
 
 	function CreateGenericTabPanel(pnlParent)
 		local tbsNewTabSheet = vgui.Create("DPropertySheet", pnlParent)
-		tbsNewTabSheet.Paint = function()
-			jdraw.QuickDrawPanel(clrTan, 0, 20, tbsNewTabSheet:GetWide(), tbsNewTabSheet:GetTall() - 20)
+
+		function tbsNewTabSheet:Paint(w, h)
+			jdraw.QuickDrawPanel(clrTan, 0, 20, w, h - 20)
 		end
+
 		function tbsNewTabSheet:NewTab(strName, strPanelObject, strIcon, strDesc)
 			local pnlNewPanel = vgui.Create(strPanelObject)
-			tbsNewTabSheet:AddSheet(strName, pnlNewPanel, strIcon, false, false, strDesc)
-			tbsNewTabSheet.TabPanels = tbsNewTabSheet.TabPanels or {}
-			table.insert(tbsNewTabSheet.TabPanels, pnlNewPanel)
-			for _, pnlSheet in pairs(tbsNewTabSheet.Items) do
-				pnlSheet.Tab.Paint = function(tbsNewTabSheet)
-					local clrBackColor = clrGray
-					if tbsNewTabSheet:GetPropertySheet():GetActiveTab() == tbsNewTabSheet then clrBackColor = clrTan end
-					jdraw.QuickDrawPanel(clrBackColor, 0, 0, pnlSheet.Tab:GetWide(), pnlSheet.Tab:GetTall() - 1)
-					if tbsNewTabSheet:GetPropertySheet():GetActiveTab() == tbsNewTabSheet then
-						draw.RoundedBox(0, 1, pnlSheet.Tab:GetTall() - 4, pnlSheet.Tab:GetWide() - 2, 5, clrBackColor)
-					else
-						draw.RoundedBox(0, 1, pnlSheet.Tab:GetTall() - 4, pnlSheet.Tab:GetWide() - 2, 2, clrBackColor)
-					end
+			local tab = self:AddSheet(strName, pnlNewPanel, strIcon, false, false, strDesc).Tab
+
+			function tab:Paint(w, h)
+				local active = tbsNewTabSheet:GetActiveTab() == self
+				local clrBackColor = active and clrTan or clrGray
+
+				jdraw.QuickDrawPanel(clrBackColor, 0, 0, w, h - 1)
+
+				-- TODO: Probably what's making them look broken
+				if active then
+					draw.RoundedBox(0, 1, h - 4, w - 2, 5, clrBackColor)
+				else
+					draw.RoundedBox(0, 1, h - 4, w - 2, 2, clrBackColor)
 				end
 			end
+
 			return pnlNewPanel
 		end
+
 		return tbsNewTabSheet
 	end
 
@@ -301,6 +352,7 @@ if CLIENT then
 		lstNewListItem:SetColor(clrColor)
 		lstNewListItem:SetExpandable(boolExpandable)
 		lstNewListItem:SetExpanded(boolExpanded)
+
 		return lstNewListItem
 	end
 
@@ -311,14 +363,16 @@ if CLIENT then
 		nmsNewNumSlider:SetMax(intMax or intMin)
 		nmsNewNumSlider:SetDecimals(intDecimals or 0)
 		nmsNewNumSlider:SetConVar(strConVar)
+
 		return nmsNewNumSlider
 	end
 
 	function CreateGenericCheckBox(pnlParent, strText, strConVar)
-		local ckbNewCheckBox = vgui.Create( "DCheckBoxLabel", pnlParent)
+		local ckbNewCheckBox = vgui.Create("DCheckBoxLabel", pnlParent)
 		ckbNewCheckBox:SetText(strText)
 		ckbNewCheckBox:SetConVar(strConVar)
 		ckbNewCheckBox:SizeToContents()
+
 		return ckbNewCheckBox
 	end
 
@@ -328,25 +382,32 @@ if CLIENT then
 		btnNewButton:SetTooltip(strToolTip)
 		btnNewButton:SizeToContents()
 		btnNewButton.DoClick = fncFunction
+
 		return btnNewButton
 	end
 
+	local shade = Color(0, 0, 0, 100)
 	function CreateGenericButton(pnlParent, strText)
 		local btnNewButton = vgui.Create("DButton", pnlParent)
 		btnNewButton:SetText(strText)
 		btnNewButton:SetTextColor(color_white)
-		btnNewButton.Paint = function(btnNewButton)
-			local clrDrawColor = ColorCopy(clrGray)
+
+		function btnNewButton:Paint(w, h)
+			local clrDrawColor = clrGray
 			local intGradDir = 1
-			if btnNewButton:GetDisabled() then
+
+			if self:GetDisabled() then
 				clrDrawColor = ColorCopy(clrGray, 100)
-			elseif btnNewButton.Depressed or btnNewButton:IsDown() then
+			elseif self.Depressed or self:IsDown() then
 				intGradDir = -1
 			elseif btnNewButton.Hovered then
+				-- TODO: maybe more visual feedback?
 			end
-			jdraw.QuickDrawPanel(clrDrawColor, 0, 0, btnNewButton:GetWide(), btnNewButton:GetTall())
-			jdraw.QuickDrawGrad(Color(0, 0, 0, 100), 0, 0, btnNewButton:GetWide(), btnNewButton:GetTall(), intGradDir)
+
+			jdraw.QuickDrawPanel(clrDrawColor, 0, 0, w, h)
+			jdraw.QuickDrawGrad(shade, 0, 0, w, h, intGradDir)
 		end
+
 		return btnNewButton
 	end
 
@@ -354,28 +415,33 @@ if CLIENT then
 		local pnlNewPanel = vgui.Create("DPanel", pnlParent)
 		pnlNewPanel:SetPos(intX, intY)
 		pnlNewPanel:SetSize(intWidth, intHieght)
-		pnlNewPanel.Paint = function()
-			jdraw.QuickDrawPanel(clrGray, 0, 0, pnlNewPanel:GetWide(), pnlNewPanel:GetTall())
+
+		function pnlNewPanel:Paint(w, h)
+			jdraw.QuickDrawPanel(clrGray, 0, 0, w, h)
 		end
+
 		return pnlNewPanel
 	end
 
 	function CreateGenericMultiChoice(pnlParent, strText, boolEditable)
 		local mlcNewMultiChoice = vgui.Create("DComboBox", pnlParent)
 		mlcNewMultiChoice:SetText(strText or "")
-		mlcNewMultiChoice:SetDisabled(not (boolEditable or false))
+		mlcNewMultiChoice:SetEnabled(boolEditable)
+
 		return mlcNewMultiChoice
 	end
 
 	function CreateGenericCollapse(pnlParent, strName, intSpacing, boolHorz)
 		local cpcNewCollapseCat = vgui.Create("DCollapsibleCategory", pnlParent)
 		cpcNewCollapseCat:SetLabel(strName)
+
 		cpcNewCollapseCat.List = vgui.Create("DPanelList")
 		cpcNewCollapseCat.List:SetAutoSize(true)
 		cpcNewCollapseCat.List:SetSpacing(intSpacing)
 		cpcNewCollapseCat.List:SetPadding(intSpacing)
 		cpcNewCollapseCat.List:EnableHorizontal(boolHorz)
 		cpcNewCollapseCat:SetContents(cpcNewCollapseCat.List)
+
 		return cpcNewCollapseCat
 	end
 end

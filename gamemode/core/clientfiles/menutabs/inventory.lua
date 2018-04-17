@@ -14,7 +14,7 @@ PANEL.AmmoDisplayTable[4] = {Type = "SniperRound", PrintName = "Sniper"}
 function PANEL:Init()
 	self.inventorylist = CreateGenericList(self, self.ItemIconPadding, true, true)
 	self.inventorylist.DoDropedOn = function()
-		if not LocalPlayer().Data.Paperdoll or not GAMEMODE.DraggingPanel or not GAMEMODE.DraggingPanel.IsPapperDollSlot then return end
+		if not LocalPlayer().Data.Paperdoll or not GAMEMODE.DraggingPanel or not GAMEMODE.DraggingPanel.IsPaperDollSlot then return end
 		if GAMEMODE.DraggingPanel.Item and GAMEMODE.DraggingPanel.Slot then
 			if LocalPlayer().Data.Paperdoll[GAMEMODE.DraggingPanel.Slot] == GAMEMODE.DraggingPanel.Item then
 				GAMEMODE.DraggingPanel.DoDoubleClick()
@@ -71,9 +71,9 @@ function PANEL:Init()
 	self.Paperdoll = vgui.Create("FPaperDoll", self)
 	self.Paperdoll.Paint = function()
 		local tblPaintPanle = jdraw.NewPanel()
-		tblPaintPanle:SetDemensions(0, 0, self.Paperdoll:GetWide(), self.Paperdoll:GetTall())
+		tblPaintPanle:SetDimensions(0, 0, self.Paperdoll:GetWide(), self.Paperdoll:GetTall())
 		tblPaintPanle:SetStyle(4, clrGray)
-		tblPaintPanle:SetBoarder(1, clrDrakGray)
+		tblPaintPanle:SetBorder(1, clrDrakGray)
 		jdraw.DrawPanel(tblPaintPanle)
 	end
 

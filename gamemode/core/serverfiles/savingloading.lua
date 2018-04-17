@@ -85,7 +85,7 @@ function Player:LoadGame()
 	for _, ply in pairs(player.GetAll()) do
 		if ply ~= self and ply.Data and ply.Data.Paperdoll then
 			for slot, item in pairs(ply.Data.Paperdoll) do
-				SendUsrMsg("UD_UpdatePapperDoll", self, {ply, slot, item})
+				SendUsrMsg("UD_UpdatePaperDoll", self, {ply, slot, item})
 			end
 		end
 	end

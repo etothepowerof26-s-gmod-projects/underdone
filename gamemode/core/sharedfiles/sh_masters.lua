@@ -49,7 +49,7 @@ end
 function Player:AddMaster(strMaster, intGainExp, boolShowExp)
 	if not IsValid(self) then return false end
 	if boolShowExp and SERVER then
-		self:CreateIndacator("+_" .. intGainExp .. "_" .. string.gsub(MasterTable(strMaster).PrintName, " ", "_"), self:GetPos() + Vector(0, 0, 70), "purple")
+		self:CreateIndicator("+_" .. intGainExp .. "_" .. string.gsub(MasterTable(strMaster).PrintName, " ", "_"), self:GetPos() + Vector(0, 0, 70), "purple")
 	end
 	return self:SetMaster(strMaster, math.Clamp(self:GetMasterExp(strMaster) + intGainExp, 0, self:GetMasterExpNextLevel(strMaster) - 1))
 end
