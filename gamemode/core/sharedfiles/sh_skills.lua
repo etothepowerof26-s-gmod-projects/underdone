@@ -71,7 +71,7 @@ if SERVER then
 	hook.Add("UD_Hook_PlayerLevelUp", "PlayerLevelUp_SkillPoints", function(plyPlayer, intLevels)
 		plyPlayer:SetNWInt("SkillPoints", plyPlayer:GetNWInt("SkillPoints") + (intSkillPointsPerLevel * intLevels))
 	end)
-	
+
 	function Player:BuySkill(strSkill, intAmount)
 		local tblSkillTable = SkillTable(strSkill)
 		if not tblSkillTable then return false end
