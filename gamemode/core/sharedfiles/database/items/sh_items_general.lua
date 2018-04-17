@@ -7,6 +7,7 @@ local Item = QuickCreateItemTable(BaseItem, "wood", "Wood", "Its wood?", "icons/
 Item.Model = "models/Gibs/wood_gib01d.mdl"
 Item.SellPrice = 7
 Item.Weight = 1
+Item.Stackable = true
 Register.Item(Item)
 
 local Item = QuickCreateItemTable(BaseFood, "item_canmeat", "Can of Uncooked Meat", "Needs to be cooked", "icons/junk_metalcan1")
