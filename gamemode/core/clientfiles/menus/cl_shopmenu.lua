@@ -16,7 +16,7 @@ function PANEL:Init()
 		GAMEMODE.ShopMenu = nil
 	end
 	self.Frame:MakePopup()
-	
+
 	self.ShopInventoryPanel = CreateGenericList(self.Frame, self.ItemIconPadding, true, true)
 	self.ShopInventoryPanel.DoDropedOn = function()
 		if GAMEMODE.DraggingPanel.UseCommand == "sell" then
@@ -25,8 +25,8 @@ function PANEL:Init()
 	end
 	GAMEMODE:AddHoverObject(self.ShopInventoryPanel)
 	GAMEMODE:AddHoverObject(self.ShopInventoryPanel.pnlCanvas, self.ShopInventoryPanel)
-	
-	self.WeightBar = CreateGenericWeightBar(self.Frame, (LocalPlayer().Weight or 0), LocalPlayer():GetMaxWeight())
+
+	self.WeightBar = CreateGenericWeightBar(self.Frame, LocalPlayer().Weight or 0, LocalPlayer():GetMaxWeight())
 	self.PlayerInventoryPanel = CreateGenericList(self.Frame, self.ItemIconPadding, true, true)
 	self.PlayerInventoryPanel.DoDropedOn = function()
 		if GAMEMODE.DraggingPanel.UseCommand == "buy" then
@@ -35,17 +35,21 @@ function PANEL:Init()
 	end
 	GAMEMODE:AddHoverObject(self.PlayerInventoryPanel)
 	GAMEMODE:AddHoverObject(self.PlayerInventoryPanel.pnlCanvas, self.PlayerInventoryPanel)
-	
+
 	self:PerformLayout()
 end
 
 function PANEL:LoadShop(strShop)
 	self.Shop = self.Shop or strShop
 	local tblShopTable = ShopTable(self.Shop)
-	self.Frame:SetTitle(tblShopTable.PrintName)
-	self.ShopInventoryPanel:Clear()
-	for strItem, tblInfo in pairs(tblShopTable.Inventory or {}) do
-		self:AddItem(self.ShopInventoryPanel, strItem, 1, "buy", tblInfo.Price or LocalPlayer():GetItemBuyPrice(strItem))
+	if tblShopTable then
+		self.Frame:SetTitle(tblShopTable.PrintName)
+		self.ShopInventoryPanel:Clear()
+		for strItem, tblInfo in pairs(tblShopTable.Inventory or {}) do
+			self:AddItem(self.ShopInventoryPanel, strItem, 1, "buy", tblInfo.Price or LocalPlayer():GetItemBuyPrice(strItem))
+		end
+	else
+		ErrorNoHalt("missing shop for '" .. tostring(strShop) .. "'")
 	end
 end
 
@@ -84,14 +88,14 @@ end
 function PANEL:PerformLayout()
 	self.ShopInventoryPanel:SetPos(5, 25)
 	self.ShopInventoryPanel:SetSize(((self.ItemIconSize + self.ItemIconPadding) * self.ItemRow) + self.ItemIconPadding, self.Frame:GetTall() - 30)
-	
+
 	self.PlayerInventoryPanel:SetPos(self.ShopInventoryPanel:GetWide() + 10, 45)
 	self.PlayerInventoryPanel:SetSize(((self.ItemIconSize + self.ItemIconPadding) * self.ItemRow) + self.ItemIconPadding, self.Frame:GetTall() - 50)
-	
+
 	self.WeightBar:SetPos(self.ShopInventoryPanel:GetWide() + 10, 25)
 	self.WeightBar:SetSize(self.PlayerInventoryPanel:GetWide(), 15)
 	self.WeightBar:Update(LocalPlayer().Weight or 0)
-	
+
 	self:SetSize(self.ShopInventoryPanel:GetWide() + self.PlayerInventoryPanel:GetWide() + 15, 300)
 	self.Frame:SetPos(self:GetPos())
 	self.Frame:SetSize(self:GetSize())
