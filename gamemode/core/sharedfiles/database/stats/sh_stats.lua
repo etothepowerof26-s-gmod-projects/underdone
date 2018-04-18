@@ -69,6 +69,8 @@ function Stat:OnSet(ply, intAgility, intOldAgility)
 	ply:AddMoveSpeed((intAgility - intOldAgility) * 10)
 end
 function Stat:FireRateMod(ply, intAgility, intFireRate)
+	if not intFireRate then return end
+	
 	intFireRate = intFireRate * math.Clamp(intAgility / 5, 1, intAgility)
 	return intFireRate
 end
