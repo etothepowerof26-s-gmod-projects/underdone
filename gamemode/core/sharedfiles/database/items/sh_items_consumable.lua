@@ -16,6 +16,7 @@ Item.Message = "You ate a Spoiled pieace of Meat"
 Item.UseSound = "vo/SandwichEat09.wav"
 Item.SellPrice = 20
 Item.Weight = 1
+Item.Stackable = true
 Register.Item(Item)
 
 local Item = QuickCreateItemTable(BaseFood, "item_cancookedmeat", "Can of Cooked Meat", "Restores your health by 20 over 10 Seconds", "icons/junk_metalcan1")
@@ -25,6 +26,7 @@ Item.Message = "You ate a pieace of Meat"
 Item.UseSound = "vo/SandwichEat09.wav"
 Item.SellPrice = 50
 Item.Weight = 1
+Item.Stackable = true
 Register.Item(Item)
 
 local Item = QuickCreateItemTable(BaseFood, "item_cookednoodles", "Cooked Chineese Noodles", "Restores your health by 30 over 5 Seconds", "icons/junk_metalcan1")
@@ -34,6 +36,7 @@ Item.Message = "You ate some chineese noodles"
 Item.UseSound = "vo/SandwichEat09.wav"
 Item.SellPrice = 100
 Item.Weight = 1
+Item.Stackable = true
 Register.Item(Item)
 
 local Item = QuickCreateItemTable(BaseFood, "item_orange", "Orange", "Restores your health by 25 over 8 Seconds", "icons/food_orange")
@@ -43,8 +46,8 @@ Item.Message = "You ate a Orange"
 Item.UseSound = "vo/SandwichEat09.wav"
 Item.SellPrice = 8
 Item.Weight = 1
+Item.Stackable = true
 Register.Item(Item)
-local Item = DeriveTable(BaseItem)
 
 local Item = QuickCreateItemTable(BaseFood, "item_antivirus", "Anti Virus", "An antivirus that can heal wounds.", "icons/item_antivirus")
 Item = AddHealth(Item, 40, 10)
@@ -63,6 +66,7 @@ Item.Message = "You ate a Bunch of Bananna's"
 Item.UseSound = "vo/SandwichEat09.wav"
 Item.SellPrice = 80
 Item.Weight = 1
+Item.Stackable = true
 Register.Item(Item)
 
 local Item = QuickCreateItemTable(BaseFood, "item_bananna", "banana", "Restores your health by 15 over 10 Seconds", "icons/food_bananna")
@@ -72,6 +76,7 @@ Item.Message = "You ate a Banana"
 Item.UseSound = "vo/SandwichEat09.wav"
 Item.SellPrice = 8
 Item.Weight = 1
+Item.Stackable = true
 Register.Item(Item)
 
 
@@ -126,6 +131,7 @@ Item.Message = "You ate a Pumpkin"
 Item.UseSound = "vo/SandwichEat09.wav"
 Item.SellPrice = 45
 Item.Weight = 1
+Item.Stackable = true
 Register.Item(Item)
 
 local Item = QuickCreateItemTable(BaseFood, "item_coffee", "Coffee Mug", "Restores health by 12", "icons/food_bananna")
@@ -135,6 +141,7 @@ Item.Message = "You drank a cup of stale coffee."
 Item.UseSound = "player/pl_scout_dodge_can_drink.wav"
 Item.SellPrice = 2
 Item.Weight = 1
+Item.Stackable = true
 Register.Item(Item)
 
 local Item = QuickCreateItemTable(BaseFood, "item_milk", "Milk(1Gal)", "Restores your health by 50 over 15 Seconds", "icons/food_bananna")
@@ -144,6 +151,7 @@ Item.Message = "You drank a whole gallon of milk!"
 Item.UseSound = "player/pl_scout_dodge_can_drink.wav"
 Item.SellPrice = 10
 Item.Weight = 1
+Item.Stackable = true
 Register.Item(Item)
 
 local Item = QuickCreateItemTable(BaseFood, "item_milk_small", "Milk(1/2Gal)", "Restores your health by 25 over 8 Seconds", "icons/food_bananna")
@@ -153,6 +161,7 @@ Item.Message = "You drank half a gallon of milk."
 Item.UseSound = "player/pl_scout_dodge_can_drink.wav"
 Item.SellPrice = 6
 Item.Weight = 1
+Item.Stackable = true
 Register.Item(Item)
 
 local Item = QuickCreateItemTable(BaseFood, "item_beer", "Cheap Beer", "Restores your health by 30 over 30 Seconds", "icons/food_bananna")
@@ -162,6 +171,7 @@ Item.Message = "You drank a bottle of cheap beer."
 Item.UseSound = "player/pl_scout_dodge_can_drink.wav"
 Item.SellPrice = 8
 Item.Weight = 1
+Item.Stackable = true
 Register.Item(Item)
 
 local Item = QuickCreateItemTable(BaseFood, "item_vodka", "Vodka", "Restores your health by 60 over 30 Seconds", "icons/food_bananna")
@@ -171,6 +181,7 @@ Item.Message = "You drank a bottle of vodka."
 Item.UseSound = "player/pl_scout_dodge_can_drink.wav"
 Item.SellPrice = 18
 Item.Weight = 2
+Item.Stackable = true
 Register.Item(Item)
 
 local Item = QuickCreateItemTable(BaseFood, "item_leftovers", "Chinese Leftovers", "Restores your health by 10 over 2 Seconds", "icons/food_bananna")
@@ -180,6 +191,7 @@ Item.Message = "You ate some leftover chinese-food."
 Item.UseSound = "vo/SandwichEat09.wav"
 Item.SellPrice = 1
 Item.Weight = 2
+Item.Stackable = true
 Register.Item(Item)
 
 local Item = QuickCreateItemTable(BaseFood, "item_melon", "Watermelon", "Restores your health by 45 over 15 Seconds", "icons/food_bananna")
@@ -189,4 +201,5 @@ Item.Message = "You ate a juicy watermelon."
 Item.UseSound = "vo/SandwichEat09.wav"
 Item.SellPrice = 16
 Item.Weight = 2
+Item.Stackable = true
 Register.Item(Item)
