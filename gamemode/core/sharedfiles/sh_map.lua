@@ -48,8 +48,9 @@ function GM:CreateWorldProp(strModel, vecPosition, angAngle, entEntity, boolLoad
 			return entNewProp
 		end
 
+		local entNewProp = tblNewObject.SpawnProp()
 		table.insert(self.MapEntities.WorldProps, tblNewObject)
-		self:UpdateWorldProp(#self.MapEntities.WorldProps, strModel, vecPosition, angAngle, tblNewObject.SpawnProp())
+		self:UpdateWorldProp(#self.MapEntities.WorldProps, strModel, vecPosition, angAngle, entNewProp)
 
 		return tblNewObject.Entity
 	elseif CLIENT then
