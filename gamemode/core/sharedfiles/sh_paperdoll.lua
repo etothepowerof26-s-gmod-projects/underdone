@@ -86,14 +86,14 @@ if CLIENT then
 
 	function Player:PaperDollBuildSlot(strSlot, strItem)
 		if not self:Alive() then return end
-		GAMEMODE.PaperDollEnts[self:EntIndex()] = GAMEMODE.PaperDollEnts[self:EntIndex()] or {}
-		local tblPlayerTable = GAMEMODE.PaperDollEnts[self:EntIndex()]
+		GAMEMODE.PaperDollEnts[self:SteamID64()] = GAMEMODE.PaperDollEnts[self:SteamID64()] or {}
+		local tblPlayerTable = GAMEMODE.PaperDollEnts[self:SteamID64()]
 		tblPlayerTable = tblPlayerTable or {}
 		local entPaperDollEnt = tblPlayerTable[strSlot]
 		if entPaperDollEnt and entPaperDollEnt:IsValid() then
 			for _, kid in pairs(entPaperDollEnt.Children or {}) do SafeRemoveEntity(kid) end
 			SafeRemoveEntity(entPaperDollEnt)
-			GAMEMODE.PaperDollEnts[self:EntIndex()][strSlot] = nil
+			GAMEMODE.PaperDollEnts[self:SteamID64()][strSlot] = nil
 		end
 		if strItem and strSlot then
 			local tblItemTable = ItemTable(strItem)
@@ -104,7 +104,7 @@ if CLIENT then
 				entNewPart:SetParent(self)
 				entNewPart.Item = strItem
 				entNewPart.Attachment = tblSlotTable.Attachment
-				GAMEMODE.PaperDollEnts[self:EntIndex()][strSlot] = entNewPart
+				GAMEMODE.PaperDollEnts[self:SteamID64()][strSlot] = entNewPart
 			end
 		end
 	end
