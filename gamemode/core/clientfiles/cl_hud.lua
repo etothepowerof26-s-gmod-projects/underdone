@@ -14,7 +14,7 @@ local function fncDrawAngleLine(intPosX, intPosY, intAngle, intSize)
 end
 
 local squad_leader = Material("icon16/star.png")
-
+local done         = Material("icon16/accept.png")
 
 function GM:HUDPaint()
 	if not GAMEMODE.ConVarShowHUD:GetBool() then return end
@@ -131,7 +131,10 @@ function GM:DrawQuestToDoList()
 				end
 			end
 			if LocalPlayer():CanTurnInQuest(strQuest) then
-				draw.SimpleTextOutlined("Done return to npc", "Trebuchet18", intXOffset, intYOffset, clrWhite, 0, 1, 1, clrDrakGray)
+				surface.SetDrawColor(255, 255, 255, 255)
+				surface.SetMaterial(done)
+				surface.DrawTexturedRect(intXOffset - 20, intYOffset - 8, 16, 16)
+				draw.SimpleTextOutlined("Return to npc", "Trebuchet18", intXOffset, intYOffset, clrWhite, 0, 1, 1, clrDrakGray)
 				intYOffset = intYOffset + intPadding
 			end
 			intYOffset = intYOffset + 10
