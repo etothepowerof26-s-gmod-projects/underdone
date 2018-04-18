@@ -23,7 +23,7 @@ function Skill:OnSet(plyPlayer, intSkillLevel, intOldSkillLevel)
 			end
 		end
 	end
-	timer.Create(plyPlayer:EntIndex(), 12, 0, function() fncDoSquadHealth(plyPlayer) end)
+	timer.Create("UD_squadhealth " .. plyPlayer:SteamID64(), 12, 0, function() fncDoSquadHealth(plyPlayer) end)
 end
 Register.Skill(Skill)
 
@@ -33,7 +33,7 @@ Skill.PrintName = "Nano Weave Musles"
 Skill.SkillNeeded = "skill_hydraulicbiceps"
 Skill.Icon = "icons/junk_box1"
 Skill.Desc = {}
-Skill.Desc["story"] = "The musles in you body are reenforced with a nano weave of carbon."
+Skill.Desc["story"] = "The muscles in your body are reinforced with a nano weave of carbon."
 Skill.Desc["SkillNeeded"] = "Hydraulic Biceps"
 Skill.Desc[1] = "Increase Strength by 9"
 Skill.Desc[2] = "Increase Strength by 10"
