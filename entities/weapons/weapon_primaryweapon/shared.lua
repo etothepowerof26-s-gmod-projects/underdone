@@ -50,7 +50,7 @@ function SWEP:Reload()
 			if self.WeaponTable.ReloadSound then self:EmitSound(self.WeaponTable.ReloadSound) end
 		end
 		timer.Simple(self.WeaponTable.ReloadTime, function()
-			if not self or not self.Owner or not self.Owner:Alive() then return end
+			if not self or not IsValid(self.Owner) or not self.Owner:Alive() then return end
 			self.Owner:RemoveAmmo(self.WeaponTable.ClipSize - self:Clip1(), self.WeaponTable.AmmoType)
 			self:SetClip1(math.Clamp(self.WeaponTable.ClipSize, 0, self:Clip1() + intCurrentAmmo))
 			self:SetNWBool("reloading", false)
