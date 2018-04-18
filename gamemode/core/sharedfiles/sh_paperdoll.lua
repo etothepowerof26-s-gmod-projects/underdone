@@ -112,8 +112,8 @@ if CLIENT then
 	local function DrawPaperDoll()
 		if LocalPlayer() and not LocalPlayer().Data then LocalPlayer().Data = {} end
 		if LocalPlayer() and LocalPlayer().Data and not LocalPlayer().Data.Paperdoll then LocalPlayer().Data.Paperdoll = {} end
-		for intEntID, tblPlayerTable in pairs(GAMEMODE.PaperDollEnts) do
-			local plyPlayer = ents.GetByIndex(intEntID)
+		for steamID64, tblPlayerTable in pairs(GAMEMODE.PaperDollEnts) do
+			local plyPlayer = player.GetBySteamID64(steamID64)
 			for strSlot, entTarget in pairs(tblPlayerTable or {}) do
 				if not plyPlayer or not plyPlayer:IsValid() then
 					for _, kid in pairs(entTarget.Children or {}) do SafeRemoveEntityDelayed(kid, 0) end
