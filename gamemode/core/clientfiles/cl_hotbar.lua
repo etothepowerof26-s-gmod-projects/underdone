@@ -40,10 +40,6 @@ local function AttemptLoad()
 		local pnlHotBarKeysPanel = vgui.Create("DPanel")
 		GAMEMODE.HotBarPanel = pnlHotBarKeysPanel
 
-		function pnlHotBarKeysPanel:Think()
-			self:SetVisible(GAMEMODE.ConVarShowHUD:GetBool())
-		end
-
 		pnlHotBarKeysPanel:SetSize((intHotBarIconSize + intHotBarPadding) * intKeys + intHotBarPadding, intHotBarIconSize + (intHotBarPadding * 2))
 		pnlHotBarKeysPanel:SetPos(300 + 20, ScrH() - pnlHotBarKeysPanel:GetTall() - 10)
 		pnlHotBarKeysPanel.Paint = function() end
@@ -75,6 +71,10 @@ local KeyEvents = {}
 local KeyEventsDebug = false
 local KeyEventsDebugChaty = false
 local function ThinkKeyDetect()
+	if IsValid(GAMEMODE.HotBarPanel) then
+		GAMEMODE.HotBarPanel:SetVisible(GAMEMODE.ConVarShowHUD:GetBool())
+	end
+
 	if LocalPlayer().UD_IsChating then return end
 	for i = 1, 130 do
 		KeyEvents[i] = KeyEvents[i] or 0
