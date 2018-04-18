@@ -6,7 +6,7 @@ GM.LastLookPos = nil
 local Player = FindMetaTable("Player")
 function Player:GetIdealCamPos()
 	local vecPosition = self:EyePos()
-	local intDistance = math.Clamp(GAMEMODE.ConVarCameraDistance:GetInt(), 0, 1000) + GAMEMODE.AdditiveCameraDistance
+	local intDistance = math.Clamp(GAMEMODE.ConVarCameraDistance:GetInt(), 50, 200) + GAMEMODE.AdditiveCameraDistance
 	local intEditorRadiants = GAMEMODE.PaperDollEditor.CurrentCamRotation
 	local intEditorDistance = GAMEMODE.PaperDollEditor.CurrentCamDistance
 	if intEditorRadiants or intEditorDistance then
