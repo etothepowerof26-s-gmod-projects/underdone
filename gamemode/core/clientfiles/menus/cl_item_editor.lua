@@ -163,8 +163,8 @@ function PANEL:AddSlotControls()
 		mlcObjectSellector:Clear()
 		mlcObjectSellector:AddChoice(1)
 		mlcObjectSellector:ChooseOptionID(1)
-		if GAMEMODE.PaperDollEnts[LocalPlayer():EntIndex()] && GAMEMODE.PaperDollEnts[LocalPlayer():EntIndex()][data] then
-			for k, v in pairs(GAMEMODE.PaperDollEnts[LocalPlayer():EntIndex()][data].Children or {}) do
+		if GAMEMODE.PaperDollEnts[LocalPlayer():SteamID64()] && GAMEMODE.PaperDollEnts[LocalPlayer():SteamID64()][data] then
+			for k, v in pairs(GAMEMODE.PaperDollEnts[LocalPlayer():SteamID64()][data].Children or {}) do
 				mlcObjectSellector:AddChoice(k + 1)
 			end
 		end

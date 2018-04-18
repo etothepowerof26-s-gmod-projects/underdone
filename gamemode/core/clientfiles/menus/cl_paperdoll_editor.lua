@@ -77,8 +77,8 @@ function GM.PaperDollEditor.OpenPaperDollEditor()
 		mlcObjectSellector:Clear()
 		mlcObjectSellector:AddChoice(1)
 		mlcObjectSellector:ChooseOptionID(1)
-		if GAMEMODE.PaperDollEnts[LocalPlayer():EntIndex()] then
-			for k, v in pairs(GAMEMODE.PaperDollEnts[LocalPlayer():EntIndex()][data].Children or {}) do
+		if GAMEMODE.PaperDollEnts[LocalPlayer():SteamID64()] then
+			for k, v in pairs(GAMEMODE.PaperDollEnts[LocalPlayer():SteamID64()][data].Children or {}) do
 				mlcObjectSellector:AddChoice(k + 1)
 			end
 		end
