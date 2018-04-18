@@ -39,18 +39,18 @@ end
 function GM:CreateWorldProp(strModel, vecPosition, angAngle, entEntity, boolLoad)
 	if SERVER then
 		local tblNewObject = {}
+
+		table.insert(self.MapEntities.WorldProps, tblNewObject)
+		local index = #self.MapEntities.WorldProps
+
 		tblNewObject.SpawnProp = function()
 			local entNewProp = ents.Create(GetPropClass(strModel))
 			tblNewObject.Entity = entNewProp
+			self:UpdateWorldProp(index, strModel, vecPosition, angAngle, entNewProp)
 			entNewProp:SetSkin(math.random(0, entNewProp:SkinCount()))
 			entNewProp:Spawn()
-
-			return entNewProp
 		end
-
-		local entNewProp = tblNewObject.SpawnProp()
-		table.insert(self.MapEntities.WorldProps, tblNewObject)
-		self:UpdateWorldProp(#self.MapEntities.WorldProps, strModel, vecPosition, angAngle, entNewProp)
+		tblNewObject.SpawnProp()
 
 		return tblNewObject.Entity
 	elseif CLIENT then
