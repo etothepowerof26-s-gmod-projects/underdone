@@ -105,6 +105,8 @@ function SWEP:WeaponAttack()
 			self:SetClip1(self:Clip1() - 1)
 		end
 		local intFireRate = self:GetFireRate(self.WeaponTable.FireRate)
+		if not intFireRate then return end
+		
 		if CLIENT and not isMelee and CurTime() >= (self.NextBulletEffect or 0) then
 			self.Owner:MuzzleFlash()
 			local strEffect = "ShellEject"
