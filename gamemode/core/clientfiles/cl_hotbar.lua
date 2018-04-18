@@ -38,7 +38,7 @@ end
 local function AttemptLoad()
 	if LocalPlayer().Data and LocalPlayer():GetNWBool("Loaded") then
 		local pnlHotBarKeysPanel = vgui.Create("DPanel")
-		GM.HotBarPanel = pnlHotBarKeysPanel
+		GAMEMODE.HotBarPanel = pnlHotBarKeysPanel
 
 		function pnlHotBarKeysPanel:Think()
 			self:SetVisible(GAMEMODE.ConVarShowHUD:GetBool())
