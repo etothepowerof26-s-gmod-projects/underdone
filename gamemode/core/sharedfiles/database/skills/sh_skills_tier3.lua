@@ -18,7 +18,7 @@ function Skill:OnSet(plyPlayer, intSkillLevel, intOldSkillLevel)
 			plyPlayer:SetHealth(math.Clamp(intCurrentHealth + (plyPlayer:GetMaximumHealth() * (intPercent / 100)), 0, plyPlayer:GetMaximumHealth()))
 		end
 	end
-	timer.Create(plyPlayer:EntIndex(), 6, 0, function() fncDoHealth(plyPlayer) end)
+	timer.Create("health: " .. plyPlayer:EntIndex(), 6, 0, function() fncDoHealth(plyPlayer) end)
 end
 Register.Skill(Skill)
 
