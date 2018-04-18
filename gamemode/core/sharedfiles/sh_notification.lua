@@ -31,8 +31,6 @@ end
 if SERVER then
 	local Player = FindMetaTable("Player")
 	function Player:CreateNotification(strMessage)
-		if IsValid(self) then
-			self:ConCommand("UD_AddNotification " .. strMessage)
-		end
+		self:ConCommand("UD_AddNotification " .. strMessage)
 	end
 end

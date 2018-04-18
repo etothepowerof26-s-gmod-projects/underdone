@@ -88,6 +88,8 @@ end
 
 function GM:NotifyAll(strText)
 	for _, ply in ipairs(player.GetAll()) do
+		if not ply.CreateNotification then continue end
+		
 		ply:CreateNotification(strText)
 	end
 end
