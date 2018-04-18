@@ -59,7 +59,7 @@ function PANEL:AddPlayer(pnlParent, ply)
 
 	--Private Messaging
 	local fncPrivateMessage = function()
-		GAMEMODE:DisplayPromt("string", "Private Message", function(strMessage)
+		GAMEMODE:DisplayPrompt("string", "Private Message", function(strMessage)
 			if strMessage == "" or ply:EntIndex() == LocalPlayer():EntIndex() then return end
 			RunConsoleCommand("UD_PrivateMessage", ply:EntIndex(), strMessage)
 		end)

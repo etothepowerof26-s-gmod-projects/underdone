@@ -385,7 +385,7 @@ if CLIENT then
 	function CreateGenericButton(pnlParent, strText)
 		local btnNewButton = vgui.Create("DButton", pnlParent)
 		btnNewButton:SetText(strText)
-		btnNewButton:SetTextColor(color_white)
+		btnNewButton:SetTextColor(Color(200, 200, 200, 255))
 
 		function btnNewButton:Paint(w, h)
 			local clrDrawColor = clrGray

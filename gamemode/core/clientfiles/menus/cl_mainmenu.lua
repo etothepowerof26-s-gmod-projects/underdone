@@ -71,64 +71,62 @@ function GM:OnSpawnMenuClose()
 	if GAMEMODE.ActiveMenu then GAMEMODE.ActiveMenu:Remove() GAMEMODE.ActiveMenu = nil end
 end
 
-GM.AcctivePromt = nil
-function GM:DisplayPromt(strType, strTitle, fncOkPressed, intAmount)
+GM.AcctivePrompt = nil
+function GM:DisplayPrompt(strType, strTitle, fncOkPressed, intAmount)
 	strType = strType or "number"
-	strTitle = strTitle or "Promt "..strType
-	if GAMEMODE.AcctivePromt then GAMEMODE.AcctivePromt:Close() end
-	GAMEMODE.AcctivePromt = nil
-	GAMEMODE.AcctivePromt = CreateGenericFrame(strTitle, false, false)
-	GAMEMODE.AcctivePromt:SetSize(300, 95)
-	GAMEMODE.AcctivePromt:Center()
-	GAMEMODE.AcctivePromt:MakePopup()
-	local btnAcceptButton = CreateGenericButton(GAMEMODE.AcctivePromt, "Accept")
-	btnAcceptButton:SetSize(GAMEMODE.AcctivePromt:GetWide() / 2 - 7.5, 20)
+	strTitle = strTitle or "Prompt " .. strType
+	if GAMEMODE.AcctivePrompt then GAMEMODE.AcctivePrompt:Close() end
+	GAMEMODE.AcctivePrompt = nil
+	GAMEMODE.AcctivePrompt = CreateGenericFrame(strTitle, false, false)
+	GAMEMODE.AcctivePrompt:SetSize(300, 95)
+	GAMEMODE.AcctivePrompt:Center()
+	GAMEMODE.AcctivePrompt:MakePopup()
+	local btnAcceptButton = CreateGenericButton(GAMEMODE.AcctivePrompt, "Accept")
+	btnAcceptButton:SetSize(GAMEMODE.AcctivePrompt:GetWide() / 2 - 7.5, 20)
 	btnAcceptButton:SetPos(5, 70)
-	btnAcceptButton.DoClick = function(btnAcceptButton)
+	btnAcceptButton.DoClick = function()
 		fncOkPressed()
-		GAMEMODE.AcctivePromt:Close()
-		GAMEMODE.AcctivePromt = nil
+		GAMEMODE.AcctivePrompt:Close()
+		GAMEMODE.AcctivePrompt = nil
 	end
-	local btnCancleButton = CreateGenericButton(GAMEMODE.AcctivePromt, "Cancel")
-	btnCancleButton:SetSize(GAMEMODE.AcctivePromt:GetWide() / 2 - 7.5, 20)
-	btnCancleButton:SetPos(GAMEMODE.AcctivePromt:GetWide() / 2 + 2.5, 70)
-	btnCancleButton.DoClick = function(btnCancleButton)
-		GAMEMODE.AcctivePromt:Close()
-		GAMEMODE.AcctivePromt = nil
+	local btnCancleButton = CreateGenericButton(GAMEMODE.AcctivePrompt, "Cancel")
+	btnCancleButton:SetSize(GAMEMODE.AcctivePrompt:GetWide() / 2 - 7.5, 20)
+	btnCancleButton:SetPos(GAMEMODE.AcctivePrompt:GetWide() / 2 + 2.5, 70)
+	btnCancleButton.DoClick = function()
+		GAMEMODE.AcctivePrompt:Close()
+		GAMEMODE.AcctivePrompt = nil
 	end
 	if strType == "number" then
-		local PromtVarPicker = CreateGenericSlider(GAMEMODE.AcctivePromt, "Amount", 1, 1, 0)
-		PromtVarPicker:SetPos(5, 25)
-		PromtVarPicker:SetWide(GAMEMODE.AcctivePromt:GetWide() - 10)
-		PromtVarPicker:SetValue(1)
+		local PromptVarPicker = CreateGenericSlider(GAMEMODE.AcctivePrompt, "Amount", 1, intAmount, 0)
+		PromptVarPicker:SetPos(5, 25)
+		PromptVarPicker:SetWide(GAMEMODE.AcctivePrompt:GetWide() - 10)
 		if type(intAmount) == "string" then intAmount = LocalPlayer().Data.Inventory[intAmount] end
-		PromtVarPicker:SetMax(intAmount)
-		btnAcceptButton.DoClick = function(btnAcceptButton)
-			fncOkPressed(math.Clamp(PromtVarPicker:GetValue(), 1, intAmount))
-			GAMEMODE.AcctivePromt:Close()
-			GAMEMODE.AcctivePromt = nil
+		btnAcceptButton.DoClick = function()
+			fncOkPressed(math.Clamp(PromptVarPicker:GetValue(), 1, intAmount))
+			GAMEMODE.AcctivePrompt:Close()
+			GAMEMODE.AcctivePrompt = nil
 		end
-		btnAcceptButton:SetPos(5, PromtVarPicker:GetTall() + 25 + 5)
-		btnCancleButton:SetPos(GAMEMODE.AcctivePromt:GetWide() / 2 + 2.5, PromtVarPicker:GetTall() + 25 + 5)
-		GAMEMODE.AcctivePromt:SetTall(25 + PromtVarPicker:GetTall() + 5 + btnAcceptButton:GetTall() + 5)
+		btnAcceptButton:SetPos(5, PromptVarPicker:GetTall() + 25 + 5)
+		btnCancleButton:SetPos(GAMEMODE.AcctivePrompt:GetWide() / 2 + 2.5, PromptVarPicker:GetTall() + 25 + 5)
+		GAMEMODE.AcctivePrompt:SetTall(25 + PromptVarPicker:GetTall() + 5 + btnAcceptButton:GetTall() + 5)
 	end
 	if strType == "string" then
-		local txePromtVarPikur = vgui.Create("DTextEntry", GAMEMODE.AcctivePromt)
-		txePromtVarPikur:SetPos(5, 25)
-		txePromtVarPikur:SetWide(GAMEMODE.AcctivePromt:GetWide() - 10)
-		btnAcceptButton.DoClick = function(btnAcceptButton)
-			fncOkPressed(txePromtVarPikur:GetValue())
-			GAMEMODE.AcctivePromt:Close()
-			GAMEMODE.AcctivePromt = nil
+		local txtPromptVarPicker = vgui.Create("DTextEntry", GAMEMODE.AcctivePrompt)
+		txtPromptVarPicker:SetPos(5, 25)
+		txtPromptVarPicker:SetWide(GAMEMODE.AcctivePrompt:GetWide() - 10)
+		btnAcceptButton.DoClick = function()
+			fncOkPressed(txtPromptVarPicker:GetValue())
+			GAMEMODE.AcctivePrompt:Close()
+			GAMEMODE.AcctivePrompt = nil
 		end
-		txePromtVarPikur.OnEnter = btnAcceptButton.DoClick
-		btnAcceptButton:SetPos(5, txePromtVarPikur:GetTall() + 25 + 5)
-		btnCancleButton:SetPos(GAMEMODE.AcctivePromt:GetWide() / 2 + 2.5, txePromtVarPikur:GetTall() + 25 + 5)
-		GAMEMODE.AcctivePromt:SetTall(25 + txePromtVarPikur:GetTall() + 5 + btnAcceptButton:GetTall() + 5)
+		txtPromptVarPicker.OnEnter = btnAcceptButton.DoClick
+		btnAcceptButton:SetPos(5, txtPromptVarPicker:GetTall() + 25 + 5)
+		btnCancleButton:SetPos(GAMEMODE.AcctivePrompt:GetWide() / 2 + 2.5, txtPromptVarPicker:GetTall() + 25 + 5)
+		GAMEMODE.AcctivePrompt:SetTall(25 + txtPromptVarPicker:GetTall() + 5 + btnAcceptButton:GetTall() + 5)
 	end
 	if strType == "none" then
 		btnAcceptButton:SetPos(5, 25)
-		btnCancleButton:SetPos(GAMEMODE.AcctivePromt:GetWide() / 2 + 2.5, 25)
-		GAMEMODE.AcctivePromt:SetTall(25 + btnAcceptButton:GetTall() + 5)
+		btnCancleButton:SetPos(GAMEMODE.AcctivePrompt:GetWide() / 2 + 2.5, 25)
+		GAMEMODE.AcctivePrompt:SetTall(25 + btnAcceptButton:GetTall() + 5)
 	end
 end

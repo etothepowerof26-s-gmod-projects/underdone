@@ -8,7 +8,7 @@ function Player:UpdateInvites(plyInviter, intAddRemove)
 		SendUsrMsg("UD_UpdateInvites", self, {plyInviter, intAddRemove})
 	end
 	if CLIENT and intAddRemove == 1 then
-		GAMEMODE:OpenInvitePromt(plyInviter)
+		GAMEMODE:OpenInvitePrompt(plyInviter)
 	end
 end
 
@@ -46,8 +46,8 @@ function Player:GetAverageSquadLevel()
 end
 
 if CLIENT then
-	function GM:OpenInvitePromt(plyInviter)
-		GAMEMODE:DisplayPromt("none", plyInviter:Nick() .. " wants you to join a party!", function()
+	function GM:OpenInvitePrompt(plyInviter)
+		GAMEMODE:DisplayPrompt("none", plyInviter:Nick() .. " wants you to join a party!", function()
 			RunConsoleCommand("UD_AcceptInvite", plyInviter:EntIndex())
 		end)
 	end

@@ -162,13 +162,13 @@ function PANEL:SetItem(tblItemTable, intAmount, strUseCommand, intCost)
 	if tblItemTable.Slot then self.Slot = tblItemTable.Slot end
 	if strUseCommand == "use" and tblItemTable.Dropable then
 		self.DoDropItem = function()
-			self:RunPromtAmount(tblItemTable, intAmount, "How many to drop", "UD_DropItem")
+			self:RunPromptAmount(tblItemTable, intAmount, "How many to drop", "UD_DropItem")
 		end
 	end
 	if strUseCommand == "use" and tblItemTable.Giveable then
 		self.DoGiveItem = function(plyGivePlayer)
 			if tblItemTable.Stackable or intAmount >= 5 then
-				GAMEMODE:DisplayPromt("number", "How many to give", function(itemamount)
+				GAMEMODE:DisplayPrompt("number", "How many to give", function(itemamount)
 					RunConsoleCommand("UD_GiveItem", tblItemTable.Name, itemamount, plyGivePlayer:EntIndex())
 				end, tblItemTable.Name)
 			else
@@ -184,17 +184,17 @@ function PANEL:SetItem(tblItemTable, intAmount, strUseCommand, intCost)
 	end
 	if strUseCommand == "sell" then
 		self.DoUseItem = function(intAmountToSell)
-			self:RunPromtAmount(tblItemTable, intAmount, "How many to sell", "UD_SellItem", intAmountToSell)
+			self:RunPromptAmount(tblItemTable, intAmount, "How many to sell", "UD_SellItem", intAmountToSell)
 		end
 	end
 	if strUseCommand == "deposit" then
 		self.DoUseItem = function(intAmountToDipostite)
-			self:RunPromtAmount(tblItemTable, intAmount, "How many to deposit", "UD_DipostiteItem", intAmountToDipostite)
+			self:RunPromptAmount(tblItemTable, intAmount, "How many to deposit", "UD_DipostiteItem", intAmountToDipostite)
 		end
 	end
 	if strUseCommand == "withdraw" then
 		self.DoUseItem = function(intAmountToWithdraw)
-			self:RunPromtAmount(tblItemTable, intAmount, "How many to withdraw", "UD_WithdrawItem", intAmountToWithdraw)
+			self:RunPromptAmount(tblItemTable, intAmount, "How many to withdraw", "UD_WithdrawItem", intAmountToWithdraw)
 		end
 	end
 	---------ToolTip---------
@@ -261,9 +261,9 @@ function PANEL:SetItem(tblItemTable, intAmount, strUseCommand, intCost)
 	self:SetRightClick(menuFunc)
 end
 
-function PANEL:RunPromtAmount(tblItemTable, intAmount, strQuestion, strCommand, intCallAmount)
+function PANEL:RunPromptAmount(tblItemTable, intAmount, strQuestion, strCommand, intCallAmount)
 	if (intAmount >= 5) and not intCallAmount then
-		GAMEMODE:DisplayPromt("number", strQuestion, function(intItemAmount)
+		GAMEMODE:DisplayPrompt("number", strQuestion, function(intItemAmount)
 			RunConsoleCommand(strCommand, tblItemTable.Name, intItemAmount)
 		end, intAmount)
 	else
