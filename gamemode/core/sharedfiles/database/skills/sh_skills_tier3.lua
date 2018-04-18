@@ -4,7 +4,7 @@ Skill.PrintName = "Blood Mutation"
 Skill.SkillNeeded = "skill_mechheart"
 Skill.Icon = "icons/item_healthkit"
 Skill.Desc = {}
-Skill.Desc["story"] = "Your blood is purposly infected with a bacteria that heals you."
+Skill.Desc["story"] = "Your blood is purposely infected with a bacteria that heals you."
 Skill.Desc["SkillNeeded"] = "Mech Heart"
 Skill.Desc[1] = "Every 6 seconds your health goes up by 1% of its max amount"
 Skill.Desc[2] = "Every 6 seconds your health goes up by 2% of its max amount"
@@ -18,7 +18,7 @@ function Skill:OnSet(plyPlayer, intSkillLevel, intOldSkillLevel)
 			plyPlayer:SetHealth(math.Clamp(intCurrentHealth + (plyPlayer:GetMaximumHealth() * (intPercent / 100)), 0, plyPlayer:GetMaximumHealth()))
 		end
 	end
-	timer.Create(plyPlayer:EntIndex(), 6, 0, function() fncDoHealth(plyPlayer) end)
+	timer.Create("UD_health " .. plyPlayer:SteamID64(), 6, 0, function() fncDoHealth(plyPlayer) end)
 end
 Register.Skill(Skill)
 
@@ -87,7 +87,7 @@ Skill.PrintName = "Eagle Eye"
 Skill.Icon = "icons/weapon_sniper1"
 Skill.SkillNeeded = "skill_marksman"
 Skill.Desc = {}
-Skill.Desc["story"] = "The sprit of teh eagle flows within you, feel the power."
+Skill.Desc["story"] = "The sprit of the eagle flows within you, feel the power."
 Skill.Desc["SkillNeeded"] = "Marks Man"
 Skill.Desc[1] = "Increase Dexterity by 5"
 Skill.Desc[2] = "Increase Dexterity by 7"
