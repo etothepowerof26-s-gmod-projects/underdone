@@ -38,20 +38,27 @@ end
 local function AttemptLoad()
 	if LocalPlayer().Data and LocalPlayer():GetNWBool("Loaded") then
 		local pnlHotBarKeysPanel = vgui.Create("DPanel")
+		GM.HotBarPanel = pnlHotBarKeysPanel
+
+		function pnlHotBarKeysPanel:Think()
+			self:SetVisible(GAMEMODE.ConVarShowHUD:GetBool())
+		end
+
 		pnlHotBarKeysPanel:SetSize((intHotBarIconSize + intHotBarPadding) * intKeys + intHotBarPadding, intHotBarIconSize + (intHotBarPadding * 2))
 		pnlHotBarKeysPanel:SetPos(300 + 20, ScrH() - pnlHotBarKeysPanel:GetTall() - 10)
 		pnlHotBarKeysPanel.Paint = function() end
 		pnlHotBarKeysPanel.KeysList = CreateGenericList(pnlHotBarKeysPanel, intHotBarPadding, true, false)
 		pnlHotBarKeysPanel.KeysList:SetSize(pnlHotBarKeysPanel:GetWide(), pnlHotBarKeysPanel:GetTall())
+
 		for i = 1, intKeys do
 			local pnlNewSlot = AddKeySlot(pnlHotBarKeysPanel.KeysList, i)
 			GAMEMODE:SetHotBarKey(pnlNewSlot, cookie.GetString("ud_hotbarkeybinds_" .. i), i)
 		end
 		return
 	end
-	timer.Simple(0.1, function() AttemptLoad() end)
+	timer.Simple(0.1, AttemptLoad)
 end
-hook.Add("Initialize", "AttemptLoad", AttemptLoad)
+hook.Add("Initialize", "UD_HotBar_AttemptLoad", AttemptLoad)
 
 function GM:UpdateHotBar()
 	for intKey, tblBoundInfo in pairs(GAMEMODE.HotBarBoundKeys) do
@@ -68,7 +75,7 @@ local KeyEvents = {}
 local KeyEventsDebug = false
 local KeyEventsDebugChaty = false
 local function ThinkKeyDetect()
-	if LocalPlayer().IsChating then return end
+	if LocalPlayer().UD_IsChating then return end
 	for i = 1, 130 do
 		KeyEvents[i] = KeyEvents[i] or 0
 		if input.IsKeyDown(i) then
@@ -93,8 +100,8 @@ local function ThinkKeyDetect()
 		end
 	end
 end
-hook.Add("Think", "ThinkKeyDetect", ThinkKeyDetect)
+hook.Add("Think", "UD_HotBar_ThinkKeyDetect", ThinkKeyDetect)
 
-hook.Add("StartChat", "StartChatIsChatting", function() LocalPlayer().IsChating = true end)
-hook.Add("FinishChat", "FinishChatIsChatting", function() LocalPlayer().IsChating = false end)
-hook.Add("ShutDown", "PlayerSaveShutDown", function() for intKey, tblInfo in pairs(GAMEMODE.HotBarBoundKeys or {}) do cookie.Set("ud_hotbarkeybinds_" .. intKey, tblInfo.Item) end end)
+hook.Add("StartChat", "UD_HotBar_StartChatIsChatting", function() LocalPlayer().UD_IsChating = true end)
+hook.Add("FinishChat", "UD_HotBar_FinishChatIsChatting", function() LocalPlayer().UD_IsChating = false end)
+hook.Add("ShutDown", "UD_HotBar_PlayerSaveShutDown", function() for intKey, tblInfo in pairs(GAMEMODE.HotBarBoundKeys or {}) do cookie.Set("ud_hotbarkeybinds_" .. intKey, tblInfo.Item) end end)

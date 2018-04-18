@@ -4,10 +4,10 @@ GM.Email       = "n/a"
 GM.Website     = "https://github.com/Zeni44/underdone"
 
 GM.MonsterViewDistance = 200
-GM.RelationHate        = 1
-GM.RelationFear        = 2
-GM.RelationLike        = 3
-GM.RelationNeutral     = 4
+GM.RelationHate        = D_HT
+GM.RelationFear        = D_FR
+GM.RelationLike        = D_LI
+GM.RelationNeutral     = D_NU
 GM.AuctionsPerPage     = 20
 
 Register    = {}

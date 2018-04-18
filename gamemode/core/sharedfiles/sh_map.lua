@@ -18,7 +18,6 @@ function GM:RemoveSpawnPoint(intKey)
 	end
 end
 function GM:UpdateSpawnPoint(intKey, vecPosition, angAngle, strNPC, intLevel, intSpawnTime)
-	local tblNPCTable = NPCTable(strNPC)
 	local tblToUpdateSpawn = GAMEMODE.MapEntities.NPCSpawnPoints[intKey]
 	if tblToUpdateSpawn then
 		tblToUpdateSpawn.Position = vecPosition or tblToUpdateSpawn.Position
@@ -142,8 +141,8 @@ if SERVER then
 		entNewMonster:SetKeyValue("spawnflags","512")
 		entNewMonster:DrawShadow(false)
 		if tblNPCTable.Weapon then
-			entNewMonster:Give(tblNPCTable.Weapon )
-			entNewMonster:SetKeyValue( "additionalequipment", tblNPCTable.Weapon)
+			entNewMonster:Give(tblNPCTable.Weapon)
+			entNewMonster:SetKeyValue("additionalequipment", tblNPCTable.Weapon)
 			entNewMonster:SetKeyValue("spawnflags","8192")
 		end
 		if tblNPCTable.Accuracy then
@@ -208,10 +207,8 @@ if SERVER then
 				else
 					if not ent.Invincible then entNewMonster:AddEntityRelationship(ent, GAMEMODE.RelationHate, 99) end
 					if not entNewMonster.Invincible and ent:IsNPC() then ent:AddEntityRelationship(entNewMonster, GAMEMODE.RelationHate, 99)  end
-					if ent:IsPlayer() and not GAMEMODE.EventHasStarted then
-						if intLevel < ent:GetLevel() then
-							entNewMonster:AddEntityRelationship(ent, GAMEMODE.RelationNeutral, 99)
-						end
+					if ent:IsPlayer() and not GAMEMODE.EventHasStarted and intLevel < ent:GetLevel() then
+						entNewMonster:AddEntityRelationship(ent, GAMEMODE.RelationNeutral, 99)
 					end
 				end
 			end
@@ -221,7 +218,7 @@ if SERVER then
 	end
 
 	if game.SinglePlayer() then
-		function OnPlayerSpawnMapEditor(ply)
+		local function OnPlayerSpawnMapEditor(ply)
 			for key, spawnPoint in pairs(GAMEMODE.MapEntities.NPCSpawnPoints) do
 				GAMEMODE:UpdateSpawnPoint(key)
 			end
@@ -231,7 +228,7 @@ if SERVER then
 				end)
 			end
 		end
-		hook.Add("PlayerSpawn", "OnPlayerSpawnMapEditor", OnPlayerSpawnMapEditor)
+		hook.Add("PlayerSpawn", "UD_OnPlayerSpawnMapEditor", OnPlayerSpawnMapEditor)
 
 		concommand.Add("UD_Dev_EditMap_CreateSpawnPoint", function(ply, command, args)
 			if not ply:IsAdmin() or not ply:IsPlayer() then return end
@@ -251,7 +248,7 @@ if SERVER then
 		concommand.Add("UD_Dev_EditMap_CreateWorldProp", function(ply, command, args)
 			if not ply:IsAdmin() or not ply:IsPlayer() then return end
 			local trcEyeTrace = ply:GetEyeTraceNoCursor()
-			local entNewEnt = GAMEMODE:CreateWorldProp(nil, trcEyeTrace.HitPos)
+			GAMEMODE:CreateWorldProp(nil, trcEyeTrace.HitPos)
 		end)
 		concommand.Add("UD_Dev_EditMap_RemoveWorldProp", function(ply, command, args)
 			if not ply:IsAdmin() or not ply:IsPlayer() then return end
@@ -272,25 +269,21 @@ if SERVER then
 			GAMEMODE:SaveMapObjects()
 		end)
 	end
-end
-
-if CLIENT then
-	if game.SinglePlayer() then
-		usermessage.Hook("UD_UpdateSpawnPoint", function(usrMsg)
-			GAMEMODE:UpdateSpawnPoint(usrMsg:ReadLong(), usrMsg:ReadVector(), usrMsg:ReadAngle(), usrMsg:ReadString(), usrMsg:ReadLong(), usrMsg:ReadLong())
-			GAMEMODE.MapEditor.UpatePanel()
-		end)
-		usermessage.Hook("UD_RemoveSpawnPoint", function(usrMsg)
-			GAMEMODE:RemoveSpawnPoint(usrMsg:ReadLong())
-			GAMEMODE.MapEditor.UpatePanel()
-		end)
-		usermessage.Hook("UD_UpdateWorldProp", function(usrMsg)
-			GAMEMODE:UpdateWorldProp(usrMsg:ReadLong(), usrMsg:ReadString(), usrMsg:ReadVector(), usrMsg:ReadAngle(), usrMsg:ReadEntity())
-			GAMEMODE.MapEditor.UpatePanel()
-		end)
-		usermessage.Hook("UD_RemoveWorldProp", function(usrMsg)
-			GAMEMODE:RemoveWorldProp(usrMsg:ReadLong())
-			GAMEMODE.MapEditor.UpatePanel()
-		end)
-	end
+elseif CLIENT and game.SinglePlayer() then
+	usermessage.Hook("UD_UpdateSpawnPoint", function(usrMsg)
+		GAMEMODE:UpdateSpawnPoint(usrMsg:ReadLong(), usrMsg:ReadVector(), usrMsg:ReadAngle(), usrMsg:ReadString(), usrMsg:ReadLong(), usrMsg:ReadLong())
+		GAMEMODE.MapEditor.UpatePanel()
+	end)
+	usermessage.Hook("UD_RemoveSpawnPoint", function(usrMsg)
+		GAMEMODE:RemoveSpawnPoint(usrMsg:ReadLong())
+		GAMEMODE.MapEditor.UpatePanel()
+	end)
+	usermessage.Hook("UD_UpdateWorldProp", function(usrMsg)
+		GAMEMODE:UpdateWorldProp(usrMsg:ReadLong(), usrMsg:ReadString(), usrMsg:ReadVector(), usrMsg:ReadAngle(), usrMsg:ReadEntity())
+		GAMEMODE.MapEditor.UpatePanel()
+	end)
+	usermessage.Hook("UD_RemoveWorldProp", function(usrMsg)
+		GAMEMODE:RemoveWorldProp(usrMsg:ReadLong())
+		GAMEMODE.MapEditor.UpatePanel()
+	end)
 end
