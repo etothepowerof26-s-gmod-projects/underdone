@@ -188,8 +188,8 @@ function PANEL:SetItem(tblItemTable, intAmount, strUseCommand, intCost)
 		end
 	end
 	if strUseCommand == "deposit" then
-		self.DoUseItem = function(intAmountToDipostite)
-			self:RunPromptAmount(tblItemTable, intAmount, "How many to deposit", "UD_DipostiteItem", intAmountToDipostite)
+		self.DoUseItem = function(intAmountToDeposit)
+			self:RunPromptAmount(tblItemTable, intAmount, "How many to deposit", "UD_DepositItem", intAmountToDeposit)
 		end
 	end
 	if strUseCommand == "withdraw" then
@@ -244,7 +244,7 @@ function PANEL:SetItem(tblItemTable, intAmount, strUseCommand, intCost)
 		if strUseCommand == "buy" and self.DoUseItem then GAMEMODE.ActiveMenu:AddOption("Buy", function() self.DoUseItem() end) end
 		if strUseCommand == "sell" and intCost > 0 and self.DoUseItem then GAMEMODE.ActiveMenu:AddOption("Sell", function() self.DoUseItem() end) end
 		if strUseCommand == "sell" and intCost > 0 and intAmount > 1 then GAMEMODE.ActiveMenu:AddOption("Sell All", function() self.DoUseItem(intAmount) end) end
-		if strUseCommand == "deposit" and self.DoUseItem then GAMEMODE.ActiveMenu:AddOption("deposit", function() self.DoUseItem() end) end
+		if strUseCommand == "deposit" and self.DoUseItem then GAMEMODE.ActiveMenu:AddOption("Deposit", function() self.DoUseItem() end) end
 		if strUseCommand == "withdraw" and self.DoUseItem then GAMEMODE.ActiveMenu:AddOption("Withdraw", function() self.DoUseItem() end) end
 		if strUseCommand == "use" and tblItemTable.Dropable then GAMEMODE.ActiveMenu:AddOption("Drop", function() self.DoDropItem() end) end
 		if strUseCommand == "use" and tblItemTable.Giveable and player.GetCount() > 1 then
