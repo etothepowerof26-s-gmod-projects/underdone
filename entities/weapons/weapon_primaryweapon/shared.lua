@@ -112,20 +112,7 @@ function SWEP:WeaponAttack()
 		end
 		local intFireRate = self:GetFireRate(self.WeaponTable.FireRate)
 		if not intFireRate then return end
-		
-		if CLIENT and not isMelee and CurTime() >= (self.NextBulletEffect or 0) then
-			self.Owner:MuzzleFlash()
-			local strEffect = "ShellEject"
-			if self.WeaponTable.AmmoType == "buckshot" then strEffect = "ShotgunShellEject" end
-			local effectdata = EffectData()
-			effectdata:SetOrigin(GAMEMODE.PaperDollEnts[self.Owner:SteamID64()]["slot_primaryweapon"]:GetPos())
-			effectdata:SetAngles(GAMEMODE.PaperDollEnts[self.Owner:SteamID64()]["slot_primaryweapon"]:GetAngles() + Angle(0, 90, 0))
-			effectdata:SetEntity(self)
-			effectdata:SetMagnitude(1)
-			effectdata:SetScale(1)
-			util.Effect(strEffect, effectdata)
-			self.NextBulletEffect = CurTime() + (1 / intFireRate)
-		end
+	
 		if SERVER then
 			self.Owner:SlowDown((1 / intFireRate))
 		end
