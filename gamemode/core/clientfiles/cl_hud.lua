@@ -74,7 +74,7 @@ function GM:HUDPaint()
 end
 
 function GM:DrawQuestToDoList()
-	local intYOffset = 20
+	local intYOffset = 200
 	local intPadding = 13
 	local intQuestNumber = 0
 	if not LocalPlayer().Data then return end
@@ -83,10 +83,10 @@ function GM:DrawQuestToDoList()
 			local tblQuestTable = QuestTable(strQuest)
 			local intXOffset = ScrW() - 200
 			if intQuestNumber == 0 then
-				draw.SimpleTextOutlined("Quest Todo list", "Trebuchet24", intXOffset - 20, intYOffset, clrWhite, 0, 1, 1, clrDrakGray)
+				draw.SimpleTextOutlined("Quest Todo list", "Trebuchet24", intXOffset - 20, intYOffset, clrBlue, 0, 1, 1, clrDrakGray)
 				intYOffset = intYOffset + intPadding + 7
 			end
-			draw.SimpleTextOutlined(tblQuestTable.PrintName, "Trebuchet22", intXOffset, intYOffset, clrWhite, 0, 1, 1, clrDrakGray)
+			draw.SimpleTextOutlined(tblQuestTable.PrintName, "Trebuchet22", intXOffset, intYOffset, clrBlue, 0, 1, 1, clrDrakGray)
 			intYOffset = intYOffset + intPadding + 5
 			intXOffset = intXOffset + 20
 			for strNPC, intAmount in pairs(tblInfo.Kills or {}) do
