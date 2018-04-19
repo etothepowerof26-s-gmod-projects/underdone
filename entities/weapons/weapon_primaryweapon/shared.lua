@@ -76,10 +76,15 @@ end
 
 function SWEP:WeaponAttack()
 
-	self.Owner:DoAttackEvent()
+	local isMelee = self.WeaponTable.Melee
+
+	if isMelee then
+		self.Owner:DoAnimationEvent(ACT_HL2MP_GESTURE_RANGE_ATTACK_MELEE)
+	else
+		self.Owner:DoAttackEvent()
+	end
 
 	if self.WeaponTable then
-		local isMelee = self.WeaponTable.Melee
 		local intRange = self.Owner:GetEyeTrace().HitPos:Distance(self.Owner:GetEyeTrace().StartPos)
 		local intMaxRange = 4000
 		if isMelee then intMaxRange = 70 end
