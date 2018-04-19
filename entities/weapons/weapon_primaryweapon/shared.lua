@@ -21,7 +21,7 @@ function SWEP:SetWeapon(tblWeapon)
 	if tblWeapon then
 		self.WeaponTable = tblWeapon
 		self:SetNWString("item", self.WeaponTable.Name)
-		self:SetWeaponHoldType(self.WeaponTable.HoldType)
+		self:SetHoldType(self.WeaponTable.HoldType)
 		return true
 	end
 	return false
@@ -49,6 +49,7 @@ function SWEP:Reload()
 		if (game.SinglePlayer() and SERVER) or (not game.SinglePlayer() and CLIENT) then
 			if self.WeaponTable.ReloadSound then self:EmitSound(self.WeaponTable.ReloadSound) end
 		end
+		self.Owner:DoReloadEvent()
 		timer.Simple(self.WeaponTable.ReloadTime, function()
 			if not self or not IsValid(self.Owner) or not self.Owner:Alive() then return end
 			self.Owner:RemoveAmmo(self.WeaponTable.ClipSize - self:Clip1(), self.WeaponTable.AmmoType)
@@ -74,9 +75,9 @@ function SWEP:SecondaryAttack()
 end
 
 function SWEP:WeaponAttack()
-	if SERVER then 
-		self.Owner:RestartGesture(self.Owner:Weapon_TranslateActivity(ACT_HL2MP_GESTURE_RANGE_ATTACK))
-	end
+
+	self.Owner:DoAttackEvent()
+
 	if self.WeaponTable then
 		local isMelee = self.WeaponTable.Melee
 		local intRange = self.Owner:GetEyeTrace().HitPos:Distance(self.Owner:GetEyeTrace().StartPos)
