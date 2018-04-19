@@ -77,42 +77,54 @@ function GM:DrawQuestToDoList()
 	local intYOffset = 200
 	local intPadding = 13
 	local intQuestNumber = 0
+	local NameColour = clrWhite
 	if not LocalPlayer().Data then return end
 	for strQuest, tblInfo in pairs(LocalPlayer().Data.Quests or {}) do
 		if LocalPlayer():GetQuest(strQuest) and not LocalPlayer():HasCompletedQuest(strQuest) then
 			local tblQuestTable = QuestTable(strQuest)
 			local intXOffset = ScrW() - 200
-			if intQuestNumber == 0 then
-				draw.SimpleTextOutlined("Quest Todo list", "Trebuchet24", intXOffset - 20, intYOffset, clrBlue, 0, 1, 1, clrDrakGray)
-				intYOffset = intYOffset + intPadding + 7
+			if tblQuestTable.Level then
+				if LocalPlayer():GetLevel() > tblQuestTable.Level then
+					NameColour = clrBlue
+				end
 			end
-			draw.SimpleTextOutlined(tblQuestTable.PrintName, "Trebuchet22", intXOffset, intYOffset, clrBlue, 0, 1, 1, clrDrakGray)
+			if LocalPlayer():CanTurnInQuest(strQuest) then
+				surface.SetDrawColor(255, 255, 255, 255)
+				surface.SetMaterial(Material("gui/accept"))
+				surface.DrawTexturedRect(intXOffset - 20, intYOffset - 8, 16, 16)
+			end
+			draw.SimpleTextOutlined(tblQuestTable.PrintName, "Trebuchet20", intXOffset, intYOffset, NameColour, 0, 1, 1, clrDrakGray)
 			intYOffset = intYOffset + intPadding + 5
 			intXOffset = intXOffset + 20
 			for strNPC, intAmount in pairs(tblInfo.Kills or {}) do
-				if not NPCTable(strNPC) then return end
+				if !NPCTable(strNPC) then return end
+				draw.SimpleTextOutlined(".", "Trebuchet20", intXOffset - 8, intYOffset - 5, clrwhite, 0, 1, 1, clrDrakGray)
 				if intAmount < tblQuestTable.Kill[strNPC] then
-					draw.SimpleTextOutlined("Kill " .. NPCTable(strNPC).PrintName .. ": " .. intAmount .. "/" .. tblQuestTable.Kill[strNPC], "Trebuchet18", intXOffset, intYOffset, clrWhite, 0, 1, 1, clrDrakGray)
+					draw.SimpleTextOutlined("Kill " .. NPCTable(strNPC).PrintName .. " (" .. intAmount .. "/" .. tblQuestTable.Kill[strNPC] .. ")", "Trebuchet18", intXOffset, intYOffset, clrWhite, 0, 1, 1, clrDrakGray)
 					intYOffset = intYOffset + intPadding
-				end
-				for _, NPC in pairs(ents.FindByClass("npc_"..strNPC)) do
-					if not NPC.HasWayPoint and not LocalPlayer():CanTurnInQuest(strQuest) then
-						NPC.HasWayPoint = true
-						local vPoint = NPC:GetPos()
-						WayPoint = EffectData()
-						WayPoint:SetStart( vPoint )
-						WayPoint:SetOrigin( vPoint )
-						WayPoint:SetEntity(NPC)
-						WayPoint:SetScale( 1 )
-						util.Effect( "selection_ring", WayPoint )
+					for _, NPC in pairs(ents.FindByClass("npc_" .. strNPC)) do
+						if not NPC.HasWayPoint and not LocalPlayer():CanTurnInQuest(strQuest) then
+							NPC.HasWayPoint = true
+							local vPoint = NPC:GetPos()
+							WayPoint = EffectData()
+							WayPoint:SetStart( vPoint )
+							WayPoint:SetOrigin( vPoint )
+							WayPoint:SetEntity(NPC)
+							WayPoint:SetScale( 1 )
+							util.Effect( "selection_ring", WayPoint )
+						end
 					end
+				else
+					draw.SimpleTextOutlined("Kill " .. NPCTable(strNPC).PrintName .. " (" .. tblQuestTable.Kill[strNPC] .. "/" .. tblQuestTable.Kill[strNPC] .. ")", "Trebuchet18", intXOffset, intYOffset, clrWhite, 0, 1, 1, clrDrakGray)
+					intYOffset = intYOffset + intPadding
 				end
 			end
 			for strItem, intAmountNeeded in pairs(tblQuestTable.ObtainItems or {}) do
 				local intItemsGot = LocalPlayer():GetItem(strItem) or 0
 				local tblItemTable = ItemTable(strItem)
+				draw.SimpleTextOutlined(".", "Trebuchet20", intXOffset - 8, intYOffset - 5, clrwhite, 0, 1, 1, clrDrakGray)
 				if intItemsGot < intAmountNeeded then
-					draw.SimpleTextOutlined(tblItemTable.PrintName .. ": " .. intItemsGot .. "/" .. intAmountNeeded, "Trebuchet18", intXOffset, intYOffset, clrWhite, 0, 1, 1, clrDrakGray)
+					draw.SimpleTextOutlined(tblItemTable.PrintName .. " (" .. intItemsGot .. "/" .. intAmountNeeded .. ")", "Trebuchet18", intXOffset, intYOffset, clrWhite, 0, 1, 1, clrDrakGray)
 					intYOffset = intYOffset + intPadding
 					for _,prop in pairs(ents.FindByClass("prop_physics")) do
 						if IsValid(prop) and tblItemTable.Model == prop:GetModel() then
@@ -128,14 +140,10 @@ function GM:DrawQuestToDoList()
 							end
 						end
 					end
+				else
+					draw.SimpleTextOutlined(tblItemTable.PrintName .. " (" .. intAmountNeeded .. "/" .. intAmountNeeded .. ")", "Trebuchet18", intXOffset, intYOffset, clrWhite, 0, 1, 1, clrDrakGray)
+					intYOffset = intYOffset + intPadding
 				end
-			end
-			if LocalPlayer():CanTurnInQuest(strQuest) then
-				surface.SetDrawColor(255, 255, 255, 255)
-				surface.SetMaterial(done)
-				surface.DrawTexturedRect(intXOffset - 20, intYOffset - 8, 16, 16)
-				draw.SimpleTextOutlined("Return to npc", "Trebuchet18", intXOffset, intYOffset, clrWhite, 0, 1, 1, clrDrakGray)
-				intYOffset = intYOffset + intPadding
 			end
 			intYOffset = intYOffset + 10
 			intQuestNumber = intQuestNumber + 1

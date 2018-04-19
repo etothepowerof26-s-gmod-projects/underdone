@@ -18,6 +18,12 @@ surface.CreateFont("Trebuchet22", {
 	weight = 900,
 })
 
+surface.CreateFont("Trebuchet20", {
+	font = "Trebuchet MS",
+	size = 20,
+	weight = 900,
+})
+
 surface.CreateFont("DefaultFixedOutline", {
 	font = "Lucida Console",
 	size = 10,
