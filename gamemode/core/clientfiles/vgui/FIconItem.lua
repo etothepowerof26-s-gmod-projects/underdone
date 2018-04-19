@@ -170,7 +170,7 @@ function PANEL:SetItem(tblItemTable, intAmount, strUseCommand, intCost)
 			if tblItemTable.Stackable or intAmount >= 5 then
 				GAMEMODE:DisplayPrompt("number", "How many to give", function(itemamount)
 					RunConsoleCommand("UD_GiveItem", tblItemTable.Name, itemamount, plyGivePlayer:EntIndex())
-				end, tblItemTable.Name)
+				end, intAmount)
 			else
 				RunConsoleCommand("UD_GiveItem", tblItemTable.Name, 1, plyGivePlayer:EntIndex())
 			end
@@ -247,10 +247,10 @@ function PANEL:SetItem(tblItemTable, intAmount, strUseCommand, intCost)
 		if strUseCommand == "deposit" and self.DoUseItem then GAMEMODE.ActiveMenu:AddOption("deposit", function() self.DoUseItem() end) end
 		if strUseCommand == "withdraw" and self.DoUseItem then GAMEMODE.ActiveMenu:AddOption("Withdraw", function() self.DoUseItem() end) end
 		if strUseCommand == "use" and tblItemTable.Dropable then GAMEMODE.ActiveMenu:AddOption("Drop", function() self.DoDropItem() end) end
-		if strUseCommand == "use" and tblItemTable.Giveable and #player.GetAll() > 1 then
+		if strUseCommand == "use" and tblItemTable.Giveable and player.GetCount() > 1 then
 			local GiveSubMenu = nil
-			for _, player in pairs(player.GetAll()) do
-				if player:GetPos():Distance(LocalPlayer():GetPos()) < 250 and player ~= LocalPlayer() then
+			for _, player in ipairs(player.GetAll()) do
+				if player:GetPos():DistToSqr(LocalPlayer():GetPos()) < 62500 and player ~= LocalPlayer() then
 					GiveSubMenu = GiveSubMenu or GAMEMODE.ActiveMenu:AddSubMenu("Give ...")
 					GiveSubMenu:AddOption(player:Nick(), function() self.DoGiveItem(player) end)
 				end

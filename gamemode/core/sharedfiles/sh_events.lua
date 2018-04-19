@@ -1,5 +1,7 @@
 function GM:StartEvent(strEvent)
 	local tblEventTable = EventTable(strEvent)
+	assert(tblEventTable, "event doesn't exist")
+	
 	for index, tblNPCAttack in pairs(tblEventTable.NPCAttack or {}) do
 		if not tblNPCAttack then return end
 		timer.Simple(tblNPCAttack.Spawntime, function() GAMEMODE:TimerSpawnNPC(tblNPCAttack) end)
