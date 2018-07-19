@@ -1,54 +1,54 @@
-local intHotBarPadding = 1
-local intHotBarIconSize = 39
-local intKeys = 9
+local HotBarPadding = 1
+local HotBarIconSize = 39
+local Keys = 9
 GM.HotBarBoundKeys = {}
-function GM:SetHotBarKey(pnlKeyIcon, strItem, intNewKey)
-	local tblItemTable = ItemTable(strItem)
-	if not tblItemTable then return end
-	for intKey, tblBoundInfo in pairs(GAMEMODE.HotBarBoundKeys or {}) do
-		if tblBoundInfo.Item == strItem then
-			tblBoundInfo.Panel:SetItem(nil, intKey, "none")
-			tblBoundInfo.Panel:SetAlpha(255)
-			GAMEMODE.HotBarBoundKeys[intKey] = {Panel = pnlKeyIcon, Item = nil}
+function GM:SetHotBarKey(KeyIcon, Item, NewKey)
+	local ItemTable = ItemTable(Item)
+	if not ItemTable then return end
+	for Key, BoundInfo in pairs(GAMEMODE.HotBarBoundKeys or {}) do
+		if BoundInfo.Item == Item then
+			BoundInfo.Panel:SetItem(nil, Key, "none")
+			BoundInfo.Panel:SetAlpha(255)
+			GAMEMODE.HotBarBoundKeys[Key] = {Panel = KeyIcon, Item = nil}
 		end
 	end
-	pnlKeyIcon:SetItem(tblItemTable, intNewKey, "none")
-	if LocalPlayer():GetItem(strItem) <= 0 then
-		pnlKeyIcon:SetAlpha(100)
+	KeyIcon:SetItem(ItemTable, NewKey, "none")
+	if LocalPlayer():GetItem(Item) <= 0 then
+		KeyIcon:SetAlpha(100)
 	else
-		pnlKeyIcon:SetAlpha(255)
+		KeyIcon:SetAlpha(255)
 	end
-	GAMEMODE.HotBarBoundKeys[intNewKey] = {Panel = pnlKeyIcon, Item = strItem}
+	GAMEMODE.HotBarBoundKeys[NewKey] = {Panel = KeyIcon, Item = Item}
 end
 
-local function AddKeySlot(pnlParent, intKey)
-	local icnItem = vgui.Create("FIconItem", pnlParent)
-	icnItem:SetSize(intHotBarIconSize, intHotBarIconSize)
-	icnItem:SetText(intKey)
-	icnItem.FromHotBar = true
-	icnItem:SetDropedOn(function()
+local function AddKeySlot(Parent, Key)
+	local Item = vgui.Create("FIconItem", Parent)
+	Item:SetSize(HotBarIconSize, HotBarIconSize)
+	Item:SetText(Key)
+	Item.FromHotBar = true
+	Item:SetDropedOn(function()
 		if GAMEMODE.DraggingPanel and GAMEMODE.DraggingPanel.Item and (GAMEMODE.DraggingPanel.FromInventory or GAMEMODE.DraggingPanel.FromHotBar) then
-			GAMEMODE:SetHotBarKey(icnItem, GAMEMODE.DraggingPanel.Item, intKey)
+			GAMEMODE:SetHotBarKey(Item, GAMEMODE.DraggingPanel.Item, Key)
 		end
 	end)
-	pnlParent:AddItem(icnItem)
-	return icnItem
+	Parent:AddItem(Item)
+	return Item
 end
 
 local function AttemptLoad()
 	if LocalPlayer().Data and LocalPlayer():GetNWBool("Loaded") then
-		local pnlHotBarKeysPanel = vgui.Create("DPanel")
-		GAMEMODE.HotBarPanel = pnlHotBarKeysPanel
+		local HotBarKeysPanel = vgui.Create("DPanel")
+		GAMEMODE.HotBarPanel = HotBarKeysPanel
 
-		pnlHotBarKeysPanel:SetSize((intHotBarIconSize + intHotBarPadding) * intKeys + intHotBarPadding, intHotBarIconSize + (intHotBarPadding * 2))
-		pnlHotBarKeysPanel:SetPos(300 + 20, ScrH() - pnlHotBarKeysPanel:GetTall() - 10)
-		pnlHotBarKeysPanel.Paint = function() end
-		pnlHotBarKeysPanel.KeysList = CreateGenericList(pnlHotBarKeysPanel, intHotBarPadding, true, false)
-		pnlHotBarKeysPanel.KeysList:SetSize(pnlHotBarKeysPanel:GetWide(), pnlHotBarKeysPanel:GetTall())
+		HotBarKeysPanel:SetSize((HotBarIconSize + HotBarPadding) * Keys + HotBarPadding, HotBarIconSize + (HotBarPadding * 2))
+		HotBarKeysPanel:SetPos(300 + 20, ScrH() - HotBarKeysPanel:GetTall() - 10)
+		HotBarKeysPanel.Paint = function() end
+		HotBarKeysPanel.KeysList = CreateGenericList(HotBarKeysPanel, HotBarPadding, true, false)
+		HotBarKeysPanel.KeysList:SetSize(HotBarKeysPanel:GetWide(), HotBarKeysPanel:GetTall())
 
-		for i = 1, intKeys do
-			local pnlNewSlot = AddKeySlot(pnlHotBarKeysPanel.KeysList, i)
-			GAMEMODE:SetHotBarKey(pnlNewSlot, cookie.GetString("ud_hotbarkeybinds_" .. i), i)
+		for i = 1, Keys do
+			local NewSlot = AddKeySlot(HotBarKeysPanel.KeysList, i)
+			GAMEMODE:SetHotBarKey(NewSlot, cookie.GetString("ud_hotbarkeybinds_" .. i), i)
 		end
 		return
 	end
@@ -57,14 +57,14 @@ end
 hook.Add("Initialize", "UD_HotBar_AttemptLoad", AttemptLoad)
 
 function GM:UpdateHotBar()
-	for intKey, tblBoundInfo in pairs(GAMEMODE.HotBarBoundKeys) do
-		GAMEMODE:SetHotBarKey(tblBoundInfo.Panel, tblBoundInfo.Item, intKey)
+	for Key, BoundInfo in pairs(GAMEMODE.HotBarBoundKeys) do
+		GAMEMODE:SetHotBarKey(BoundInfo.Panel, BoundInfo.Item, Key)
 	end
 end
 
-local function DoKeyRelease(intKey)
-	if GAMEMODE.HotBarBoundKeys[tonumber(intKey) - 1] then
-		RunConsoleCommand("UD_UseItem", GAMEMODE.HotBarBoundKeys[intKey - 1].Item)
+local function DoKeyRelease(Key)
+	if GAMEMODE.HotBarBoundKeys[tonumber(Key) - 1] then
+		RunConsoleCommand("UD_UseItem", GAMEMODE.HotBarBoundKeys[Key - 1].Item)
 	end
 end
 local KeyEvents = {}
@@ -104,4 +104,4 @@ hook.Add("Think", "UD_HotBar_ThinkKeyDetect", ThinkKeyDetect)
 
 hook.Add("StartChat", "UD_HotBar_StartChatIsChatting", function() LocalPlayer().UD_IsChating = true end)
 hook.Add("FinishChat", "UD_HotBar_FinishChatIsChatting", function() LocalPlayer().UD_IsChating = false end)
-hook.Add("ShutDown", "UD_HotBar_PlayerSaveShutDown", function() for intKey, tblInfo in pairs(GAMEMODE.HotBarBoundKeys or {}) do cookie.Set("ud_hotbarkeybinds_" .. intKey, tblInfo.Item) end end)
+hook.Add("ShutDown", "UD_HotBar_PlayerSaveShutDown", function() for Key, Info in pairs(GAMEMODE.HotBarBoundKeys or {}) do cookie.Set("ud_hotbarkeybinds_" .. Key, Info.Item) end end)

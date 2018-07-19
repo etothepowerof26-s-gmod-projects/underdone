@@ -217,9 +217,9 @@ function GM:DrawLevelBar()
 end
 
 function GM:DrawAmmoBar()
-	local entActiveWeapon = LocalPlayer():GetActiveWeapon()
-	local CurrentClip = entActiveWeapon:Clip1()
-	local WeaponTable = entActiveWeapon.WeaponTable or {}
+	local ActiveWeapon = LocalPlayer():GetActiveWeapon()
+	local CurrentClip = ActiveWeapon:Clip1()
+	local WeaponTable = ActiveWeapon.WeaponTable or {}
 	local AmmoType = WeaponTable.AmmoType or "none"
 	local BarColor = Blue
 	self.AmmoBar = jdraw.NewProgressBar(self.PlayerBox, true)
