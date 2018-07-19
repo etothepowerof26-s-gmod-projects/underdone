@@ -38,16 +38,16 @@ include("core/sharedfiles/database/items/sh_items_base.lua")
 include("core/sh_resource.lua")
 
 GM.TranslateColor = {}
-GM.TranslateColor["green"]  = clrGreen
-GM.TranslateColor["orange"] = clrOrange
-GM.TranslateColor["purple"] = clrPurple
-GM.TranslateColor["blue"]   = clrBlue
-GM.TranslateColor["red"]    = clrRed
-GM.TranslateColor["tan"]    = clrTan
-GM.TranslateColor["white"]  = clrWhite
+GM.TranslateColor["green"]  = Green
+GM.TranslateColor["orange"] = Orange
+GM.TranslateColor["purple"] = Purple
+GM.TranslateColor["blue"]   = Blue
+GM.TranslateColor["red"]    = Red
+GM.TranslateColor["tan"]    = Tan
+GM.TranslateColor["white"]  = White
 
-function GM:GetColor(strColorName)
-	return GAMEMODE.TranslateColor[strColorName] or clrWhite
+function GM:GetColor(ColorName)
+	return GAMEMODE.TranslateColor[ColorName] or White
 end
 
 -- Disable new scoreboard

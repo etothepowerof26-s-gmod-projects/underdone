@@ -1,137 +1,137 @@
 jdraw = {}
-local matGradiantDown = Material("gui/gradient_down")
-local matGradiantUp = Material("gui/gradient_up")
+local GradiantDown = Material("gui/gradient_down")
+local GradiantUp = Material("gui/gradient_up")
 
-function jdraw.NewPanel(tblParent, boolCopyStyle)
-	local tblNewPanel = {}
-	tblNewPanel.Position = {}
-	tblNewPanel.Position.X = 0
-	if tblParent then tblNewPanel.Position.X = tblParent.Position.X end
-	tblNewPanel.Position.Y = 0
-	if tblParent then tblNewPanel.Position.Y = tblParent.Position.Y end
-	tblNewPanel.Size = {}
-	tblNewPanel.Size.Width = 0
-	tblNewPanel.Size.Height = 0
-	function tblNewPanel:SetDimensions(intX, intY, intWidth, intHeight)
-		if tblParent then
-			tblNewPanel.Position.X = tblParent.Position.X + intX
-			tblNewPanel.Position.Y = tblParent.Position.Y + intY
+function jdraw.NewPanel(Parent, CopyStyle)
+	local NewPanel = {}
+	NewPanel.Position = {}
+	NewPanel.Position.X = 0
+	if Parent then NewPanel.Position.X = Parent.Position.X end
+	NewPanel.Position.Y = 0
+	if Parent then NewPanel.Position.Y = Parent.Position.Y end
+	NewPanel.Size = {}
+	NewPanel.Size.Width = 0
+	NewPanel.Size.Height = 0
+	function NewPanel:SetDimensions(X, Y, Width, Height)
+		if Parent then
+			NewPanel.Position.X = Parent.Position.X + X
+			NewPanel.Position.Y = Parent.Position.Y + Y
 		else
-			tblNewPanel.Position.X = intX
-			tblNewPanel.Position.Y = intY
+			NewPanel.Position.X = X
+			NewPanel.Position.Y = Y
 		end
-		tblNewPanel.Size.Width = intWidth
-		tblNewPanel.Size.Height = intHeight
+		NewPanel.Size.Width = Width
+		NewPanel.Size.Height = Height
 	end
-	tblNewPanel.Radius = 0
-	if tblParent and boolCopyStyle then tblNewPanel.Radius = tblParent.Radius end
-	tblNewPanel.Color = Color(255, 255, 255, 255)
-	if tblParent and boolCopyStyle then tblNewPanel.Color = tblParent.Color end
-	function tblNewPanel:SetStyle(intRadius, clrColor)
-		tblNewPanel.Radius = intRadius
-		tblNewPanel.Color = clrColor
+	NewPanel.Radius = 0
+	if Parent and CopyStyle then NewPanel.Radius = Parent.Radius end
+	NewPanel.Color = Color(255, 255, 255, 255)
+	if Parent and CopyStyle then NewPanel.Color = Parent.Color end
+	function NewPanel:SetStyle(Radius, Color)
+		NewPanel.Radius = Radius
+		NewPanel.Color = Color
 	end
-	tblNewPanel.Border = 0
-	if tblParent and boolCopyStyle then tblNewPanel.Border = tblParent.Border end
-	tblNewPanel.BorderColor = Color(255, 255, 255, 255)
-	if tblParent and boolCopyStyle then tblNewPanel.BorderColor = tblParent.BorderColor end
-	function tblNewPanel:SetBorder(intBorder, clrBorderColor)
-		tblNewPanel.Border = intBorder
-		tblNewPanel.BorderColor = clrBorderColor
+	NewPanel.Border = 0
+	if Parent and CopyStyle then NewPanel.Border = Parent.Border end
+	NewPanel.BorderColor = Color(255, 255, 255, 255)
+	if Parent and CopyStyle then NewPanel.BorderColor = Parent.BorderColor end
+	function NewPanel:SetBorder(Border, BorderColor)
+		NewPanel.Border = Border
+		NewPanel.BorderColor = BorderColor
 	end
-	return tblNewPanel
+	return NewPanel
 end
 
-function jdraw.DrawPanel(tblPanelTable)
-	local intRadius = tblPanelTable.Radius or 0
-	local intBorder = tblPanelTable.Border or 0
-	local intX, intY = tblPanelTable.Position.X, tblPanelTable.Position.Y
-	local intWidth, intHeight = tblPanelTable.Size.Width, tblPanelTable.Size.Height
-	if tblPanelTable.Border > 0 then
-		draw.RoundedBox(intRadius, intX, intY, intWidth, intHeight, tblPanelTable.BorderColor)
-		draw.RoundedBox(intRadius, intX + intBorder, intY + intBorder, intWidth - (intBorder * 2), intHeight - (intBorder * 2), tblPanelTable.Color)
+function jdraw.DrawPanel(PanelTable)
+	local Radius = PanelTable.Radius or 0
+	local Border = PanelTable.Border or 0
+	local X, Y = PanelTable.Position.X, PanelTable.Position.Y
+	local Width, Height = PanelTable.Size.Width, PanelTable.Size.Height
+	if PanelTable.Border > 0 then
+		draw.RoundedBox(Radius, X, Y, Width, Height, PanelTable.BorderColor)
+		draw.RoundedBox(Radius, X + Border, Y + Border, Width - (Border * 2), Height - (Border * 2), PanelTable.Color)
 	else
-		draw.RoundedBox(intRadius, intX, intY, intWidth, intHeight, tblPanelTable.Color)
+		draw.RoundedBox(Radius, X, Y, Width, Height, PanelTable.Color)
 	end
 end
 
-function jdraw.NewProgressBar(tblParent, boolCopyStyle)
-	local tblNewPanel = jdraw.NewPanel(tblParent, boolCopyStyle)
-	tblNewPanel.Value = 0
-	tblNewPanel.MaxValue = 0
-	function tblNewPanel:SetValue(intValue, intMaxValue)
-		tblNewPanel.Value = intValue
-		tblNewPanel.MaxValue = intMaxValue or 0
+function jdraw.NewProgressBar(Parent, CopyStyle)
+	local NewPanel = jdraw.NewPanel(Parent, CopyStyle)
+	NewPanel.Value = 0
+	NewPanel.MaxValue = 0
+	function NewPanel:SetValue(Value, MaxValue)
+		NewPanel.Value = Value
+		NewPanel.MaxValue = MaxValue or 0
 	end
-	tblNewPanel.Font = "Default"
-	tblNewPanel.Text = ""
-	tblNewPanel.TextColor = Color(255, 255, 255, 255)
-	function tblNewPanel:SetText(strFont, strText, clrtextColor)
-		tblNewPanel.Font = strFont
-		tblNewPanel.Text = strText
-		tblNewPanel.TextColor = clrtextColor
+	NewPanel.Font = "Default"
+	NewPanel.Text = ""
+	NewPanel.TextColor = Color(255, 255, 255, 255)
+	function NewPanel:SetText(Font, Text, TextColor)
+		NewPanel.Font = Font
+		NewPanel.Text = Text
+		NewPanel.TextColor = TextColor
 	end
-	return tblNewPanel
+	return NewPanel
 end
 
-function jdraw.DrawProgressBar(tblPanelTable)
-	local intRadius = tblPanelTable.Radius or 0
-	local intBorder = tblPanelTable.Border or 0
-	local intX, intY = tblPanelTable.Position.X, tblPanelTable.Position.Y
-	local intWidth, intHeight = tblPanelTable.Size.Width, tblPanelTable.Size.Height
-	local intValue = tblPanelTable.Value
-	local intMaxValue = tblPanelTable.MaxValue
-	local intBarWidth = ((intWidth - (intBorder * 2)) / intMaxValue) * intValue
-	local strText = tblPanelTable.Text
-	if intRadius > intBarWidth then intRadius = 1 end
-	draw.RoundedBox(intRadius, intX, intY, intWidth, intHeight, tblPanelTable.BorderColor)
-	draw.RoundedBox(intRadius, intX + intBorder, intY + intBorder, intWidth  - (intBorder * 2), intHeight - (intBorder * 2), clrGray)
+function jdraw.DrawProgressBar(PanelTable)
+	local Radius = PanelTable.Radius or 0
+	local Border = PanelTable.Border or 0
+	local X, Y = PanelTable.Position.X, PanelTable.Position.Y
+	local Width, Height = PanelTable.Size.Width, PanelTable.Size.Height
+	local Value = PanelTable.Value
+	local MaxValue = PanelTable.MaxValue
+	local BarWidth = ((Width - (Border * 2)) / MaxValue) * Value
+	local Text = PanelTable.Text
+	if Radius > BarWidth then Radius = 1 end
+	draw.RoundedBox(Radius, X, Y, Width, Height, PanelTable.BorderColor)
+	draw.RoundedBox(Radius, X + Border, Y + Border, Width  - (Border * 2), Height - (Border * 2), Gray)
 	surface.SetDrawColor(0, 0, 0, 70)
-	surface.SetMaterial(matGradiantDown)
-	surface.DrawTexturedRect(intX, intY, intWidth, intHeight)
-	if intValue > 0 then
-		draw.RoundedBox(intRadius, intX + intBorder, intY + intBorder, intBarWidth, intHeight - (intBorder * 2), tblPanelTable.Color)
+	surface.SetMaterial(GradiantDown)
+	surface.DrawTexturedRect(X, Y, Width, Height)
+	if Value > 0 then
+		draw.RoundedBox(Radius, X + Border, Y + Border, BarWidth, Height - (Border * 2), PanelTable.Color)
 		surface.SetDrawColor(0, 0, 0, 100)
-		surface.SetMaterial(matGradiantUp)
-		surface.DrawTexturedRect(intX + intBorder, intY + intBorder, intBarWidth, intHeight - (intBorder * 2))
+		surface.SetMaterial(GradiantUp)
+		surface.DrawTexturedRect(X + Border, Y + Border, BarWidth, Height - (Border * 2))
 	end
-	if strText and strText ~= "" then
-		draw.SimpleText(strText, tblPanelTable.Font, intX + (intWidth / 2), intY + (intHeight / 2), tblPanelTable.TextColor, 1, 1)
+	if Text and Text ~= "" then
+		draw.SimpleText(Text, PanelTable.Font, X + (Width / 2), Y + (Height / 2), PanelTable.TextColor, 1, 1)
 	end
 end
 
-function jdraw.DrawHealthBar(intHealth, intMaxHealth, intX, intY, intWidth, intHeight, strPreHealth)
-	intHealth = math.Clamp(intHealth, 0, 9999)
-	intMaxHealth = intMaxHealth or 100
-	local clrBarColor = clrGreen
-	if intHealth <= (intMaxHealth * 0.2) then clrBarColor = clrRed end
+function jdraw.DrawHealthBar(Health, MaxHealth, X, Y, Width, Height, PreHealth)
+	Health = math.Clamp(Health, 0, math.huge)
+	MaxHealth = MaxHealth or 100
+	local BarColor = Green
+	if Health <= (MaxHealth * 0.2) then BarColor = Red end
 	local tblNewHealthBar = jdraw.NewProgressBar()
-	tblNewHealthBar:SetDimensions(intX, intY, intWidth, intHeight)
-	tblNewHealthBar:SetStyle(4, clrBarColor)
-	tblNewHealthBar:SetBorder(1, clrDrakGray)
-	tblNewHealthBar:SetText("Default", (strPreHealth or "") .. intHealth, clrDrakGray)
-	tblNewHealthBar:SetValue(intHealth, intMaxHealth)
+	tblNewHealthBar:SetDimensions(X, Y, Width, Height)
+	tblNewHealthBar:SetStyle(4, BarColor)
+	tblNewHealthBar:SetBorder(1, DrakGray)
+	tblNewHealthBar:SetText("Default", (PreHealth or "") .. Health, DrakGray)
+	tblNewHealthBar:SetValue(Health, MaxHealth)
 	jdraw.DrawProgressBar(tblNewHealthBar)
 end
 
-function jdraw.DrawIcon(strIcon, intX, intY, intWidth, intHeight)
+function jdraw.DrawIcon(strIcon, X, Y, Width, Height)
 	strIcon = strIcon or "gui/player"
 	surface.SetDrawColor(255, 255, 255, 255)
 	surface.SetMaterial(strIcon)
-	surface.DrawTexturedRect(intX, intY, intWidth, intHeight or intWidth)
+	surface.DrawTexturedRect(X, Y, Width, Height or Width)
 end
 
-function jdraw.QuickDrawPanel(clrColor, intX, intY, intWidth, intHeight)
-	local tblNewPanel = jdraw.NewPanel()
-	tblNewPanel:SetDimensions(intX, intY, intWidth, intHeight or intWidth)
-	tblNewPanel:SetStyle(4, clrColor)
-	tblNewPanel:SetBorder(1, clrDrakGray)
-	jdraw.DrawPanel(tblNewPanel)
+function jdraw.QuickDrawPanel(Color, X, Y, Width, Height)
+	local NewPanel = jdraw.NewPanel()
+	NewPanel:SetDimensions(X, Y, Width, Height or Width)
+	NewPanel:SetStyle(4, Color)
+	NewPanel:SetBorder(1, DrakGray)
+	jdraw.DrawPanel(NewPanel)
 end
 
-function jdraw.QuickDrawGrad(clrColor, intX, intY, intWidth, intHeight, intDir)
-	surface.SetDrawColor(clrColor)
-	surface.SetMaterial(matGradiantUp)
-	if intDir == -1 then surface.SetMaterial(matGradiantDown) end
-	surface.DrawTexturedRect(intX, intY, intWidth, intHeight)
+function jdraw.QuickDrawGrad(Color, X, Y, Width, Height, Dir)
+	surface.SetDrawColor(Color)
+	surface.SetMaterial(GradiantUp)
+	if Dir == -1 then surface.SetMaterial(GradiantDown) end
+	surface.DrawTexturedRect(X, Y, Width, Height)
 end

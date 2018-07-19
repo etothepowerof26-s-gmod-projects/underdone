@@ -1,5 +1,5 @@
 GM.Name        = "underdone"
-GM.Author      = "Polkm, Zeni, Tewntysx, Q2F2"
+GM.Author      = "Polkm, Zeni, TwentySix, Q2F2"
 GM.Email       = "n/a"
 GM.Website     = "https://github.com/Zeni44/underdone"
 
@@ -13,70 +13,63 @@ GM.AuctionsPerPage     = 20
 Register    = {}
 GM.DataBase = {}
 
-clrGray     = Color(097, 095, 090, 255)
-clrDrakGray = Color(043, 042, 039, 255)
-clrGreen    = Color(194, 255, 072, 255)
-clrOrange   = Color(255, 137, 044, 255)
-clrPurple   = Color(135, 081, 201, 255)
-clrBlue     = Color(059, 142, 209, 255)
-clrRed      = Color(191, 075, 037, 255)
-clrTan      = Color(178, 161, 126, 255)
-clrCream    = Color(245, 255, 154, 255)
-clrMooca    = Color(107, 097, 078, 255)
-clrWhite    = Color(242, 242, 242, 255)
+Gray     = Color(097, 095, 090, 255)
+DrakGray = Color(043, 042, 039, 255)
+Green    = Color(194, 255, 072, 255)
+Orange   = Color(255, 137, 044, 255)
+Purple   = Color(135, 081, 201, 255)
+Blue     = Color(059, 142, 209, 255)
+Red      = Color(191, 075, 037, 255)
+Tan      = Color(178, 161, 126, 255)
+Cream    = Color(245, 255, 154, 255)
+Mooca    = Color(107, 097, 078, 255)
+White    = Color(242, 242, 242, 255)
 
 GM.DataBase.Items = {}
-function Register.Item(tblItem) GM.DataBase.Items[tblItem.Name] = tblItem end
-function ItemTable(strItem) return GAMEMODE.DataBase.Items[strItem] end
-
 GM.DataBase.Slots = {}
-function Register.Slot(tblItem) GM.DataBase.Slots[tblItem.Name] = tblItem end
-function SlotTable(strSlot) return GAMEMODE.DataBase.Slots[strSlot] end
-
 GM.DataBase.EquipmentSets = {}
-function Register.EquipmentSet(tblEquipmentSet) GM.DataBase.EquipmentSets[tblEquipmentSet.Name] = tblEquipmentSet end
-function EquipmentSetTable(strEquipmentSet) return GAMEMODE.DataBase.EquipmentSets[strEquipmentSet] end
-
 GM.DataBase.Stats = {}
-local intStatIndex = 1
-function Register.Stat(tblItem)
-	GM.DataBase.Stats[tblItem.Name] = tblItem
-	GM.DataBase.Stats[tblItem.Name].Index = intStatIndex
-	intStatIndex = intStatIndex + 1
-end
-function StatTable(strStat) return GAMEMODE.DataBase.Stats[strStat] end
-
 GM.DataBase.NPCs = {}
-function Register.NPC(tblItem) GM.DataBase.NPCs[tblItem.Name] = tblItem end
-function NPCTable(strNPC) return GAMEMODE.DataBase.NPCs[strNPC] end
-
 GM.DataBase.Shops = {}
-function Register.Shop(tblShop) GM.DataBase.Shops[tblShop.Name] = tblShop end
-function ShopTable(strShop) return GAMEMODE.DataBase.Shops[strShop] end
-
 GM.DataBase.Quests = {}
-function Register.Quest(tblQuest) GM.DataBase.Quests[tblQuest.Name] = tblQuest end
-function QuestTable(strQuest) return GAMEMODE.DataBase.Quests[strQuest] end
-
 GM.DataBase.Skills = {}
-function Register.Skill(tblSkill) GM.DataBase.Skills[tblSkill.Name] = tblSkill end
-function SkillTable(strSkill) return GAMEMODE.DataBase.Skills[strSkill] end
-
 GM.DataBase.Recipes = {}
-function Register.Recipe(tblRecipe) GM.DataBase.Recipes[tblRecipe.Name] = tblRecipe end
-function RecipeTable(strRecipe) return GAMEMODE.DataBase.Recipes[strRecipe] end
-
 GM.DataBase.Masters = {}
-function Register.Master(tblMaster) GM.DataBase.Masters[tblMaster.Name] = tblMaster end
-function MasterTable(strMaster) return GAMEMODE.DataBase.Masters[strMaster] end
-
 GM.DataBase.Events = {}
-function Register.Event(tblEvent) GM.DataBase.Events[tblEvent.Name] = tblEvent end
-function EventTable(strEvent) return GAMEMODE.DataBase.Events[strEvent] end
-
 GM.PlayerModels = {}
-function AddPlayerModel(strModel)
-	GM.PlayerModels[strModel] = true
+
+local StatIndex = 1
+
+function Register.Item(Item) GM.DataBase.Items[Item.Name] = Item end
+function Register.Slot(Item) GM.DataBase.Slots[Item.Name] = Item end
+function Register.EquipmentSet(EquipmentSet) GM.DataBase.EquipmentSets[EquipmentSet.Name] = EquipmentSet end
+function Register.Stat(Item)
+	GM.DataBase.Stats[Item.Name] = Item
+	GM.DataBase.Stats[Item.Name].Index = StatIndex
+	StatIndex = StatIndex + 1
+end
+function Register.NPC(Item) GM.DataBase.NPCs[Item.Name] = Item end
+function Register.Shop(Shop) GM.DataBase.Shops[Shop.Name] = Shop end
+function Register.Quest(Quest) GM.DataBase.Quests[Quest.Name] = Quest end
+function Register.Skill(Skill) GM.DataBase.Skills[Skill.Name] = Skill end
+function Register.Recipe(Recipe) GM.DataBase.Recipes[Recipe.Name] = Recipe end
+function Register.Master(Master) GM.DataBase.Masters[Master.Name] = Master end
+function Register.Event(Event) GM.DataBase.Events[Event.Name] = Event end
+
+function ItemTable(Item) return GAMEMODE.DataBase.Items[Item] end
+function SlotTable(Slot) return GAMEMODE.DataBase.Slots[Slot] end
+function EquipmentSetTable(EquipmentSet) return GAMEMODE.DataBase.EquipmentSets[EquipmentSet] end
+function StatTable(Stat) return GAMEMODE.DataBase.Stats[Stat] end
+function NPCTable(NPC) return GAMEMODE.DataBase.NPCs[NPC] end
+function ShopTable(Shop) return GAMEMODE.DataBase.Shops[Shop] end
+function QuestTable(Quest) return GAMEMODE.DataBase.Quests[Quest] end
+function SkillTable(Skill) return GAMEMODE.DataBase.Skills[Skill] end
+function RecipeTable(Recipe) return GAMEMODE.DataBase.Recipes[Recipe] end
+function MasterTable(Master) return GAMEMODE.DataBase.Masters[Master] end
+function EventTable(Event) return GAMEMODE.DataBase.Events[Event] end
+
+function AddPlayerModel(Model)
+	GM.PlayerModels[Model] = true
 end
 
 -- Citizen
