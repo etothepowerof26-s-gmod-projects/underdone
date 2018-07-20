@@ -11,7 +11,7 @@ PANEL.Shop = nil
 
 function PANEL:Init()
 	self.Frame = CreateGenericFrame("Shop Menu", false, true)
-	self.Frame.btnClose.DoClick = function(btn)
+	self.Frame.Close.DoClick = function()
 		GAMEMODE.ShopMenu.Frame:Close()
 		GAMEMODE.ShopMenu = nil
 	end
@@ -24,7 +24,7 @@ function PANEL:Init()
 		end
 	end
 	GAMEMODE:AddHoverObject(self.ShopInventoryPanel)
-	GAMEMODE:AddHoverObject(self.ShopInventoryPanel.pnlCanvas, self.ShopInventoryPanel)
+	GAMEMODE:AddHoverObject(self.ShopInventoryPanel.Canvas, self.ShopInventoryPanel)
 
 	self.WeightBar = CreateGenericWeightBar(self.Frame, LocalPlayer().Weight or 0, LocalPlayer():GetMaxWeight())
 	self.PlayerInventoryPanel = CreateGenericList(self.Frame, self.ItemIconPadding, true, true)
@@ -34,55 +34,55 @@ function PANEL:Init()
 		end
 	end
 	GAMEMODE:AddHoverObject(self.PlayerInventoryPanel)
-	GAMEMODE:AddHoverObject(self.PlayerInventoryPanel.pnlCanvas, self.PlayerInventoryPanel)
+	GAMEMODE:AddHoverObject(self.PlayerInventoryPanel.Canvas, self.PlayerInventoryPanel)
 
 	self:PerformLayout()
 end
 
-function PANEL:LoadShop(strShop)
-	self.Shop = self.Shop or strShop
-	local tblShopTable = ShopTable(self.Shop)
-	if tblShopTable then
-		self.Frame:SetTitle(tblShopTable.PrintName)
+function PANEL:LoadShop(Shop)
+	self.Shop = self.Shop or Shop
+	local ShopTable = ShopTable(self.Shop)
+	if ShopTable then
+		self.Frame:SetTitle(ShopTable.PrintName)
 		self.ShopInventoryPanel:Clear()
-		for strItem, tblInfo in pairs(tblShopTable.Inventory or {}) do
-			self:AddItem(self.ShopInventoryPanel, strItem, 1, "buy", tblInfo.Price or LocalPlayer():GetItemBuyPrice(strItem))
+		for Item, Info in pairs(ShopTable.Inventory or {}) do
+			self:AddItem(self.ShopInventoryPanel, Item, 1, "buy", Info.Price or LocalPlayer():GetItemBuyPrice(Item))
 		end
 	else
-		ErrorNoHalt("missing shop for '" .. tostring(strShop) .. "'")
+		ErrorNoHalt("missing shop for '" .. tostring(Shop) .. "'")
 	end
 end
 
 function PANEL:LoadPlayer()
 	self.WeightBar:Update(LocalPlayer().Weight or 0)
-	local tblInventory = LocalPlayer().Data.Inventory or {}
+	local Inventory = LocalPlayer().Data.Inventory or {}
 	self.PlayerInventoryPanel:Clear()
-	if tblInventory["money"] and tblInventory["money"] > 0 then
-		self:AddItem(self.PlayerInventoryPanel, "money", tblInventory["money"], "sell")
+	if Inventory["money"] and Inventory["money"] > 0 then
+		self:AddItem(self.PlayerInventoryPanel, "money", Inventory["money"], "sell")
 	end
-	for strItem, intAmount in pairs(tblInventory) do
-		if intAmount > 0 and strItem ~= "money" then
-			local tblItemTable = ItemTable(strItem)
-			self:AddItem(self.PlayerInventoryPanel, strItem, intAmount, "sell", tblItemTable.SellPrice)
+	for Item, Amount in pairs(Inventory) do
+		if Amount > 0 and Item ~= "money" then
+			local ItemTable = ItemTable(Item)
+			self:AddItem(self.PlayerInventoryPanel, Item, Amount, "sell", ItemTable.SellPrice)
 		end
 	end
 end
 
-function PANEL:AddItem(lstAddList, item, amount, strCommand, intCost)
-	local tblItemTable = ItemTable(item)
-	if tblItemTable then
-		local intListItems = 1
-		if not tblItemTable.Stackable then intListItems = amount or 1 end
-		if strCommand == "sell" and table.HasValue(LocalPlayer().Data.Paperdoll or {}, item) then intListItems = intListItems - 1 end
-		if tblItemTable.QuestNeeded and not LocalPlayer():HasCompletedQuest(tblItemTable.QuestNeeded) then return end
-		for i = 1, intListItems do
-			local icnItem = vgui.Create("FIconItem")
-			icnItem:SetSize(self.ItemIconSize, self.ItemIconSize)
-			icnItem:SetItem(tblItemTable, amount, strCommand or "use", intCost or 0)
-			if strCommand == "buy" and not LocalPlayer():HasItem("money", intCost) then
-				icnItem:SetAlpha(100)
+function PANEL:AddItem(AddList, item, amount, Command, Cost)
+	local ItemTable = ItemTable(item)
+	if ItemTable then
+		local ListItems = 1
+		if not ItemTable.Stackable then ListItems = amount or 1 end
+		if Command == "sell" and table.HasValue(LocalPlayer().Data.Paperdoll or {}, item) then ListItems = ListItems - 1 end
+		if ItemTable.QuestNeeded and not LocalPlayer():HasCompletedQuest(ItemTable.QuestNeeded) then return end
+		for i = 1, ListItems do
+			local Item = vgui.Create("FIconItem")
+			Item:SetSize(self.ItemIconSize, self.ItemIconSize)
+			Item:SetItem(ItemTable, amount, Command or "use", Cost or 0)
+			if Command == "buy" and not LocalPlayer():HasItem("money", Cost) then
+				Item:SetAlpha(100)
 			end
-			lstAddList:AddItem(icnItem)
+			AddList:AddItem(Item)
 		end
 	else
 		ErrorNoHalt("missing item for '" .. tostring(self.Shop) .. "', '" .. tostring(item) .. "'")
@@ -108,8 +108,8 @@ vgui.Register("shopmenu", PANEL, "Panel")
 
 concommand.Add("UD_OpenShopMenu", function(ply, command, args)
 	local npc = ply:GetEyeTrace().Entity
-	local tblNPCTable = NPCTable(npc:GetNWString("npc"))
-	if not IsValid(npc) or not tblNPCTable or not tblNPCTable.Shop then return end
+	local NPCTable = NPCTable(npc:GetNWString("npc"))
+	if not IsValid(npc) or not NPCTable or not NPCTable.Shop then return end
 	GAMEMODE.ShopMenu = GAMEMODE.ShopMenu or vgui.Create("shopmenu")
 	GAMEMODE.ShopMenu:SetSize(505, 300)
 	GAMEMODE.ShopMenu:Center()

@@ -7,16 +7,16 @@ function PANEL:Init()
 	self.LeftList = CreateGenericList(self.Frame, 10, 1, 0)
 	self.RightList = CreateGenericList(self.Frame, 1, 1, 0)
 
-	self.Frame.btnClose = vgui.Create("DButton", self.Frame)
-	self.Frame.btnClose:SetFont("Marlett")
-	self.Frame.btnClose:SetText("r")
-	self.Frame.btnClose.DoClick = function(pnlPanel)
+	self.Frame.Close = vgui.Create("DButton", self.Frame)
+	self.Frame.Close:SetFont("Marlett")
+	self.Frame.Close:SetText("r")
+	self.Frame.Close.DoClick = function(Panel)
 		GAMEMODE.AppearanceMenu.Frame:Close()
 		GAMEMODE.AppearanceMenu = nil
 	end
 
-	self.Frame.btnClose.Paint = function()
-		jdraw.QuickDrawPanel(clrGray, 20,20, self.Frame.btnClose:GetWide() - 1, self.Frame.btnClose:GetTall() - 1)
+	self.Frame.Close.Paint = function()
+		jdraw.QuickDrawPanel(clrGray, 20,20, self.Frame.Close:GetWide() - 1, self.Frame.Close:GetTall() - 1)
 	end
 
 	self.ViewPlayerModel = vgui.Create( "DModelPanel" )
@@ -47,7 +47,7 @@ end
 function PANEL:PerformLayout()
 	self.Frame:SetPos(self:GetPos())
 	self.Frame:SetSize(self:GetSize())
-	self.Frame.btnClose:SetPos(self.Frame:GetWide() - 5, 0)
+	self.Frame.Close:SetPos(self.Frame:GetWide() - 5, 0)
 
 	self.LeftList:SetPos(5, 25)
 	self.LeftList:SetSize((self.Frame:GetWide() /2) - 10, self.Frame:GetTall() - 30)
@@ -64,8 +64,8 @@ vgui.Register("Appearancemenu", PANEL, "Panel")
 
 concommand.Add("UD_OpenAppearanceMenu", function(ply, command, args)
 	local npc = ply:GetEyeTrace().Entity
-	local tblNPCTable = NPCTable(npc:GetNWString("npc"))
-	if not IsValid(npc) or not tblNPCTable or not tblNPCTable.Appearance then return end
+	local NPCTable = NPCTable(npc:GetNWString("npc"))
+	if not IsValid(npc) or not NPCTable or not NPCTable.Appearance then return end
 	-- if ply:GetPos():Distance(npc:GetPos()) > 100 then return end
 	GAMEMODE.AppearanceMenu = GAMEMODE.AppearanceMenu or vgui.Create("Appearancemenu")
 	GAMEMODE.AppearanceMenu:SetSize(520, 459)
