@@ -23,7 +23,7 @@ function Entity:AddItem(strItem, intAmount)
 	self.Data.Inventory[strItem] = self.Data.Inventory[strItem] + intAmount
 	self.Weight = self.Weight + (tblItemTable.Weight * intAmount)
 	if SERVER and self:GetClass() == "player" then
-		SendUsrMsg("UD_UpdateItem", self, {strItem, intAmount})
+		SendNetworkMessage("UD_UpdateItem", self, {strItem, intAmount})
 		self:SaveGame()
 	end
 	if CLIENT then
@@ -89,7 +89,7 @@ end
 
 
 if CLIENT then
-	usermessage.Hook("UD_UpdateItem", function(usrMsg)
-		LocalPlayer():AddItem(usrMsg:ReadString(), usrMsg:ReadLong())
+	net.Receive("UD_UpdateItem", function()
+		LocalPlayer():AddItem(net.ReadString(), net.ReadInt(16))
 	end)
 end
