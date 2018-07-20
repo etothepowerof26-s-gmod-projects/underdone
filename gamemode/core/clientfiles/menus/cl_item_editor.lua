@@ -52,7 +52,7 @@ if not game.SinglePlayer() then return end
 local PANEL = {}
 function PANEL:Init()
 	self.Frame = CreateGenericFrame("Item Editor", true, true)
-	self.Frame.Close.DoClick = function(Panel)
+	self.Frame.CloseButton.DoClick = function(Panel)
 		GAMEMODE.ItemEditor.Frame:Close()
 		GAMEMODE.ItemEditor = nil
 		GAMEMODE.ItemEditorSettings.CurrentCamRotation = nil

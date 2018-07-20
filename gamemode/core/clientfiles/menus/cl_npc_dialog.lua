@@ -3,13 +3,13 @@ PANEL = {}
 
 function PANEL:Init()
 	self.Frame = CreateGenericFrame("Npc Dialog", true, true)
-	self.Frame.Close.DoClick = function(Panel)
+	self.Frame.CloseButton.DoClick = function(Panel)
 		GAMEMODE.Dialog.Frame:Close()
 		GAMEMODE.Dialog = nil
 	end
 	self.Frame:MakePopup()
 	self.TextList = CreateGenericList(self.Frame, 5, false, true)
-	self.Dialog = CreateGenericLabel(nil, nil, "", clrDrakGray)
+	self.Dialog = CreateGenericLabel(nil, nil, "", DrakGray)
 	self.TextList:AddItem(self.Dialog)
 	self:PerformLayout()
 end

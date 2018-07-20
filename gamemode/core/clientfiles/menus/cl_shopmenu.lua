@@ -11,7 +11,7 @@ PANEL.Shop = nil
 
 function PANEL:Init()
 	self.Frame = CreateGenericFrame("Shop Menu", false, true)
-	self.Frame.Close.DoClick = function()
+	self.Frame.CloseButton.DoClick = function()
 		GAMEMODE.ShopMenu.Frame:Close()
 		GAMEMODE.ShopMenu = nil
 	end

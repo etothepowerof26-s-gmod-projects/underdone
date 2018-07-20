@@ -3,7 +3,7 @@ PANEL = {}
 
 function PANEL:Init()
 	self.Frame = CreateGenericFrame("Book", true, true)
-	self.Frame.Close.DoClick = function(Panel)
+	self.Frame.CloseButton.DoClick = function(Panel)
 		GAMEMODE.ReadMenu.Frame:Close()
 		GAMEMODE.ReadMenu = nil
 	end

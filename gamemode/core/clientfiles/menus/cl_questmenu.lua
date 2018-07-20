@@ -7,7 +7,7 @@ PANEL.ItemIconSize = 39
 
 function PANEL:Init()
 	self.Frame = CreateGenericFrame("Quest Menu", false, true)
-	self.Frame.Close.DoClick = function()
+	self.Frame.CloseButton.DoClick = function()
 		GAMEMODE.QuestMenu.Frame:Close()
 		GAMEMODE.QuestMenu = nil
 	end

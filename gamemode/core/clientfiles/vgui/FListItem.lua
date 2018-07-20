@@ -32,8 +32,6 @@ function PANEL:Init()
 	self:SetColor(Gray)
 	self.NameText = "Test"
 	self.DescText = ""
-	self.ExpandedSize = 50
-	self.HeaderSize = 18
 	--RightClick Dectection--
 	self:SetMouseInputEnabled(true)
 	self.OnMousePressed = function(self,mousecode) self:MouseCapture(true) end
@@ -48,6 +46,9 @@ function PANEL:Init()
 end
 
 function PANEL:PerformLayout()
+	self.ExpandedSize = 50
+	self.HeaderSize = 18
+	
 	if self.Expanded then self:SetSize(self:GetWide(), self.ExpandedSize) end
 	if not self.Expanded then self:SetSize(self:GetWide(), self.HeaderSize) end
 	if self.CommonButton then
@@ -180,6 +181,9 @@ function PANEL:SetItemIcon(Item, Text, AvatarSize)
 end
 
 function PANEL:AddContent(Item)
+	self.ExpandedSize = 50
+	self.HeaderSize = 18
+	
 	if not self.ContentList then
 		self.ContentList = vgui.Create("DPanelList", self)
 		self.ContentList:SetSpacing(1)

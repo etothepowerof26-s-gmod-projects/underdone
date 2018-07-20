@@ -8,7 +8,7 @@ PANEL.ItemRow = 7
 
 function PANEL:Init()
 	self.Frame = CreateGenericFrame("Bank Menu", false, true)
-	self.Frame.Close.DoClick = function()
+	self.Frame.CloseButton.DoClick = function()
 		GAMEMODE.BankMenu.Frame:Close()
 		GAMEMODE.BankMenu = nil
 	end
