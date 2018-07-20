@@ -33,58 +33,58 @@ GM.MapEditor.Models[22] = "models/props/cs_italy/it_mkt_table3.mdl"
 if not game.SinglePlayer() then return end
 
 function GM.MapEditor.OpenMapEditor()
-	local frmMapEditorFrame = CreateGenericFrame("Map Editor", true, true)
-	frmMapEditorFrame:SetPos(50, 50)
-	frmMapEditorFrame:SetSize(375, 450)
-	frmMapEditorFrame:MakePopup()
-	frmMapEditorFrame.btnClose.DoClick = function(btn)
-		frmMapEditorFrame:Close()
+	local MapEditorFrame = CreateGenericFrame("Map Editor", true, true)
+	MapEditorFrame:SetPos(50, 50)
+	MapEditorFrame:SetSize(375, 450)
+	MapEditorFrame:MakePopup()
+	MapEditorFrame.Close.DoClick = function()
+		MapEditorFrame:Close()
 		GAMEMODE.MapEditor.Open = false
 	end
 
-	local pnlControlsList = CreateGenericList(frmMapEditorFrame, 5, false, true)
-	pnlControlsList:SetPos(5, 55)
-	pnlControlsList:SetSize(frmMapEditorFrame:GetWide() - 10, frmMapEditorFrame:GetTall() - 60)
+	local ControlsList = CreateGenericList(MapEditorFrame, 5, false, true)
+	ControlsList:SetPos(5, 55)
+	ControlsList:SetSize(MapEditorFrame:GetWide() - 10, MapEditorFrame:GetTall() - 60)
 
-	local mchObjectSetList = vgui.Create("DComboBox", frmMapEditorFrame)
-	local wngObjects = vgui.Create("DNumberWang", frmMapEditorFrame)
-	GAMEMODE.MapEditor.ObjectsList = wngObjects
+	local ObjectSetList = vgui.Create("DComboBox", MapEditorFrame)
+	local Objects = vgui.Create("DNumberWang", MapEditorFrame)
+	GAMEMODE.MapEditor.ObjectsList = Objects
 
-	mchObjectSetList:SetPos(75, 30)
-	mchObjectSetList:SetSize(frmMapEditorFrame:GetWide() - 135, 20)
-	for key, sets in pairs(GAMEMODE.MapEditor.ObjectSets) do mchObjectSetList:AddChoice(key) end
-	mchObjectSetList.OnSelect = function(index, value, data)
+	ObjectSetList:SetPos(75, 30)
+	ObjectSetList:SetSize(MapEditorFrame:GetWide() - 135, 20)
+	for key, sets in pairs(GAMEMODE.MapEditor.ObjectSets) do ObjectSetList:AddChoice(key) end
+	ObjectSetList.OnSelect = function(index, value, data)
 		GAMEMODE.MapEditor.CurrentObjectSet = GAMEMODE.MapEditor.ObjectSets[data]
 		GAMEMODE.MapEditor.CurrentObjectNum = 0
 		GAMEMODE.MapEditor.UpatePanel()
-		pnlControlsList:Clear()
+		ControlsList:Clear()
 	end
 
-	wngObjects:SetPos(frmMapEditorFrame:GetWide() - 55, 30)
-	wngObjects:SetSize(50, 20)
-	wngObjects:SetDecimals(0)
-	wngObjects:SetMin(1)
-	wngObjects:SetMax(1)
+	Objects:SetPos(MapEditorFrame:GetWide() - 55, 30)
+	Objects:SetSize(50, 20)
+	Objects:SetDecimals(0)
+	Objects:SetMin(1)
+	Objects:SetMax(1)
 	if GAMEMODE.MapEditor.CurrentObjectSet then
-		wngObjects:SetMax(#GAMEMODE.MapEditor.CurrentObjectSet)
+		Objects:SetMax(#GAMEMODE.MapEditor.CurrentObjectSet)
 	end
-	wngObjects.OnValueChanged = function(pnlPanel, intIndex)
-		intIndex = math.Round(intIndex)
-		if GAMEMODE.MapEditor.CurrentObjectSet and GAMEMODE.MapEditor.CurrentObjectSet[tonumber(intIndex)] then
-			GAMEMODE.MapEditor.CurrentObjectNum = tonumber(intIndex)
+	Objects.OnValueChanged = function(Panel, Index)
+		Index = math.Round(Index)
+		if GAMEMODE.MapEditor.CurrentObjectSet and GAMEMODE.MapEditor.CurrentObjectSet[tonumber(Index)] then
+			GAMEMODE.MapEditor.CurrentObjectNum = tonumber(Index)
 			if GAMEMODE.MapEditor.CurrentObjectSet == GAMEMODE.MapEntities.NPCSpawnPoints then
-				GAMEMODE.MapEditor.AddSpawnPointControls(pnlControlsList)
+				GAMEMODE.MapEditor.AddSpawnPointControls(ControlsList)
 			elseif GAMEMODE.MapEditor.CurrentObjectSet == GAMEMODE.MapEntities.WorldProps then
-				GAMEMODE.MapEditor.AddWorldPropControls(pnlControlsList)
+				GAMEMODE.MapEditor.AddWorldPropControls(ControlsList)
 			end
-			LocalPlayer():SetEyeAngles((GAMEMODE.MapEditor.CurrentObjectSet[tonumber(intIndex)].Position - LocalPlayer():GetShootPos()):Angle())
+			LocalPlayer():SetEyeAngles((GAMEMODE.MapEditor.CurrentObjectSet[tonumber(Index)].Position - LocalPlayer():GetShootPos()):Angle())
 		end
 	end
 
 	local function SaveMap() RunConsoleCommand("UD_Dev_EditMap_SaveMap") end
-	local btnSaveButton = CreateGenericImageButton(frmMapEditorFrame, "icon16/disk_multiple.png", "Save Map", SaveMap)
-	btnSaveButton:SetPos(7, 32)
-	btnSaveButton:SetSize(16, 16)
+	local SaveButton = CreateGenericImageButton(MapEditorFrame, "icon16/disk_multiple.png", "Save Map", SaveMap)
+	SaveButton:SetPos(7, 32)
+	SaveButton:SetSize(16, 16)
 
 	local function AddObject()
 		GAMEMODE.MapEditor.CurrentObjectNum = #GAMEMODE.MapEditor.CurrentObjectSet + 1
@@ -94,21 +94,21 @@ function GM.MapEditor.OpenMapEditor()
 			RunConsoleCommand("UD_Dev_EditMap_CreateWorldProp")
 		end
 	end
-	local btnNewSpawnButton = CreateGenericImageButton(frmMapEditorFrame, "icon16/brick_add.png", "New Object", AddObject)
-	btnNewSpawnButton:SetPos(32, 32)
-	btnNewSpawnButton:SetSize(16, 16)
+	local NewSpawnButton = CreateGenericImageButton(MapEditorFrame, "icon16/brick_add.png", "New Object", AddObject)
+	NewSpawnButton:SetPos(32, 32)
+	NewSpawnButton:SetSize(16, 16)
 
 	local function RemoveObject()
-		pnlControlsList:Clear()
+		ControlsList:Clear()
 		if GAMEMODE.MapEditor.CurrentObjectSet == GAMEMODE.MapEntities.NPCSpawnPoints then
 			RunConsoleCommand("UD_Dev_EditMap_RemoveSpawnPoint", GAMEMODE.MapEditor.CurrentObjectNum)
 		elseif GAMEMODE.MapEditor.CurrentObjectSet == GAMEMODE.MapEntities.WorldProps then
 			RunConsoleCommand("UD_Dev_EditMap_RemoveWorldProp", GAMEMODE.MapEditor.CurrentObjectNum)
 		end
 	end
-	local btnRemoveButton = CreateGenericImageButton(frmMapEditorFrame, "icon16/delete.png", "Remove Object", RemoveObject)
-	btnRemoveButton:SetPos(57, 32)
-	btnRemoveButton:SetSize(16, 16)
+	local RemoveButton = CreateGenericImageButton(MapEditorFrame, "icon16/delete.png", "Remove Object", RemoveObject)
+	RemoveButton:SetPos(57, 32)
+	RemoveButton:SetSize(16, 16)
 
 	GAMEMODE.MapEditor.Open = true
 end
@@ -124,173 +124,173 @@ function GM.MapEditor.UpatePanel()
 	end
 end
 
-function GM.MapEditor.AddSpawnPointControls(pnlAddList)
-	pnlAddList:Clear()
-	local intSpawnKey = GAMEMODE.MapEditor.CurrentObjectNum
-	local tblSpawnTable = GAMEMODE.MapEditor.CurrentObjectSet[intSpawnKey]
-	local strNPCName = tblSpawnTable.NPC or "zombie"
-	local intLevel = tblSpawnTable.Level or 5
-	local intSpawnTime = tblSpawnTable.SpawnTime or 0
-	local intRotation = tblSpawnTable.Angle.y or 90
+function GM.MapEditor.AddSpawnPointControls(AddList)
+	AddList:Clear()
+	local SpawnKey = GAMEMODE.MapEditor.CurrentObjectNum
+	local SpawnTable = GAMEMODE.MapEditor.CurrentObjectSet[SpawnKey]
+	local NPCName = SpawnTable.NPC or "zombie"
+	local Level = SpawnTable.Level or 5
+	local SpawnTime = SpawnTable.SpawnTime or 0
+	local Rotation = SpawnTable.Angle.y or 90
 
-	local mchNPCTypes = vgui.Create("DComboBox")
-	local intID = 1
+	local NPCTypes = vgui.Create("DComboBox")
+	local ID = 1
 	for key, npctable in pairs(GAMEMODE.DataBase.NPCs) do
-		mchNPCTypes:AddChoice(key)
-		if key == tblSpawnTable.NPC then mchNPCTypes:ChooseOptionID(intID) end
-		intID = intID + 1
+		NPCTypes:AddChoice(key)
+		if key == SpawnTable.NPC then NPCTypes:ChooseOptionID(ID) end
+		ID = ID + 1
 	end
-	mchNPCTypes.OnSelect = function(index, value, data)
-		strNPCName = data
+	NPCTypes.OnSelect = function(index, value, data)
+		NPCName = data
 	end
-	pnlAddList:AddItem(mchNPCTypes)
+	AddList:AddItem(NPCTypes)
 
-	local nmsLevel = GAMEMODE.MapEditor.CreateGenericSlider(pnlAddList, "Level", 50, 0)
-	nmsLevel:SetMin(0)
-	nmsLevel.ValueChanged = function(self, value) intLevel = value end
-	nmsLevel.UpdateSlider(intLevel)
+	local Level = GAMEMODE.MapEditor.CreateGenericSlider(AddList, "Level", 50, 0)
+	Level:SetMin(0)
+	Level.ValueChanged = function(self, value) Level = value end
+	Level.UpdateSlider(Level)
 
-	local nmsSpawnTime = GAMEMODE.MapEditor.CreateGenericSlider(pnlAddList, "Spawn Time", 90, 0)
-	nmsSpawnTime:SetMin(0)
-	nmsSpawnTime.ValueChanged = function(self, value) intSpawnTime = value end
-	nmsSpawnTime.UpdateSlider(intSpawnTime)
+	local SpawnTime = GAMEMODE.MapEditor.CreateGenericSlider(AddList, "Spawn Time", 90, 0)
+	SpawnTime:SetMin(0)
+	SpawnTime.ValueChanged = function(self, value) SpawnTime = value end
+	SpawnTime.UpdateSlider(SpawnTime)
 
-	local nmsRotation = GAMEMODE.MapEditor.CreateGenericSlider(pnlAddList, "Rotation", 180, 0)
-	nmsRotation.ValueChanged = function(self, value) intRotation = value end
-	nmsRotation.UpdateSlider(intRotation)
+	local Rotation = GAMEMODE.MapEditor.CreateGenericSlider(AddList, "Rotation", 180, 0)
+	Rotation.ValueChanged = function(self, value) Rotation = value end
+	Rotation.UpdateSlider(Rotation)
 
-	local btnUpdateServer = vgui.Create("DButton")
-	btnUpdateServer:SetText("Update Server")
-	btnUpdateServer.DoClick = function()
-		RunConsoleCommand("UD_Dev_EditMap_UpdateSpawnPoint", intSpawnKey, strNPCName, intLevel, intSpawnTime, intRotation)
+	local UpdateServer = vgui.Create("DButton")
+	UpdateServer:SetText("Update Server")
+	UpdateServer.DoClick = function()
+		RunConsoleCommand("UD_Dev_EditMap_UpdateSpawnPoint", SpawnKey, NPCName, Level, SpawnTime, Rotation)
 	end
-	btnUpdateServer.Paint = function()
-		local tblPaintPanel = jdraw.NewPanel()
-		tblPaintPanel:SetDimensions(0, 0, btnUpdateServer:GetWide(), btnUpdateServer:GetTall())
-		tblPaintPanel:SetStyle(4, clrGray)
-		tblPaintPanel:SetBorder(2, clrTan)
-		jdraw.DrawPanel(tblPaintPanel)
+	UpdateServer.Paint = function()
+		local PaintPanel = jdraw.NewPanel()
+		PaintPanel:SetDimensions(0, 0, UpdateServer:GetWide(), UpdateServer:GetTall())
+		PaintPanel:SetStyle(4, Gray)
+		PaintPanel:SetBorder(2, Tan)
+		jdraw.DrawPanel(PaintPanel)
 	end
-	pnlAddList:AddItem(btnUpdateServer)
+	AddList:AddItem(UpdateServer)
 end
 
-function GM.MapEditor.AddWorldPropControls(pnlAddList)
-	pnlAddList:Clear()
-	local intSpawnKey = GAMEMODE.MapEditor.CurrentObjectNum
-	local tblSpawnTable = GAMEMODE.MapEditor.CurrentObjectSet[intSpawnKey]
-	local strModel = tblSpawnTable.Entity:GetModel() or "models/props_junk/garbage_metalcan001a.mdl"
+function GM.MapEditor.AddWorldPropControls(AddList)
+	AddList:Clear()
+	local SpawnKey = GAMEMODE.MapEditor.CurrentObjectNum
+	local SpawnTable = GAMEMODE.MapEditor.CurrentObjectSet[SpawnKey]
+	local Model = SpawnTable.Entity:GetModel() or "models/props_junk/garbage_metalcan001a.mdl"
 	local vecOffset = Vector(0, 0, 0)
-	local intRotation = 0
+	local Rotation = 0
 
-	local cpcVectorControls = GAMEMODE.MapEditor.AddVectorControls(pnlAddList)
-	cpcVectorControls.ValueChanged = function(vecValue) vecOffset = vecValue end
-	cpcVectorControls.UpdateNewValues(vecOffset)
+	local VectorControls = GAMEMODE.MapEditor.AddVectorControls(AddList)
+	VectorControls.ValueChanged = function(vecValue) vecOffset = vecValue end
+	VectorControls.UpdateNewValues(vecOffset)
 
-	local nmsRotation = GAMEMODE.MapEditor.CreateGenericSlider(pnlAddList, "Rotation", 180, 0)
-	nmsRotation.ValueChanged = function(self, value) intRotation = value end
-	nmsRotation.UpdateSlider(intRotation)
+	local Rotation = GAMEMODE.MapEditor.CreateGenericSlider(AddList, "Rotation", 180, 0)
+	Rotation.ValueChanged = function(self, value) Rotation = value end
+	Rotation.UpdateSlider(Rotation)
 
-	local cpcModelControls = GAMEMODE.MapEditor.AddModelControls(pnlAddList)
-	cpcModelControls:SetExpanded(false)
-	cpcModelControls.ValueChanged = function(strNewModel) RunConsoleCommand("UD_Dev_EditMap_UpdateWorldProp", intSpawnKey, strNewModel, StringatizeVector(vecOffset), intRotation) end
+	local ModelControls = GAMEMODE.MapEditor.AddModelControls(AddList)
+	ModelControls:SetExpanded(false)
+	ModelControls.ValueChanged = function(NewModel) RunConsoleCommand("UD_Dev_EditMap_UpdateWorldProp", SpawnKey, NewModel, StringatizeVector(vecOffset), Rotation) end
 
-	local btnUpdateServer = vgui.Create("DButton")
-	btnUpdateServer:SetText("Update Server")
-	btnUpdateServer.DoClick = function()
-		RunConsoleCommand("UD_Dev_EditMap_UpdateWorldProp", intSpawnKey, strModel, StringatizeVector(vecOffset), intRotation)
+	local UpdateServer = vgui.Create("DButton")
+	UpdateServer:SetText("Update Server")
+	UpdateServer.DoClick = function()
+		RunConsoleCommand("UD_Dev_EditMap_UpdateWorldProp", SpawnKey, Model, StringatizeVector(vecOffset), Rotation)
 	end
-	btnUpdateServer.Paint = function()
-		local tblPaintPanel = jdraw.NewPanel()
-		tblPaintPanel:SetDimensions(0, 0, btnUpdateServer:GetWide(), btnUpdateServer:GetTall())
-		tblPaintPanel:SetStyle(4, clrGray)
-		tblPaintPanel:SetBorder(2, clrTan)
-		jdraw.DrawPanel(tblPaintPanel)
+	UpdateServer.Paint = function()
+		local PaintPanel = jdraw.NewPanel()
+		PaintPanel:SetDimensions(0, 0, UpdateServer:GetWide(), UpdateServer:GetTall())
+		PaintPanel:SetStyle(4, Gray)
+		PaintPanel:SetBorder(2, Tan)
+		jdraw.DrawPanel(PaintPanel)
 	end
-	pnlAddList:AddItem(btnUpdateServer)
+	AddList:AddItem(UpdateServer)
 end
 
-function GM.MapEditor.CreateGenericCollapse(pnlAddList, strName)
-	local cpcNewCollapseCat = vgui.Create("DCollapsibleCategory")
-	cpcNewCollapseCat:SetLabel(strName)
-	cpcNewCollapseCat.Paint = function()
-		local tblPaintPanel = jdraw.NewPanel()
-		tblPaintPanel:SetDimensions(0, 0, cpcNewCollapseCat:GetWide(), cpcNewCollapseCat:GetTall())
-		tblPaintPanel:SetStyle(4, clrTan)
-		tblPaintPanel:SetBorder(1, clrDrakGray)
-		jdraw.DrawPanel(tblPaintPanel)
+function GM.MapEditor.CreateGenericCollapse(AddList, Name)
+	local NewCollapseCat = vgui.Create("DCollapsibleCategory")
+	NewCollapseCat:SetLabel(Name)
+	NewCollapseCat.Paint = function()
+		local PaintPanel = jdraw.NewPanel()
+		PaintPanel:SetDimensions(0, 0, NewCollapseCat:GetWide(), NewCollapseCat:GetTall())
+		PaintPanel:SetStyle(4, Tan)
+		PaintPanel:SetBorder(1, DrakGray)
+		jdraw.DrawPanel(PaintPanel)
 	end
-	cpcNewCollapseCat.List = vgui.Create("DPanelList")
-	cpcNewCollapseCat.List:SetAutoSize(true)
-	cpcNewCollapseCat.List:SetSpacing(5)
-	cpcNewCollapseCat.List:SetPadding(5)
-	cpcNewCollapseCat.List:EnableHorizontal(false)
-	cpcNewCollapseCat.List.Paint = function()
-		local tblPaintPanel = jdraw.NewPanel()
-		tblPaintPanel:SetDimensions(0, 0, cpcNewCollapseCat.List:GetWide(), cpcNewCollapseCat.List:GetTall())
-		tblPaintPanel:SetStyle(4, clrDrakGray)
-		tblPaintPanel:SetBorder(1, clrTan)
-		jdraw.DrawPanel(tblPaintPanel)
+	NewCollapseCat.List = vgui.Create("DPanelList")
+	NewCollapseCat.List:SetAutoSize(true)
+	NewCollapseCat.List:SetSpacing(5)
+	NewCollapseCat.List:SetPadding(5)
+	NewCollapseCat.List:EnableHorizontal(false)
+	NewCollapseCat.List.Paint = function()
+		local PaintPanel = jdraw.NewPanel()
+		PaintPanel:SetDimensions(0, 0, NewCollapseCat.List:GetWide(), NewCollapseCat.List:GetTall())
+		PaintPanel:SetStyle(4, DrakGray)
+		PaintPanel:SetBorder(1, Tan)
+		jdraw.DrawPanel(PaintPanel)
 	end
-	cpcNewCollapseCat:SetContents(cpcNewCollapseCat.List)
-	pnlAddList:AddItem(cpcNewCollapseCat)
-	return cpcNewCollapseCat
+	NewCollapseCat:SetContents(NewCollapseCat.List)
+	AddList:AddItem(NewCollapseCat)
+	return NewCollapseCat
 end
 
-function GM.MapEditor.AddVectorControls(pnlAddList)
+function GM.MapEditor.AddVectorControls(AddList)
 	local vecCommyVector = Vector(0, 0, 0)
-	local cpcNewCollapseCat = GAMEMODE.MapEditor.CreateGenericCollapse(pnlAddList, "Offset Controls")
-	local nmsNewXSlider = GAMEMODE.MapEditor.CreateGenericSlider(cpcNewCollapseCat.List, "X Axis", 30)
-	nmsNewXSlider.ValueChanged = function(self, value) vecCommyVector.x = value cpcNewCollapseCat.ValueChanged(vecCommyVector) end
-	local nmsNewYSlider = GAMEMODE.MapEditor.CreateGenericSlider(cpcNewCollapseCat.List, "Y Axis", 30)
-	nmsNewYSlider.ValueChanged = function(self, value) vecCommyVector.y = value cpcNewCollapseCat.ValueChanged(vecCommyVector) end
-	local nmsNewZSlider = GAMEMODE.MapEditor.CreateGenericSlider(cpcNewCollapseCat.List, "Z Axis", 30)
-	nmsNewZSlider.ValueChanged = function(self, value) vecCommyVector.z = value cpcNewCollapseCat.ValueChanged(vecCommyVector) end
-	cpcNewCollapseCat.UpdateNewValues = function(vecNewOffset)
-		nmsNewXSlider.UpdateSlider(vecNewOffset.x)
-		nmsNewYSlider.UpdateSlider(vecNewOffset.y)
-		nmsNewZSlider.UpdateSlider(vecNewOffset.z)
+	local NewCollapseCat = GAMEMODE.MapEditor.CreateGenericCollapse(AddList, "Offset Controls")
+	local NewXSlider = GAMEMODE.MapEditor.CreateGenericSlider(NewCollapseCat.List, "X Axis", 30)
+	NewXSlider.ValueChanged = function(self, value) vecCommyVector.x = value NewCollapseCat.ValueChanged(vecCommyVector) end
+	local NewYSlider = GAMEMODE.MapEditor.CreateGenericSlider(NewCollapseCat.List, "Y Axis", 30)
+	NewYSlider.ValueChanged = function(self, value) vecCommyVector.y = value NewCollapseCat.ValueChanged(vecCommyVector) end
+	local NewZSlider = GAMEMODE.MapEditor.CreateGenericSlider(NewCollapseCat.List, "Z Axis", 30)
+	NewZSlider.ValueChanged = function(self, value) vecCommyVector.z = value NewCollapseCat.ValueChanged(vecCommyVector) end
+	NewCollapseCat.UpdateNewValues = function(vecNewOffset)
+		NewXSlider.UpdateSlider(vecNewOffset.x)
+		NewYSlider.UpdateSlider(vecNewOffset.y)
+		NewZSlider.UpdateSlider(vecNewOffset.z)
 	end
-	return cpcNewCollapseCat
+	return NewCollapseCat
 end
 
-function GM.MapEditor.AddModelControls(pnlAddList)
-	local intIconsPerRow = 8
-	local cpcNewCollapseCat = GAMEMODE.MapEditor.CreateGenericCollapse(pnlAddList, "Model Controls")
-	cpcNewCollapseCat.List:EnableHorizontal(true)
+function GM.MapEditor.AddModelControls(AddList)
+	local IconsPerRow = 8
+	local NewCollapseCat = GAMEMODE.MapEditor.CreateGenericCollapse(AddList, "Model Controls")
+	NewCollapseCat.List:EnableHorizontal(true)
 	for key, model in pairs(GAMEMODE.MapEditor.Models) do
 		local ModelIcon = vgui.Create("SpawnIcon")
 		ModelIcon:SetModel(model)
-		ModelIcon:SetIconSize((pnlAddList:GetWide() - ((intIconsPerRow + 1) * 5) - 10) / intIconsPerRow)
+		ModelIcon:SetIconSize((AddList:GetWide() - ((IconsPerRow + 1) * 5) - 10) / IconsPerRow)
 		ModelIcon.OnMousePressed = function()
-			cpcNewCollapseCat.ValueChanged(model)
+			NewCollapseCat.ValueChanged(model)
 		end
-		cpcNewCollapseCat.List:AddItem(ModelIcon)
+		NewCollapseCat.List:AddItem(ModelIcon)
 	end
-	return cpcNewCollapseCat
+	return NewCollapseCat
 end
 
-function GM.MapEditor.CreateGenericSlider(pnlAddList, strName, intRange, intDecimals)
-	local nmsNewSlider = vgui.Create("DNumSlider")
-	nmsNewSlider:SetText(strName)
-	nmsNewSlider:SetMin(-intRange)
-	nmsNewSlider:SetMax(intRange)
-	nmsNewSlider:SetDecimals(intDecimals or 1)
-	nmsNewSlider.UpdateSlider = function(intNewValue)
-		nmsNewSlider:SetValue(intNewValue)
-		nmsNewSlider.Slider:SetSlideX(nmsNewSlider.Wang:GetFraction())
+function GM.MapEditor.CreateGenericSlider(AddList, Name, Range, Decimals)
+	local NewSlider = vgui.Create("DNumSlider")
+	NewSlider:SetText(Name)
+	NewSlider:SetMin(-Range)
+	NewSlider:SetMax(Range)
+	NewSlider:SetDecimals(Decimals or 1)
+	NewSlider.UpdateSlider = function(NewValue)
+		NewSlider:SetValue(NewValue)
+		NewSlider.Slider:SetSlideX(NewSlider.Wang:GetFraction())
 	end
-	pnlAddList:AddItem(nmsNewSlider)
-	return nmsNewSlider
+	AddList:AddItem(NewSlider)
+	return NewSlider
 end
 
 hook.Add("HUDPaint", "UD_DrawMapObjects", function()
 	if GAMEMODE.MapEditor.Open then
 		for key, object in pairs(GAMEMODE.MapEditor.CurrentObjectSet or {}) do
 			if not key or not object or not object.Position then return end
-			local intPosX, intPosY = object.Position:ToScreen().x, object.Position:ToScreen().y
-			local clrDrawColor = clrWhite
-			if GAMEMODE.MapEditor.CurrentObjectNum == key then clrDrawColor = clrBlue end
-			draw.SimpleTextOutlined(key, "UiBold", intPosX, intPosY, clrDrawColor, 1, 1, 1, Color(0, 0, 0, 255))
+			local PosX, PosY = object.Position:ToScreen().x, object.Position:ToScreen().y
+			local DrawColor = White
+			if GAMEMODE.MapEditor.CurrentObjectNum == key then DrawColor = Blue end
+			draw.SimpleTextOutlined(key, "UiBold", PosX, PosY, DrawColor, 1, 1, 1, Color(0, 0, 0, 255))
 		end
 	end
 end)
