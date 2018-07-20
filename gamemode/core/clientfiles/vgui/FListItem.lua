@@ -103,14 +103,14 @@ function PANEL:Paint()
 	return true
 end
 
-function PANEL:SetColor(Color)
-	self.Color = Color
+function PANEL:SetColor(clr)
+	self.Color = clr
 	local HoverChange = 20
 	local HoverColor = Color(
-		math.Clamp(Color.r + HoverChange, 0, 255),
-		math.Clamp(Color.g + HoverChange, 0, 255),
-		math.Clamp(Color.b + HoverChange, 0, 255),
-		Color.a)
+		math.Clamp(clr.r + HoverChange, 0, 255),
+		math.Clamp(clr.g + HoverChange, 0, 255),
+		math.Clamp(clr.b + HoverChange, 0, 255),
+		clr.a)
 	self.Color_hover = HoverColor
 end
 function PANEL:GetIcon()
