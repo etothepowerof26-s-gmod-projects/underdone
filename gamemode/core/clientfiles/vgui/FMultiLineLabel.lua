@@ -14,7 +14,7 @@ function PANEL:Init()
 	self.FixedHieght = false
 end
 
-function PANEL:Paint()
+function PANEL:Paint(w, h)
 	derma.SkinHook("Paint", "MultiLineLabel", self)
 	local Yoffset = 0
 	local Word = 1
@@ -26,10 +26,10 @@ function PANEL:Paint()
 	for _, word in pairs(self.Text) do
 		local StringWidth, StringHieght = surface.GetTextSize(tostring(table.concat(CurrentLine, " ") .. " " .. word))
 		StringWidth = StringWidth + 5
-		if StringWidth <= self:GetWide() and not self.EnterText[word] then
+		if StringWidth <= w and not self.EnterText[word] then
 			table.insert(CurrentLine, word)
 		end
-		if StringWidth > self:GetWide() or Word >= #self.Text or self.EnterText[word] then
+		if StringWidth > w or Word >= #self.Text or self.EnterText[word] then
 			surface.SetTextPos(2, Yoffset)
 			surface.DrawText(tostring(table.concat(CurrentLine, " ")))
 			Yoffset = Yoffset + StringHieght
@@ -41,7 +41,7 @@ function PANEL:Paint()
 		Word = Word + 1
 	end
 
-	if not self.FixedHieght and self:GetTall() ~= Yoffset + 2 then
+	if not self.FixedHieght and h ~= Yoffset + 2 then
 		self:SetTall(Yoffset + 2)
 		self:GetParent():InvalidateLayout()
 	end

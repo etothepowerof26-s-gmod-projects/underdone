@@ -18,11 +18,11 @@ function PANEL:Init()
 	self.ArmorRatingLabel = CreateGenericLabel(self, "UiBold", "Total Armor " .. LocalPlayer():GetArmorRating(), DrakGray)
 end
 
-function PANEL:PerformLayout()
+function PANEL:PerformLayout(w, h)
 	for name, Item in pairs(self.Slots) do
 		local SlotTable = GAMEMODE.DataBase.Slots[name]
-		local X = (self:GetWide() * (SlotTable.Position.x / 100)) - (self.ItemIconSize / 2)
-		local Y = (self:GetTall() * (SlotTable.Position.y / 100)) - (self.ItemIconSize / 2)
+		local X = (w * (SlotTable.Position.x / 100)) - (self.ItemIconSize / 2)
+		local Y = (h * (SlotTable.Position.y / 100)) - (self.ItemIconSize / 2)
 		Item:SetPos(X, Y)
 	end
 

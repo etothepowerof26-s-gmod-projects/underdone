@@ -67,18 +67,18 @@ function PANEL:PerformLayout()
 	self:GetParent():InvalidateLayout()
 end
 
-function PANEL:Paint()
+function PANEL:Paint(w, h)
 	local IconSize = 16
 	local IconSize_small = 12
 	local BackGroundColor
 	local x, y = self:CursorPos()
-	if x > 0 and x < self:GetWide() and y > 0 and y < self:GetTall() then
+	if x > 0 and x < w and y > 0 and y < h then
 		BackGroundColor = self.Color_hover
 	else
 		BackGroundColor = self.Color
 	end
 	local PaintPanel = jdraw.NewPanel()
-	PaintPanel:SetDimensions(0, 0, self:GetWide(), self:GetTall())
+	PaintPanel:SetDimensions(0, 0, w, h)
 	PaintPanel:SetStyle(4, BackGroundColor)
 	PaintPanel:SetBorder(1, DrakGray)
 	jdraw.DrawPanel(PaintPanel)

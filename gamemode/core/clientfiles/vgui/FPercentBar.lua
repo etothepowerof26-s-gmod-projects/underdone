@@ -14,9 +14,9 @@ function PANEL:Init()
 end
 
 function PANEL:Paint(w, h)
-		self.PercentBar:SetDimensions(0, 0, w, h)
-		self.PercentBar:SetValue(self.Value, self.Max)
-		self.PercentBar:SetText("UiBold", self.Text, DrakGray)
+	self.PercentBar:SetDimensions(0, 0, w, h)
+	self.PercentBar:SetValue(self.Value, self.Max)
+	self.PercentBar:SetText("UiBold", self.Text, DrakGray)
 	jdraw.DrawProgressBar(self.PercentBar)
 end
 
