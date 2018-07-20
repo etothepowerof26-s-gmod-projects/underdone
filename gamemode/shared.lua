@@ -1,5 +1,5 @@
 GM.Name        = "Legacy Underdone"
-GM.Author      = "Polkm, Zeni, TwentySix, Q2F2"
+GM.Author      = "Polkm, Zeni, TwentySix and Q2F2"
 GM.Email       = "n/a"
 GM.Website     = "https://github.com/Zeni44/underdone"
 
