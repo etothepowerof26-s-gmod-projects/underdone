@@ -12,6 +12,7 @@ local NWStrings = {
 	"UD_UpdateMasters",
 	"UD_UpdateAuctions",
 	"UD_UpdateLibrary",
+	"UD_UpdatePaperDoll",
 	"UD_UpdateSpawnPoint",
 	"UD_RemoveSpawnPoint",
 	"UD_UpdateWorldProp",

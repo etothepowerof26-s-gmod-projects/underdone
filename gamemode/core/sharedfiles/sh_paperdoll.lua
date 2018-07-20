@@ -70,19 +70,19 @@ end
 
 if CLIENT then
 	GM.PaperDollEnts = {}
-	function UpdatePaperDollUsrMsg(usrMsg)
-		local plyPlayer = usrMsg:ReadEntity()
+
+	net.Receive("UD_UpdatePaperDoll", function()
+		local plyPlayer = net.ReadEntity()
 		if not IsValid(plyPlayer) then return end
-		local strSlot = usrMsg:ReadString()
-		local strItem = usrMsg:ReadString()
+		local strSlot = net.ReadString()
+		local strItem = net.ReadString()
 		if strItem == "" then strItem = nil end
 		plyPlayer:SetPaperDoll(strSlot, strItem)
 		plyPlayer:PaperDollBuildSlot(strSlot, strItem)
 		if plyPlayer == LocalPlayer() and GAMEMODE.MainMenu then
 			GAMEMODE.MainMenu.InventoryTab:LoadInventory()
 		end
-	end
-	usermessage.Hook("UD_UpdatePaperDoll", UpdatePaperDollUsrMsg)
+	end)
 
 	function Player:PaperDollBuildSlot(strSlot, strItem)
 		if not self:Alive() then return end
