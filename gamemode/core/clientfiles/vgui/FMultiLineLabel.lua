@@ -1,5 +1,5 @@
 local PANEL = {}
--- TODO: remake
+-- TODO: remake | Yea, you should. ~26
 PANEL.EnterText = {}
 PANEL.EnterText["/n"] = "/n"
 PANEL.EnterText["\n"] = "\n"
@@ -9,7 +9,6 @@ function PANEL:Init()
 	self:SetDrawOnTop(false)
 	self.DeleteContentsOnClose = true
 	self.Text = {}
-	--self.Font = "ConsoleText"
 	self.Font = "Default"
 	self.Color = Color(60, 60, 60, 255)
 	self.FixedHieght = false
@@ -17,36 +16,33 @@ end
 
 function PANEL:Paint()
 	derma.SkinHook("Paint", "MultiLineLabel", self)
-	local intYoffset = 0
-	local intWord = 1
-	local tblCurrentLine = {}
-
-	--surface.SetDrawColor(200, 200, 200, 255)
-	--surface.DrawRect(0, 0, self:GetWide(), self:GetTall())
+	local Yoffset = 0
+	local Word = 1
+	local CurrentLine = {}
 
 	surface.SetFont(self.Font)
 	surface.SetTextColor(self.Color)
 
 	for _, word in pairs(self.Text) do
-		local intStringWidth, intStringHieght = surface.GetTextSize(tostring(table.concat(tblCurrentLine, " ") .. " " .. word))
-		intStringWidth = intStringWidth + 5
-		if intStringWidth <= self:GetWide() and not self.EnterText[word] then
-			table.insert(tblCurrentLine, word)
+		local StringWidth, StringHieght = surface.GetTextSize(tostring(table.concat(CurrentLine, " ") .. " " .. word))
+		StringWidth = StringWidth + 5
+		if StringWidth <= self:GetWide() and not self.EnterText[word] then
+			table.insert(CurrentLine, word)
 		end
-		if intStringWidth > self:GetWide() or intWord >= #self.Text or self.EnterText[word] then
-			surface.SetTextPos(2, intYoffset)
-			surface.DrawText(tostring(table.concat(tblCurrentLine, " ")))
-			intYoffset = intYoffset + intStringHieght
-			table.Empty(tblCurrentLine)
+		if StringWidth > self:GetWide() or Word >= #self.Text or self.EnterText[word] then
+			surface.SetTextPos(2, Yoffset)
+			surface.DrawText(tostring(table.concat(CurrentLine, " ")))
+			Yoffset = Yoffset + StringHieght
+			table.Empty(CurrentLine)
 			if word ~= "/n" and word ~= "[n]" then
-				table.insert(tblCurrentLine, word)
+				table.insert(CurrentLine, word)
 			end
 		end
-		intWord = intWord + 1
+		Word = Word + 1
 	end
 
-	if not self.FixedHieght and self:GetTall() ~= intYoffset + 2 then
-		self:SetTall(intYoffset + 2)
+	if not self.FixedHieght and self:GetTall() ~= Yoffset + 2 then
+		self:SetTall(Yoffset + 2)
 		self:GetParent():InvalidateLayout()
 	end
 

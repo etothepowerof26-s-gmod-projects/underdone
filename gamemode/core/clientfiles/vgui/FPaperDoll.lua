@@ -7,23 +7,23 @@ function PANEL:Init()
 	self.Slots = {}
 
 	for _, slotTable in pairs(GAMEMODE.DataBase.Slots) do
-		local icnItem = vgui.Create("FIconItem", self)
-		icnItem:SetSize(self.ItemIconSize, self.ItemIconSize)
-		icnItem:SetSlot(slotTable)
-		icnItem.FromInventory = true
+		local Item = vgui.Create("FIconItem", self)
+		Item:SetSize(self.ItemIconSize, self.ItemIconSize)
+		Item:SetSlot(slotTable)
+		Item.FromInventory = true
 
-		self.Slots[slotTable.Name] = icnItem
+		self.Slots[slotTable.Name] = Item
 	end
 
-	self.ArmorRatingLabel = CreateGenericLabel(self, "UiBold", "Total Armor " .. LocalPlayer():GetArmorRating(), clrDrakGray)
+	self.ArmorRatingLabel = CreateGenericLabel(self, "UiBold", "Total Armor " .. LocalPlayer():GetArmorRating(), DrakGray)
 end
 
 function PANEL:PerformLayout()
-	for name, icnItem in pairs(self.Slots) do
-		local tblSlotTable = GAMEMODE.DataBase.Slots[name]
-		local intX = (self:GetWide() * (tblSlotTable.Position.x / 100)) - (self.ItemIconSize / 2)
-		local intY = (self:GetTall() * (tblSlotTable.Position.y / 100)) - (self.ItemIconSize / 2)
-		icnItem:SetPos(intX, intY)
+	for name, Item in pairs(self.Slots) do
+		local SlotTable = GAMEMODE.DataBase.Slots[name]
+		local X = (self:GetWide() * (SlotTable.Position.x / 100)) - (self.ItemIconSize / 2)
+		local Y = (self:GetTall() * (SlotTable.Position.y / 100)) - (self.ItemIconSize / 2)
+		Item:SetPos(X, Y)
 	end
 
 	if IsValid(self.ArmorRatingLabel) then
