@@ -1,9 +1,9 @@
 local function TickDistanceRetreat()
 	for _, npc in pairs(ents.FindByClass("npc_*")) do
 		if IsValid(npc) and not npc.DontReturn  then
-			local tblNPCTable = NPCTable(npc:GetNWString("npc"))
-			if tblNPCTable and tblNPCTable.DistanceRetreat then
-				if npc:GetPos():Distance(npc.Position) > tblNPCTable.DistanceRetreat then
+			local NPCTable = NPCTable(npc:GetNWString("npc"))
+			if NPCTable and NPCTable.DistanceRetreat then
+				if npc:GetPos():Distance(npc.Position) > NPCTable.DistanceRetreat then
 					if not npc.HasTask then
 						npc:ReturnSpawn()
 						npc.HasTask = true
@@ -15,11 +15,11 @@ local function TickDistanceRetreat()
 						end)
 					end
 				end
-				if npc:GetPos():Distance(npc.Position) > (tblNPCTable.DistanceRetreat * 2) then
+				if npc:GetPos():Distance(npc.Position) > (NPCTable.DistanceRetreat * 2) then
 					npc:SetPos(npc.Position)
 				end
 				if npc.HasTask then
-					if npc:GetPos():Distance(npc.Position) < (tblNPCTable.DistanceRetreat * 0.1) then
+					if npc:GetPos():Distance(npc.Position) < (NPCTable.DistanceRetreat * 0.1) then
 						npc:Idle()
 						npc.HasTask = false
 					end
@@ -41,16 +41,16 @@ local function TickDistanceRetreat()
 end
 hook.Add("Tick", "TickDistanceRetreat", TickDistanceRetreat)
 
-function GM:OnNPCKilled(npcTarget, entKiller, weapon)
-	if npcTarget:GetClass() == "npc_zombie" then GAMEMODE:RemoveAll("npc_headcrab") end
-	if not entKiller:IsPlayer() and npcTarget.LastPlayerAttacker then entKiller = npcTarget.LastPlayerAttacker end
-	if entKiller.EntityDamageData then
-		if entKiller.EntityDamageData[npcTarget] then
+function GM:OnNPCKilled(Target, Killer, weapon)
+	if Target:GetClass() == "npc_zombie" then GAMEMODE:RemoveAll("npc_headcrab") end
+	if not Killer:IsPlayer() and Target.LastPlayerAttacker then Killer = Target.LastPlayerAttacker end
+	if Killer.EntityDamageData then
+		if Killer.EntityDamageData[Target] then
 			for _, ply in pairs(player.GetAll()) do
 				if ply.EntityDamageData then
-					if ply.EntityDamageData[npcTarget] then
-						if ply.EntityDamageData[npcTarget] > entKiller.EntityDamageData[npcTarget] then
-							entKiller = ply
+					if ply.EntityDamageData[Target] then
+						if ply.EntityDamageData[Target] > Killer.EntityDamageData[Target] then
+							Killer = ply
 						end
 					end
 				end
@@ -59,40 +59,40 @@ function GM:OnNPCKilled(npcTarget, entKiller, weapon)
 	end
 	for _, ply in pairs(player.GetAll()) do
 		if ply.EntityDamageData then
-			if ply.EntityDamageData[npcTarget] then
-				ply.EntityDamageData[npcTarget] = nil
+			if ply.EntityDamageData[Target] then
+				ply.EntityDamageData[Target] = nil
 			end
 		end
 	end
-	if npcTarget:GetNWInt("level") > 0 and entKiller and entKiller:IsValid() and entKiller:IsPlayer() then
-		local tblNPCTable = NPCTable(npcTarget:GetNWString("npc"))
-		if #(entKiller.Squad or {}) > 1 then
-			local intTotalExp = math.Round((npcTarget:GetMaxHealth() * (npcTarget:GetLevel() / entKiller:GetAverageSquadLevel())) / (#(entKiller.Squad or {}) + 7))
-			local intPerPlayer = math.Round(intTotalExp / #entKiller.Squad)
-			for _, ply in pairs(entKiller.Squad) do
+	if Target:GetNWInt("level") > 0 and Killer and Killer:IsValid() and Killer:IsPlayer() then
+		local NPCTable = NPCTable(Target:GetNWString("npc"))
+		if #(Killer.Squad or {}) > 1 then
+			local TotalExp = math.Round((Target:GetMaxHealth() * (Target:GetLevel() / Killer:GetAverageSquadLevel())) / (#(Killer.Squad or {}) + 7))
+			local PerPlayer = math.Round(TotalExp / #Killer.Squad)
+			for _, ply in pairs(Killer.Squad) do
 				if IsValid(ply) then
-					ply:GiveExp(intPerPlayer, true)
+					ply:GiveExp(PerPlayer, true)
 				end
 			end
 		else
-			entKiller:GiveExp(math.Round((npcTarget:GetMaxHealth() * (npcTarget:GetLevel() / entKiller:GetLevel())) / 6), true)
+			Killer:GiveExp(math.Round((Target:GetMaxHealth() * (Target:GetLevel() / Killer:GetLevel())) / 6), true)
 		end
-		for strItem, tblInfo in pairs(tblNPCTable.Drops or {}) do
-			local tblItemTable = ItemTable(strItem)
+		for Item, Info in pairs(NPCTable.Drops or {}) do
+			local ItemTable = ItemTable(Item)
 			--Check Level of player and of npc
-			if npcTarget:GetLevel() >= (tblInfo.MinLevel or 0) then
-				if not tblItemTable.QuestItem or (entKiller:GetQuest(tblItemTable.QuestItem) and not entKiller:HasCompletedQuest(tblItemTable.QuestItem)) then
-					strItem, tblInfo = entKiller:CallSkillHook("drop_mod", strItem, tblInfo)
-					local intChance = (tblInfo.Chance or 0) * (1 + (entKiller:GetStat("stat_luck") / 45))
-					local ItemChance = 100 / math.Clamp(intChance, 0, 100)
+			if Target:GetLevel() >= (Info.MinLevel or 0) then
+				if not ItemTable.QuestItem or (Killer:GetQuest(ItemTable.QuestItem) and not Killer:HasCompletedQuest(ItemTable.QuestItem)) then
+					Item, Info = Killer:CallSkillHook("drop_mod", Item, Info)
+					local Chance = (Info.Chance or 0) * (1 + (Killer:GetStat("stat_luck") / 45))
+					local ItemChance = 100 / math.Clamp(Chance, 0, 100)
 					if math.random(1, (ItemChance or 100)) == 1 then
-						local intAmount = math.random(tblInfo.Min or 1, tblInfo.Max or tblInfo.Min or 1)
-						local entLoot = CreateWorldItem(strItem, intAmount, npcTarget:GetPos() + Vector(0, 0, 30))
-						entLoot:SetOwner(entKiller)
-						local phyLootPhys = entLoot:GetPhysicsObject()
-						if not IsValid(phyLootPhys) and IsValid(entLoot.Grip) then phyLootPhys = entLoot.Grip:GetPhysicsObject() end
-						phyLootPhys:Wake()
-						phyLootPhys:ApplyForceCenter(Vector(math.random(-100, 100), math.random(-100, 100), math.random(350, 400)))
+						local Amount = math.random(Info.Min or 1, Info.Max or Info.Min or 1)
+						local Loot = CreateWorldItem(Item, Amount, Target:GetPos() + Vector(0, 0, 30))
+						Loot:SetOwner(Killer)
+						local LootPhys = Loot:GetPhysicsObject()
+						if not IsValid(LootPhys) and IsValid(Loot.Grip) then LootPhys = Loot.Grip:GetPhysicsObject() end
+						LootPhys:Wake()
+						LootPhys:ApplyForceCenter(Vector(math.random(-100, 100), math.random(-100, 100), math.random(350, 400)))
 					end
 				end
 			end
@@ -100,59 +100,59 @@ function GM:OnNPCKilled(npcTarget, entKiller, weapon)
 	end
 end
 
-local function NPCAdjustDamage(entVictim, tblDamageInfo) --entInflictor, entAttacker, intAmount, tblDamageInfo)
-	local entAttacker = tblDamageInfo:GetAttacker()
-	if not IsValid(entVictim) or not IsValid(entAttacker) or not NPCTable(entVictim:GetNWString("npc")) then return end
-	if entAttacker.OverrideDamge then tblDamageInfo:SetDamage(entAttacker.OverrideDamge) end
-	if not entAttacker:IsPlayer() and entAttacker:GetOwner():IsPlayer() then
-		entAttacker = entAttacker:GetOwner()
+local function NPCAdjustDamage(Victim, DamageInfo)
+	local Attacker = DamageInfo:GetAttacker()
+	if not IsValid(Victim) or not IsValid(Attacker) or not NPCTable(Victim:GetNWString("npc")) then return end
+	if Attacker.OverrideDamge then DamageInfo:SetDamage(Attacker.OverrideDamge) end
+	if not Attacker:IsPlayer() and Attacker:GetOwner():IsPlayer() then
+		Attacker = Attacker:GetOwner()
 	end
-	local tblNPCTable = NPCTable(entVictim:GetNWString("npc"))
-	local boolInvincible = tblNPCTable.Invincible or entAttacker.Race == tblNPCTable.Race
-	if entAttacker:IsPlayer() and not boolInvincible then
-		local clrDisplayColor = "white"
-		tblDamageInfo:SetDamage(math.Round(tblDamageInfo:GetDamage() * (1 / entVictim:GetNWInt("level"))))
-		if math.random(1, math.Round(20 / (1 + (entAttacker:GetStat("stat_luck") / 50)))) == 1 then
-			tblDamageInfo:SetDamage(math.Round(tblDamageInfo:GetDamage() * 2))
-			entAttacker:CreateIndicator("Crit!", tblDamageInfo:GetDamagePosition(), "blue", true)
-			clrDisplayColor = "blue"
+	local NPCTable = NPCTable(Victim:GetNWString("npc"))
+	local Invincible = NPCTable.Invincible or Attacker.Race == NPCTable.Race
+	if Attacker:IsPlayer() and not Invincible then
+		local DisplayColor = "white"
+		DamageInfo:SetDamage(math.Round(DamageInfo:GetDamage() * (1 / Victim:GetNWInt("level"))))
+		if math.random(1, math.Round(20 / (1 + (Attacker:GetStat("stat_luck") / 50)))) == 1 then
+			DamageInfo:SetDamage(math.Round(DamageInfo:GetDamage() * 2))
+			Attacker:CreateIndicator("Crit!", DamageInfo:GetDamagePosition(), "blue", true)
+			DisplayColor = "blue"
 		end
-		if entVictim:IsNPC() then
-			if not entVictim:GetEnemy() then
-				entVictim:AttackEnemy(entAttacker)
+		if Victim:IsNPC() then
+			if not Victim:GetEnemy() then
+				Victim:AttackEnemy(Attacker)
 			end
-			entVictim:AddEntityRelationship(entAttacker, GAMEMODE.RelationHate, 99)
+			Victim:AddEntityRelationship(Attacker, GAMEMODE.RelationHate, 99)
 		end
-		if entVictim:Health() < 2 and entVictim:IsBuilding() then
-			local tblNPCTable = NPCTable(entVictim:GetNWString("npc"))
-			if not tblNPCTable then return end
-			entAttacker:AddQuestKill(entVictim:GetNWString("npc"))
+		if Victim:Health() < 2 and Victim:IsBuilding() then
+			local NPCTable = NPCTable(Victim:GetNWString("npc"))
+			if not NPCTable then return end
+			Attacker:AddQuestKill(Victim:GetNWString("npc"))
 		end
-		tblDamageInfo:SetDamage(math.Round(tblDamageInfo:GetDamage() + math.random(-1, math.Round(1 * (1 + (entAttacker:GetStat("stat_luck") / 55))))))
-		tblDamageInfo:SetDamage(math.Clamp(tblDamageInfo:GetDamage(), 0, tblDamageInfo:GetDamage()))
-		if not entAttacker.EntityDamageData then
-			entAttacker.EntityDamageData = {}
+		DamageInfo:SetDamage(math.Round(DamageInfo:GetDamage() + math.random(-1, math.Round(1 * (1 + (Attacker:GetStat("stat_luck") / 55))))))
+		DamageInfo:SetDamage(math.Clamp(DamageInfo:GetDamage(), 0, DamageInfo:GetDamage()))
+		if not Attacker.EntityDamageData then
+			Attacker.EntityDamageData = {}
 		end
-		entAttacker.EntityDamageData[entVictim] = (entAttacker.EntityDamageData[entVictim] or 0) + math.Clamp(tblDamageInfo:GetDamage(),0,entVictim:Health())
-		entAttacker:CreateIndicator(tblDamageInfo:GetDamage(), tblDamageInfo:GetDamagePosition(), clrDisplayColor, true)
-		if entVictim:Health() <= tblDamageInfo:GetDamage() then
-			entVictim:Remove()
+		Attacker.EntityDamageData[Victim] = (Attacker.EntityDamageData[Victim] or 0) + math.Clamp(DamageInfo:GetDamage(),0,Victim:Health())
+		Attacker:CreateIndicator(DamageInfo:GetDamage(), DamageInfo:GetDamagePosition(), DisplayColor, true)
+		if Victim:Health() <= DamageInfo:GetDamage() then
+			Victim:Remove()
 		end
-		entVictim.FirstPlayerAttacker = entVictim.FirstPlayerAttacker or entAttacker
-		entVictim.LastPlayerAttacker = entAttacker
-		entVictim:SetHealth(entVictim:Health() - tblDamageInfo:GetDamage())
-		entVictim:SetNWInt("Health", entVictim:Health())
-		tblDamageInfo:SetDamage(0)
+		Victim.FirstPlayerAttacker = Victim.FirstPlayerAttacker or Attacker
+		Victim.LastPlayerAttacker = Attacker
+		Victim:SetHealth(Victim:Health() - DamageInfo:GetDamage())
+		Victim:SetNWInt("Health", Victim:Health())
+		DamageInfo:SetDamage(0)
 	end
-	if boolInvincible then tblDamageInfo:SetDamage(0) end
+	if Invincible then DamageInfo:SetDamage(0) end
 end
 hook.Add("EntityTakeDamage", "UD_NPCAdjustDamage", NPCAdjustDamage)
 
-function GM:ScaleNPCDamage(entVictim, strHitGroup, tblDamageInfo)
-	tblDamageInfo:ScaleDamage(1)
-	local tblNPCTable = NPCTable(entVictim:GetNWString("npc"))
-	if not tblNPCTable then return end
-	if tblNPCTable.Invincible or tblDamageInfo:GetAttacker().Race == tblNPCTable.Race then
-		tblDamageInfo:ScaleDamage(0)
+function GM:ScaleNPCDamage(Victim, strHitGroup, DamageInfo)
+	DamageInfo:ScaleDamage(1)
+	local NPCTable = NPCTable(Victim:GetNWString("npc"))
+	if not NPCTable then return end
+	if NPCTable.Invincible or DamageInfo:GetAttacker().Race == NPCTable.Race then
+		DamageInfo:ScaleDamage(0)
 	end
 end
