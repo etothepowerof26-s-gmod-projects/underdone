@@ -5,6 +5,30 @@ include("shared.lua")
 include("core/sharedfiles/database/items/sh_items_base.lua")
 include("core/sh_resource.lua")
 
+--Add network strings
+local NWStrings = {
+	"UD_UpdateItem",
+	"UD_UpdateBankItem"
+	"UD_UpdateMasters",
+	"UD_UpdateAuctions",
+	"UD_UpdateLibrary",
+	"UD_UpdateSpawnPoint",
+	"UD_RemoveSpawnPoint",
+	"UD_UpdateWorldProp",
+	"UD_RemoveWorldProp",
+	"UD_UpdateCurrentBook",
+	"UD_UpdateTradeItem",
+	"UD_UpdateQuest",
+	"UD_UpdateInvites",
+	"UD_UpdateSquadTable",
+	"UD_UpdateSkills",
+	"UD_UpdateStats"
+}
+
+for _,v in ipairs(NWStrings) do
+	util.AddNetworkString(v)
+end
+
 function GM:PlayerInitialSpawn(ply)
 	timer.Simple(3, function() -- TODO: needs to be networked or something
 		if not IsValid(ply) then return end

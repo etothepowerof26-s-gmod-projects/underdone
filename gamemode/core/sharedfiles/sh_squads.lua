@@ -5,7 +5,7 @@ function Player:UpdateInvites(plyInviter, intAddRemove)
 	self.Invites = self.Invites or {}
 	self.Invites[plyInviter] = intAddRemove
 	if SERVER then
-		SendUsrMsg("UD_UpdateInvites", self, {plyInviter, intAddRemove})
+		SendNetworkMessage("UD_UpdateInvites", self, {plyInviter, intAddRemove})
 	end
 	if CLIENT and intAddRemove == 1 then
 		GAMEMODE:OpenInvitePrompt(plyInviter)
@@ -25,7 +25,7 @@ function Player:UpdateSquadTable()
 		if SERVER then self:SetNWEntity("SquadLeader", self) end
 	end
 	if SERVER then
-		SendUsrMsg("UD_UpdateSquadTable", self, {})
+		SendNetworkMessage("UD_UpdateSquadTable", self, {})
 	end
 end
 
@@ -51,10 +51,10 @@ if CLIENT then
 			RunConsoleCommand("UD_AcceptInvite", plyInviter:EntIndex())
 		end)
 	end
-	usermessage.Hook("UD_UpdateInvites", function(usrMsg)
-		LocalPlayer():UpdateInvites(usrMsg:ReadEntity(), usrMsg:ReadLong())
+	net.Receive("UD_UpdateInvites", function()
+		LocalPlayer():UpdateInvites(net.ReadEntity(), net.ReadInt(16))
 	end)
-	usermessage.Hook("UD_UpdateSquadTable", function(usrMsg)
+	net.Receive("UD_UpdateSquadTable", function()
 		LocalPlayer():UpdateSquadTable()
 	end)
 end

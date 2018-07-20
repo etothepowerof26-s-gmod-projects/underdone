@@ -1,9 +1,5 @@
 local Player = FindMetaTable("Player")
 
-if SERVER then
-util.AddNetworkString("UD_UpdateMasters")
-end
-
 function toMasterLevel(Exp)
 	if not Exp then return end
 	return math.floor(math.max((math.sqrt(tonumber(Exp) or 0) / 8), 1))

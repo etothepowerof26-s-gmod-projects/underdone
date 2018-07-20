@@ -58,7 +58,7 @@ function Player:UpdateQuest(strQuest, tblInfo)
 	if self:GetQuest(strQuest) then
 		table.Merge(self.Data.Quests[strQuest], tblInfo or self.Data.Quests[strQuest] or {})
 		if SERVER then
-			SendUsrMsg("UD_UpdateQuest", self, {strQuest, tblInfo or self.Data.Quests[strQuest]})
+			SendNetworkMessage("UD_UpdateQuest", self, {strQuest, tblInfo or self.Data.Quests[strQuest]})
 			self:SaveGame()
 		end
 		if CLIENT and GAMEMODE.QuestMenu then
@@ -157,9 +157,9 @@ if SERVER then
 end
 
 if CLIENT then
-	usermessage.Hook("UD_UpdateQuest", function(usrMsg)
-		local strQuest = usrMsg:ReadString()
-		local strIncomingInfo = usrMsg:ReadString()
+	net.Receive("UD_UpdateQuest", function()
+		local strQuest = net.ReadString()
+		local strIncomingInfo = net.ReadString()
 		--print(string.len(strQuest .. strIncomingInfo))
 		--print(strQuest .. strIncomingInfo)
 		LocalPlayer():UpdateQuest(strQuest, util.JSONToTable(strIncomingInfo))

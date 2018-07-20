@@ -1,9 +1,5 @@
 local Player = FindMetaTable("Player")
 
-if SERVER then
-	util.AddNetworkString("UD_UpdateBankItem")
-end
-
 function Player:GetBankSize()
 	if not IsValid(self) or not self.Data then return 0 end
 	return self.BankWeight or 0

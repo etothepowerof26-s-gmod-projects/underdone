@@ -13,7 +13,7 @@ function Player:SetSkill(strSkill, intAmount)
 			if tblSkillTable.OnSet then
 				tblSkillTable:OnSet(self, intAmount, intOldSkill)
 			end
-			SendUsrMsg("UD_UpdateSkills", self, {strSkill, intAmount})
+			SendNetworkMessage("UD_UpdateSkills", self, {strSkill, intAmount})
 		end
 		if CLIENT then
 			if GAMEMODE.MainMenu then GAMEMODE.MainMenu.CharacterTab:LoadSkills() end
@@ -88,7 +88,7 @@ if SERVER then
 	concommand.Add("UD_BuySkill", function(ply, command, args) ply:BuySkill(args[1]) end)
 end
 if CLIENT then
-	usermessage.Hook("UD_UpdateSkills", function(usrMsg)
-		LocalPlayer():SetSkill(usrMsg:ReadString(), usrMsg:ReadLong())
+	net.Receive("UD_UpdateSkills", function()
+		LocalPlayer():SetSkill(net.ReadString(), net.ReadInt(16))
 	end)
 end

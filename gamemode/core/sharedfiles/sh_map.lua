@@ -14,7 +14,7 @@ function GM:RemoveSpawnPoint(intKey)
 		table.remove(GAMEMODE.MapEntities.NPCSpawnPoints, intKey)
 	end
 	if SERVER and game.SinglePlayer() and player.GetByID(1) and player.GetByID(1):IsValid() then
-		SendUsrMsg("UD_RemoveSpawnPoint", player.GetByID(1), {intKey})
+		SendNetworkMessage("UD_RemoveSpawnPoint", player.GetByID(1), {intKey})
 	end
 end
 function GM:UpdateSpawnPoint(intKey, vecPosition, angAngle, strNPC, intLevel, intSpawnTime)
@@ -29,7 +29,7 @@ function GM:UpdateSpawnPoint(intKey, vecPosition, angAngle, strNPC, intLevel, in
 			tblToUpdateSpawn.Monster:SetAngles(tblToUpdateSpawn.Angle)
 		end
 		if SERVER and game.SinglePlayer() and IsValid(player.GetByID(1)) then
-			SendUsrMsg("UD_UpdateSpawnPoint", player.GetByID(1), {intKey, tblToUpdateSpawn.Position, tblToUpdateSpawn.Angle, tblToUpdateSpawn.NPC, tblToUpdateSpawn.Level, tblToUpdateSpawn.SpawnTime})
+			SendNetworkMessage("UD_UpdateSpawnPoint", player.GetByID(1), {intKey, tblToUpdateSpawn.Position, tblToUpdateSpawn.Angle, tblToUpdateSpawn.NPC, tblToUpdateSpawn.Level, tblToUpdateSpawn.SpawnTime})
 		end
 	else
 		GAMEMODE:CreateSpawnPoint(vecPosition, angAngle, strNPC, intLevel, intSpawnTime)
@@ -65,7 +65,7 @@ function GM:RemoveWorldProp(intKey)
 		table.remove(GAMEMODE.MapEntities.WorldProps, intKey)
 	end
 	if SERVER and game.SinglePlayer() and player.GetByID(1) and player.GetByID(1):IsValid() then
-		SendUsrMsg("UD_RemoveWorldProp", player.GetByID(1), {intKey})
+		SendNetworkMessage("UD_RemoveWorldProp", player.GetByID(1), {intKey})
 	end
 end
 function GM:UpdateWorldProp(intKey, strModel, vecPosition, angAngle, entEntity, boolLoad)
@@ -84,7 +84,7 @@ function GM:UpdateWorldProp(intKey, strModel, vecPosition, angAngle, entEntity, 
 			entProp:SetKeyValue("spawnflags", 8)
 			entProp.ObjectKey = intKey
 			if game.SinglePlayer() and player.GetByID(1) and player.GetByID(1):IsValid() then
-				SendUsrMsg("UD_UpdateWorldProp", player.GetByID(1), {intKey, entProp:GetModel(), entProp:GetPos(), entProp:GetAngles(), entProp})
+				SendNetworkMessage("UD_UpdateWorldProp", player.GetByID(1), {intKey, entProp:GetModel(), entProp:GetPos(), entProp:GetAngles(), entProp})
 			end
 		end
 		tblToUpdateProp.Model = entProp:GetModel()
@@ -274,20 +274,21 @@ if SERVER then
 		end)
 	end
 elseif CLIENT and game.SinglePlayer() then
-	usermessage.Hook("UD_UpdateSpawnPoint", function(usrMsg)
-		GAMEMODE:UpdateSpawnPoint(usrMsg:ReadLong(), usrMsg:ReadVector(), usrMsg:ReadAngle(), usrMsg:ReadString(), usrMsg:ReadLong(), usrMsg:ReadLong())
+	
+	net.Receive("UD_UpdateSpawnPoint", function()
+		GAMEMODE:UpdateSpawnPoint(net.ReadInt(16), net.ReadVector(), net.ReadAngle(), net.ReadString(), net.ReadInt(16), net.ReadInt(16))
 		GAMEMODE.MapEditor.UpatePanel()
 	end)
-	usermessage.Hook("UD_RemoveSpawnPoint", function(usrMsg)
-		GAMEMODE:RemoveSpawnPoint(usrMsg:ReadLong())
+	net.Receive("UD_RemoveSpawnPoint", function()
+		GAMEMODE:RemoveSpawnPoint(net.ReadInt(16))
 		GAMEMODE.MapEditor.UpatePanel()
 	end)
-	usermessage.Hook("UD_UpdateWorldProp", function(usrMsg)
-		GAMEMODE:UpdateWorldProp(usrMsg:ReadLong(), usrMsg:ReadString(), usrMsg:ReadVector(), usrMsg:ReadAngle(), usrMsg:ReadEntity())
+	net.Receive("UD_UpdateWorldProp", function()
+		GAMEMODE:UpdateWorldProp(net.ReadInt(16), net.ReadString(), net.ReadVector(), net.ReadAngle(), net.ReadEntity())
 		GAMEMODE.MapEditor.UpatePanel()
 	end)
-	usermessage.Hook("UD_RemoveWorldProp", function(usrMsg)
-		GAMEMODE:RemoveWorldProp(usrMsg:ReadLong())
+	net.Receive("UD_RemoveWorldProp", function()
+		GAMEMODE:RemoveWorldProp(net.ReadInt(16))
 		GAMEMODE.MapEditor.UpatePanel()
 	end)
 end

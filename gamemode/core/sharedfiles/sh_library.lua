@@ -37,7 +37,7 @@ if CLIENT then
 	net.Receive("UD_UpdateLibrary", function()
 		LocalPlayer():AddBookToLibrary(net.ReadString())
 	end)
-	usermessage.Hook("UD_UpdateCurrentBook", function()
+	net.Receive("UD_UpdateCurrentBook", function()
 		LocalPlayer().CurrentStory = LocalPlayer().CurrentStory or ""
 		if not net.ReadBool() then
 			LocalPlayer().CurrentStory = LocalPlayer().CurrentStory .. net.ReadString()

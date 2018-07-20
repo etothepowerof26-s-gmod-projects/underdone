@@ -58,7 +58,7 @@ function Player:SetPaperDoll(strSlot, strItem)
 				self:UseItem(strChkItem)
 			end
 		end
-		SendUsrMsg("UD_UpdatePaperDoll", player.GetAll(), {self, strSlot, self:GetSlot(strSlot)})
+		SendNetworkMessage("UD_UpdatePaperDoll", player.GetAll(), {self, strSlot, self:GetSlot(strSlot)})
 		self:SaveGame()
 	end
 end

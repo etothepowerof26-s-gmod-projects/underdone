@@ -5,7 +5,6 @@ local CleanUpTime = 168 --1 Week
 GM.Auctions = {}
 
 if SERVER then
-	util.AddNetworkString("UD_UpdateAuctions")
 
 	function GM:AddAuction(Seller, Item, Amount, SellPrice)
 		if not IsValid(Seller) or not Seller:HasItem(Item, Amount) then return false end
