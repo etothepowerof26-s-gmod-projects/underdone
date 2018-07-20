@@ -9,8 +9,8 @@ function DeriveTable(WantedTable)
 	end
 	return NewTable
 end
-function QuickCreateItemTable(DeriveTable, Name, PrintName, strDesc, strIcon)
-	local NewItem = DeriveTable(DeriveTable)
+function QuickCreateItemTable(DTable, Name, PrintName, strDesc, strIcon)
+	local NewItem = DeriveTable(DTable)
 	NewItem.Name = Name
 	NewItem.PrintName = PrintName
 	NewItem.Desc = strDesc

@@ -11,7 +11,7 @@ function PANEL:PerformLayout()
 end
 
 function PANEL:CreateHelp()
-	local s = GM.Author
+	local s = GAMEMODE.Author
 	s = s:gsub("Polkm, ", "")
 	FAQ[1] = {Text = "What is this?", Color = White}
 	FAQ[2] = {Text = "This is a gamemode called underdone, It's an RPG by @Polkm, refurbished by " .. s .. ".", Color = DrakGray}
