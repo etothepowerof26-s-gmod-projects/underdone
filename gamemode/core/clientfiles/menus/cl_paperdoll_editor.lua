@@ -9,216 +9,216 @@ GM.PaperDollEditor.CurrentCamDistance = nil
 if not game.SinglePlayer() then return end
 
 function GM.PaperDollEditor.OpenPaperDollEditor()
-	local frmPaperDollFrame = vgui.Create("DFrame")
-	frmPaperDollFrame.Paint = function()
-		local tblPaintPanel = jdraw.NewPanel()
-		tblPaintPanel:SetDimensions(0, 0, frmPaperDollFrame:GetWide(), frmPaperDollFrame:GetTall())
-		tblPaintPanel:SetStyle(4, clrTan)
-		tblPaintPanel:SetBorder(1, clrDrakGray)
-		jdraw.DrawPanel(tblPaintPanel)
-		local tblPaintPanel = jdraw.NewPanel()
-		tblPaintPanel:SetDimensions(5, 5, frmPaperDollFrame:GetWide() - 10, 15)
-		tblPaintPanel:SetStyle(4, clrGray)
-		tblPaintPanel:SetBorder(1, clrDrakGray)
-		jdraw.DrawPanel(tblPaintPanel)
+	local PaperDollFrame = vgui.Create("DFrame")
+	PaperDollFrame.Paint = function()
+		local PaintPanel = jdraw.NewPanel()
+		PaintPanel:SetDimensions(0, 0, PaperDollFrame:GetWide(), PaperDollFrame:GetTall())
+		PaintPanel:SetStyle(4, clrTan)
+		PaintPanel:SetBorder(1, clrDrakGray)
+		jdraw.DrawPanel(PaintPanel)
+		local PaintPanel = jdraw.NewPanel()
+		PaintPanel:SetDimensions(5, 5, PaperDollFrame:GetWide() - 10, 15)
+		PaintPanel:SetStyle(4, clrGray)
+		PaintPanel:SetBorder(1, clrDrakGray)
+		jdraw.DrawPanel(PaintPanel)
 	end
-	local pnlControlsList = vgui.Create("DPanelList", frmPaperDollFrame)
-	pnlControlsList.Paint = function()
-		local tblPaintPanel = jdraw.NewPanel()
-		tblPaintPanel:SetDimensions(0, 0, pnlControlsList:GetWide(), pnlControlsList:GetTall())
-		tblPaintPanel:SetStyle(4, clrDrakGray)
-		tblPaintPanel:SetBorder(2, clrDrakGray)
-		jdraw.DrawPanel(tblPaintPanel)
+	local ControlsList = vgui.Create("DPanelList", PaperDollFrame)
+	ControlsList.Paint = function()
+		local PaintPanel = jdraw.NewPanel()
+		PaintPanel:SetDimensions(0, 0, ControlsList:GetWide(), ControlsList:GetTall())
+		PaintPanel:SetStyle(4, clrDrakGray)
+		PaintPanel:SetBorder(2, clrDrakGray)
+		jdraw.DrawPanel(PaintPanel)
 	end
-	local mlcSlotSellector = vgui.Create("DComboBox")
-	pnlControlsList:AddItem(mlcSlotSellector)
-	local mlcObjectSellector = vgui.Create("DComboBox")
-	pnlControlsList:AddItem(mlcObjectSellector)
-	local cpcVectorControls = GAMEMODE.PaperDollEditor.AddVectorControls(pnlControlsList)
-	local cpcAngleControls = GAMEMODE.PaperDollEditor.AddAngleControls(pnlControlsList)
-	local cpcCameraControls = GAMEMODE.PaperDollEditor.AddCameraControls(pnlControlsList)
-	local btnPrintButton = vgui.Create("DButton")
-	pnlControlsList:AddItem(btnPrintButton)
-	btnPrintButton.Paint = function()
-		local tblPaintPanel = jdraw.NewPanel()
-		tblPaintPanel:SetDimensions(0, 0, btnPrintButton:GetWide(), btnPrintButton:GetTall())
-		tblPaintPanel:SetStyle(4, clrGray)
-		tblPaintPanel:SetBorder(2, clrTan)
-		jdraw.DrawPanel(tblPaintPanel)
+	local SlotSellector = vgui.Create("DComboBox")
+	ControlsList:AddItem(SlotSellector)
+	local ObjectSellector = vgui.Create("DComboBox")
+	ControlsList:AddItem(ObjectSellector)
+	local VectorControls = GAMEMODE.PaperDollEditor.AddVectorControls(ControlsList)
+	local AngleControls = GAMEMODE.PaperDollEditor.AddAngleControls(ControlsList)
+	local CameraControls = GAMEMODE.PaperDollEditor.AddCameraControls(ControlsList)
+	local PrintButton = vgui.Create("DButton")
+	ControlsList:AddItem(PrintButton)
+	PrintButton.Paint = function()
+		local PaintPanel = jdraw.NewPanel()
+		PaintPanel:SetDimensions(0, 0, PrintButton:GetWide(), PrintButton:GetTall())
+		PaintPanel:SetStyle(4, clrGray)
+		PaintPanel:SetBorder(2, clrTan)
+		jdraw.DrawPanel(PaintPanel)
 	end
 
-	frmPaperDollFrame:SetPos(50, 50)
-	frmPaperDollFrame:SetSize(325, 450)
-	frmPaperDollFrame:SetTitle("Paper Doll Editor")
-	frmPaperDollFrame:SetVisible(true)
-	frmPaperDollFrame:SetDraggable(true)
-	frmPaperDollFrame:ShowCloseButton(true)
-	frmPaperDollFrame:MakePopup()
-	frmPaperDollFrame.btnClose.DoClick = function(btn)
-		frmPaperDollFrame:Close()
+	PaperDollFrame:SetPos(50, 50)
+	PaperDollFrame:SetSize(325, 450)
+	PaperDollFrame:SetTitle("Paper Doll Editor")
+	PaperDollFrame:SetVisible(true)
+	PaperDollFrame:SetDraggable(true)
+	PaperDollFrame:ShowCloseButton(true)
+	PaperDollFrame:MakePopup()
+	PaperDollFrame.Close.DoClick = function()
+		PaperDollFrame:Close()
 		GAMEMODE.PaperDollEditor.CurrentCamRotation = nil
 		GAMEMODE.PaperDollEditor.CurrentCamDistance = nil
 	end
 
-	pnlControlsList:SetPos(5, 30)
-	pnlControlsList:SetSize(frmPaperDollFrame:GetWide() - 10, frmPaperDollFrame:GetTall() - 35)
-	pnlControlsList:EnableHorizontal(false)
-	pnlControlsList:EnableVerticalScrollbar(true)
-	pnlControlsList:SetSpacing(5)
-	pnlControlsList:SetPadding(5)
+	ControlsList:SetPos(5, 30)
+	ControlsList:SetSize(PaperDollFrame:GetWide() - 10, PaperDollFrame:GetTall() - 35)
+	ControlsList:EnableHorizontal(false)
+	ControlsList:EnableVerticalScrollbar(true)
+	ControlsList:SetSpacing(5)
+	ControlsList:SetPadding(5)
 
-	mlcSlotSellector:SetText("Pick the slot")
-	mlcSlotSellector:SetDisabled(false)
+	SlotSellector:SetText("Pick the slot")
+	SlotSellector:SetDisabled(false)
 	for name, slot in pairs(GAMEMODE.DataBase.Slots) do
-		mlcSlotSellector:AddChoice(name)
+		SlotSellector:AddChoice(name)
 	end
-	mlcSlotSellector.OnSelect = function(index, value, data)
+	SlotSellector.OnSelect = function(index, value, data)
 		GAMEMODE.PaperDollEditor.CurrentSlot = data
-		mlcObjectSellector:Clear()
-		mlcObjectSellector:AddChoice(1)
-		mlcObjectSellector:ChooseOptionID(1)
+		ObjectSellector:Clear()
+		ObjectSellector:AddChoice(1)
+		ObjectSellector:ChooseOptionID(1)
 		if GAMEMODE.PaperDollEnts[LocalPlayer():SteamID64()] then
 			for k, v in pairs(GAMEMODE.PaperDollEnts[LocalPlayer():SteamID64()][data].Children or {}) do
-				mlcObjectSellector:AddChoice(k + 1)
+				ObjectSellector:AddChoice(k + 1)
 			end
 		end
 	end
-	mlcObjectSellector:SetDisabled(false)
-	mlcObjectSellector.OnSelect = function(index, value, data)
+	ObjectSellector:SetDisabled(false)
+	ObjectSellector.OnSelect = function(index, value, data)
 		data = tonumber(data)
 		GAMEMODE.PaperDollEditor.CurrentObject = data
-		local strItem = LocalPlayer().Data.Paperdoll[GAMEMODE.PaperDollEditor.CurrentSlot]
-		local tblItemTable = GAMEMODE.DataBase.Items[strItem]
-		if tblItemTable and tblItemTable.Model[data] then
-			GAMEMODE.PaperDollEditor.CurrentAddedVector = tblItemTable.Model[data].Position
-			GAMEMODE.PaperDollEditor.CurrentAddedAngle = tblItemTable.Model[data].Angle
-			cpcVectorControls.UpdateNewValues(tblItemTable.Model[data].Position)
-			cpcAngleControls.UpdateNewValues(tblItemTable.Model[data].Angle)
+		local Item = LocalPlayer().Data.Paperdoll[GAMEMODE.PaperDollEditor.CurrentSlot]
+		local ItemTable = GAMEMODE.DataBase.Items[Item]
+		if ItemTable and ItemTable.Model[data] then
+			GAMEMODE.PaperDollEditor.CurrentAddedVector = ItemTable.Model[data].Position
+			GAMEMODE.PaperDollEditor.CurrentAddedAngle = ItemTable.Model[data].Angle
+			VectorControls.UpdateNewValues(ItemTable.Model[data].Position)
+			AngleControls.UpdateNewValues(ItemTable.Model[data].Angle)
 		end
 	end
-	btnPrintButton:SetText("Copy Info to Clipboard")
-	btnPrintButton.DoClick = function(btnPrintButton) GAMEMODE.PaperDollEditor.PrintNewDementions() end
+	PrintButton:SetText("Copy Info to Clipboard")
+	PrintButton.DoClick = function(PrintButton) GAMEMODE.PaperDollEditor.PrintNewDementions() end
 end
 concommand.Add("UD_Dev_EditPaperDoll", function() GAMEMODE.PaperDollEditor.OpenPaperDollEditor() end)
 
-function GM.PaperDollEditor.AddVectorControls(pnlAddList)
-	local cpcNewCollapseCat = GAMEMODE.PaperDollEditor.CreateGenericCollapse(pnlAddList, "Offset Controls")
-	cpcNewCollapseCat.Paint = function()
-		local tblPaintPanel = jdraw.NewPanel()
-		tblPaintPanel:SetDimensions(0, 0, cpcNewCollapseCat:GetWide(), cpcNewCollapseCat:GetTall())
-		tblPaintPanel:SetStyle(4, clrTan)
-		tblPaintPanel:SetBorder(1, clrDrakGray)
-		jdraw.DrawPanel(tblPaintPanel)
+function GM.PaperDollEditor.AddVectorControls(AddList)
+	local NewCollapseCat = GAMEMODE.PaperDollEditor.CreateGenericCollapse(AddList, "Offset Controls")
+	NewCollapseCat.Paint = function()
+		local PaintPanel = jdraw.NewPanel()
+		PaintPanel:SetDimensions(0, 0, NewCollapseCat:GetWide(), NewCollapseCat:GetTall())
+		PaintPanel:SetStyle(4, clrTan)
+		PaintPanel:SetBorder(1, clrDrakGray)
+		jdraw.DrawPanel(PaintPanel)
 	end
-	local nmsNewXSlider = GAMEMODE.PaperDollEditor.CreateGenericSlider(cpcNewCollapseCat.List, "X Axis", 30)
-	nmsNewXSlider.ValueChanged = function(self, value) GAMEMODE.PaperDollEditor.CurrentAddedVector.x = value end
-	local nmsNewYSlider = GAMEMODE.PaperDollEditor.CreateGenericSlider(cpcNewCollapseCat.List, "Y Axis", 30)
-	nmsNewYSlider.ValueChanged = function(self, value) GAMEMODE.PaperDollEditor.CurrentAddedVector.y = value end
-	local nmsNewZSlider = GAMEMODE.PaperDollEditor.CreateGenericSlider(cpcNewCollapseCat.List, "Z Axis", 30)
-	nmsNewZSlider.ValueChanged = function(self, value) GAMEMODE.PaperDollEditor.CurrentAddedVector.z = value end
-	cpcNewCollapseCat.UpdateNewValues = function(vecNewOffset)
-		nmsNewXSlider.UpdateSlider(vecNewOffset.x)
-		nmsNewYSlider.UpdateSlider(vecNewOffset.y)
-		nmsNewZSlider.UpdateSlider(vecNewOffset.z)
+	local NewXSlider = GAMEMODE.PaperDollEditor.CreateGenericSlider(NewCollapseCat.List, "X Axis", 30)
+	NewXSlider.ValueChanged = function(self, value) GAMEMODE.PaperDollEditor.CurrentAddedVector.x = value end
+	local NewYSlider = GAMEMODE.PaperDollEditor.CreateGenericSlider(NewCollapseCat.List, "Y Axis", 30)
+	NewYSlider.ValueChanged = function(self, value) GAMEMODE.PaperDollEditor.CurrentAddedVector.y = value end
+	local NewZSlider = GAMEMODE.PaperDollEditor.CreateGenericSlider(NewCollapseCat.List, "Z Axis", 30)
+	NewZSlider.ValueChanged = function(self, value) GAMEMODE.PaperDollEditor.CurrentAddedVector.z = value end
+	NewCollapseCat.UpdateNewValues = function(vecNewOffset)
+		NewXSlider.UpdateSlider(vecNewOffset.x)
+		NewYSlider.UpdateSlider(vecNewOffset.y)
+		NewZSlider.UpdateSlider(vecNewOffset.z)
 	end
-	cpcNewCollapseCat.List.Paint = function()
-		local tblPaintPanel = jdraw.NewPanel()
-		tblPaintPanel:SetDimensions(0, 0, cpcNewCollapseCat.List:GetWide(), cpcNewCollapseCat.List:GetTall())
-		tblPaintPanel:SetStyle(4, clrDrakGray)
-		tblPaintPanel:SetBorder(1, clrTan)
-		jdraw.DrawPanel(tblPaintPanel)
+	NewCollapseCat.List.Paint = function()
+		local PaintPanel = jdraw.NewPanel()
+		PaintPanel:SetDimensions(0, 0, NewCollapseCat.List:GetWide(), NewCollapseCat.List:GetTall())
+		PaintPanel:SetStyle(4, clrDrakGray)
+		PaintPanel:SetBorder(1, clrTan)
+		jdraw.DrawPanel(PaintPanel)
 	end
-	return cpcNewCollapseCat
+	return NewCollapseCat
 end
 
-function GM.PaperDollEditor.AddAngleControls(pnlAddList)
-	local cpcNewCollapseCat = GAMEMODE.PaperDollEditor.CreateGenericCollapse(pnlAddList, "Angle Controls")
-	cpcNewCollapseCat.Paint = function()
-		local tblPaintPanel = jdraw.NewPanel()
-		tblPaintPanel:SetDimensions(0, 0, cpcNewCollapseCat:GetWide(), cpcNewCollapseCat:GetTall())
-		tblPaintPanel:SetStyle(4, clrTan)
-		tblPaintPanel:SetBorder(1, clrDrakGray)
-		jdraw.DrawPanel(tblPaintPanel)
+function GM.PaperDollEditor.AddAngleControls(AddList)
+	local NewCollapseCat = GAMEMODE.PaperDollEditor.CreateGenericCollapse(AddList, "Angle Controls")
+	NewCollapseCat.Paint = function()
+		local PaintPanel = jdraw.NewPanel()
+		PaintPanel:SetDimensions(0, 0, NewCollapseCat:GetWide(), NewCollapseCat:GetTall())
+		PaintPanel:SetStyle(4, clrTan)
+		PaintPanel:SetBorder(1, clrDrakGray)
+		jdraw.DrawPanel(PaintPanel)
 	end
-	local nmsNewPitchSlider = GAMEMODE.PaperDollEditor.CreateGenericSlider(cpcNewCollapseCat.List, "Pitch", 180)
-	nmsNewPitchSlider.ValueChanged = function(self, value) GAMEMODE.PaperDollEditor.CurrentAddedAngle.p = value end
-	local nmsNewYawSlider = GAMEMODE.PaperDollEditor.CreateGenericSlider(cpcNewCollapseCat.List, "Yaw", 180)
-	nmsNewYawSlider.ValueChanged = function(self, value) GAMEMODE.PaperDollEditor.CurrentAddedAngle.y = value end
-	local nmsNewRollSlider = GAMEMODE.PaperDollEditor.CreateGenericSlider(cpcNewCollapseCat.List, "Roll", 180)
-	nmsNewRollSlider.ValueChanged = function(self, value) GAMEMODE.PaperDollEditor.CurrentAddedAngle.r = value end
-	cpcNewCollapseCat.UpdateNewValues = function(angNewAngle)
-		nmsNewPitchSlider.UpdateSlider(angNewAngle.p)
-		nmsNewYawSlider.UpdateSlider(angNewAngle.y)
-		nmsNewRollSlider.UpdateSlider(angNewAngle.r)
+	local NewPitchSlider = GAMEMODE.PaperDollEditor.CreateGenericSlider(NewCollapseCat.List, "Pitch", 180)
+	NewPitchSlider.ValueChanged = function(self, value) GAMEMODE.PaperDollEditor.CurrentAddedAngle.p = value end
+	local NewYawSlider = GAMEMODE.PaperDollEditor.CreateGenericSlider(NewCollapseCat.List, "Yaw", 180)
+	NewYawSlider.ValueChanged = function(self, value) GAMEMODE.PaperDollEditor.CurrentAddedAngle.y = value end
+	local NewRollSlider = GAMEMODE.PaperDollEditor.CreateGenericSlider(NewCollapseCat.List, "Roll", 180)
+	NewRollSlider.ValueChanged = function(self, value) GAMEMODE.PaperDollEditor.CurrentAddedAngle.r = value end
+	NewCollapseCat.UpdateNewValues = function(angNewAngle)
+		NewPitchSlider.UpdateSlider(angNewAngle.p)
+		NewYawSlider.UpdateSlider(angNewAngle.y)
+		NewRollSlider.UpdateSlider(angNewAngle.r)
 	end
-	cpcNewCollapseCat.List.Paint = function()
-		local tblPaintPanel = jdraw.NewPanel()
-		tblPaintPanel:SetDimensions(0, 0, cpcNewCollapseCat.List:GetWide(), cpcNewCollapseCat.List:GetTall())
-		tblPaintPanel:SetStyle(4, clrDrakGray)
-		tblPaintPanel:SetBorder(1, clrTan)
-		jdraw.DrawPanel(tblPaintPanel)
+	NewCollapseCat.List.Paint = function()
+		local PaintPanel = jdraw.NewPanel()
+		PaintPanel:SetDimensions(0, 0, NewCollapseCat.List:GetWide(), NewCollapseCat.List:GetTall())
+		PaintPanel:SetStyle(4, clrDrakGray)
+		PaintPanel:SetBorder(1, clrTan)
+		jdraw.DrawPanel(PaintPanel)
 	end
-	return cpcNewCollapseCat
+	return NewCollapseCat
 end
 
-function GM.PaperDollEditor.AddCameraControls(pnlAddList)
-	local cpcNewCollapseCat = GAMEMODE.PaperDollEditor.CreateGenericCollapse(pnlAddList, "Camera Controls")
-	cpcNewCollapseCat.Paint = function()
-		local tblPaintPanel = jdraw.NewPanel()
-		tblPaintPanel:SetDimensions(0, 0, cpcNewCollapseCat:GetWide(), cpcNewCollapseCat:GetTall())
-		tblPaintPanel:SetStyle(4, clrTan)
-		tblPaintPanel:SetBorder(1, clrDrakGray)
-		jdraw.DrawPanel(tblPaintPanel)
+function GM.PaperDollEditor.AddCameraControls(AddList)
+	local NewCollapseCat = GAMEMODE.PaperDollEditor.CreateGenericCollapse(AddList, "Camera Controls")
+	NewCollapseCat.Paint = function()
+		local PaintPanel = jdraw.NewPanel()
+		PaintPanel:SetDimensions(0, 0, NewCollapseCat:GetWide(), NewCollapseCat:GetTall())
+		PaintPanel:SetStyle(4, clrTan)
+		PaintPanel:SetBorder(1, clrDrakGray)
+		jdraw.DrawPanel(PaintPanel)
 	end
-	local nmsNewRotationSlider = GAMEMODE.PaperDollEditor.CreateGenericSlider(cpcNewCollapseCat.List, "Rotation", 180, 3)
-	nmsNewRotationSlider.ValueChanged = function(self, value) GAMEMODE.PaperDollEditor.CurrentCamRotation = value end
-	local nmsNewDistanceSlider = GAMEMODE.PaperDollEditor.CreateGenericSlider(cpcNewCollapseCat.List, "Distance", 90)
-	nmsNewDistanceSlider.ValueChanged = function(self, value) GAMEMODE.PaperDollEditor.CurrentCamDistance = value end
-	cpcNewCollapseCat.List.Paint = function()
-		local tblPaintPanel = jdraw.NewPanel()
-		tblPaintPanel:SetDimensions(0, 0, cpcNewCollapseCat.List:GetWide(), cpcNewCollapseCat.List:GetTall())
-		tblPaintPanel:SetStyle(4, clrDrakGray)
-		tblPaintPanel:SetBorder(1, clrTan)
-		jdraw.DrawPanel(tblPaintPanel)
+	local NewRotationSlider = GAMEMODE.PaperDollEditor.CreateGenericSlider(NewCollapseCat.List, "Rotation", 180, 3)
+	NewRotationSlider.ValueChanged = function(self, value) GAMEMODE.PaperDollEditor.CurrentCamRotation = value end
+	local NewDistanceSlider = GAMEMODE.PaperDollEditor.CreateGenericSlider(NewCollapseCat.List, "Distance", 90)
+	NewDistanceSlider.ValueChanged = function(self, value) GAMEMODE.PaperDollEditor.CurrentCamDistance = value end
+	NewCollapseCat.List.Paint = function()
+		local PaintPanel = jdraw.NewPanel()
+		PaintPanel:SetDimensions(0, 0, NewCollapseCat.List:GetWide(), NewCollapseCat.List:GetTall())
+		PaintPanel:SetStyle(4, clrDrakGray)
+		PaintPanel:SetBorder(1, clrTan)
+		jdraw.DrawPanel(PaintPanel)
 	end
-	return cpcNewCollapseCat
+	return NewCollapseCat
 end
 
-function GM.PaperDollEditor.CreateGenericCollapse(pnlAddList, strName)
-	local cpcNewCollapseCat = vgui.Create("DCollapsibleCategory")
-	cpcNewCollapseCat:SetLabel(strName)
-	cpcNewCollapseCat.List = vgui.Create("DPanelList")
-	cpcNewCollapseCat.List:SetAutoSize(true)
-	cpcNewCollapseCat.List:SetSpacing(5)
-	cpcNewCollapseCat.List:SetPadding(2)
-	cpcNewCollapseCat.List:EnableHorizontal(false)
-	cpcNewCollapseCat:SetContents(cpcNewCollapseCat.List)
-	pnlAddList:AddItem(cpcNewCollapseCat)
-	return cpcNewCollapseCat
+function GM.PaperDollEditor.CreateGenericCollapse(AddList, Name)
+	local NewCollapseCat = vgui.Create("DCollapsibleCategory")
+	NewCollapseCat:SetLabel(Name)
+	NewCollapseCat.List = vgui.Create("DPanelList")
+	NewCollapseCat.List:SetAutoSize(true)
+	NewCollapseCat.List:SetSpacing(5)
+	NewCollapseCat.List:SetPadding(2)
+	NewCollapseCat.List:EnableHorizontal(false)
+	NewCollapseCat:SetContents(NewCollapseCat.List)
+	AddList:AddItem(NewCollapseCat)
+	return NewCollapseCat
 end
 
-function GM.PaperDollEditor.CreateGenericSlider(pnlAddList, strName, intRange, intDecimals)
-	local nmsNewSlider = vgui.Create("DNumSlider")
-	if not intRange then intRange = 50 end
-	nmsNewSlider:SetText(strName)
-	nmsNewSlider:SetMin(-intRange)
-	nmsNewSlider:SetMax(intRange)
-	nmsNewSlider:SetDecimals(intDecimals or 1)
-	nmsNewSlider.UpdateSlider = function(intNewValue)
-		nmsNewSlider:SetValue(intNewValue)
-		nmsNewSlider.Slider:SetSlideX(nmsNewSlider.Wang:GetFraction())
+function GM.PaperDollEditor.CreateGenericSlider(AddList, Name, Range, Decimals)
+	local NewSlider = vgui.Create("DNumSlider")
+	if not Range then Range = 50 end
+	NewSlider:SetText(Name)
+	NewSlider:SetMin(-Range)
+	NewSlider:SetMax(Range)
+	NewSlider:SetDecimals(Decimals or 1)
+	NewSlider.UpdateSlider = function(NewValue)
+		NewSlider:SetValue(NewValue)
+		NewSlider.Slider:SetSlideX(NewSlider.Wang:GetFraction())
 	end
-	pnlAddList:AddItem(nmsNewSlider)
-	return nmsNewSlider
+	AddList:AddItem(NewSlider)
+	return NewSlider
 end
 
 function GM.PaperDollEditor.PrintNewDementions()
-	local vecVector = GAMEMODE.PaperDollEditor.CurrentAddedVector
-	local intX, intY, intZ = math.Round(vecVector.x * 10) / 10, math.Round(vecVector.y * 10) / 10, math.Round(vecVector.z * 10) / 10
-	local strVector = tostring(intX .. ", " .. intY .. ", " .. intZ)
-	local angAngle = GAMEMODE.PaperDollEditor.CurrentAddedAngle
-	local intPitch, intYaw, intRoll = math.Round(angAngle.p * 10) / 10, math.Round(angAngle.y * 10) / 10, math.Round(angAngle.r * 10) / 10
-	local strAngle = tostring(intPitch .. ", " .. intYaw .. ", " .. intRoll)
-	print("Vector(" .. strVector .. "), Angle(" .. strAngle .. ")")
-	SetClipboardText("Vector(" .. strVector .. "), Angle(" .. strAngle .. ")")
+	local AVector = GAMEMODE.PaperDollEditor.CurrentAddedVector
+	local X, Y, Z = math.Round(AVector.x * 10) / 10, math.Round(AVector.y * 10) / 10, math.Round(AVector.z * 10) / 10
+	local Vector_String = tostring(X .. ", " .. Y .. ", " .. Z)
+	local AAngle = GAMEMODE.PaperDollEditor.CurrentAddedAngle
+	local Pitch, Yaw, Roll = math.Round(AAngle.p * 10) / 10, math.Round(AAngle.y * 10) / 10, math.Round(AAngle.r * 10) / 10
+	local Angle_String = tostring(Pitch .. ", " .. Yaw .. ", " .. Roll)
+	print("Vector(" .. Vector_String .. "), Angle(" .. Angle_String .. ")")
+	SetClipboardText("Vector(" .. Vector_String .. "), Angle(" .. Angle_String .. ")")
 end
