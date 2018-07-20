@@ -7,7 +7,7 @@ PANEL.ItemIconSize = 39
 
 function PANEL:Init()
 	self.Frame = CreateGenericFrame("Quest Menu", false, true)
-	self.Frame.btnClose.DoClick = function(btn)
+	self.Frame.Close.DoClick = function()
 		GAMEMODE.QuestMenu.Frame:Close()
 		GAMEMODE.QuestMenu = nil
 	end
@@ -20,89 +20,88 @@ function PANEL:Init()
 	self:PerformLayout()
 end
 
-function PANEL:LoadQuests(tblQuests)
-	tblQuests = self.QuestTable or tblQuests
-	self.QuestTable = tblQuests
+function PANEL:LoadQuests(Quests)
+	Quests = self.QuestTable or Quests
+	self.QuestTable = Quests
 	self.QuestList:Clear()
-	for _, strQuest in pairs(tblQuests) do
-		local tblQuestTable = QuestTable(strQuest)
-		if not tblQuestTable.QuestNeeded or (tblQuestTable.QuestNeeded and LocalPlayer():HasCompletedQuest(tblQuestTable.QuestNeeded)) then
-			local ltmQuest = vgui.Create("FListItem")
-			ltmQuest:SetHeaderSize(20)
-			ltmQuest:SetFont("UiBold")
-			ltmQuest:SetNameText(tblQuestTable.PrintName)
-			ltmQuest:SetDescText("level " .. tblQuestTable.Level .. "+")
-			ltmQuest.DoClick = function() self:SellectQuest(strQuest) end
-			if LocalPlayer():CanAcceptQuest(strQuest) then
-				ltmQuest:AddButton("gui/accept", "Accept Quest", function() RunConsoleCommand("UD_AcceptQuest", strQuest) end)
+	for _, Quest in pairs(Quests) do
+		local QuestTable = QuestTable(Quest)
+		if not QuestTable.QuestNeeded or (QuestTable.QuestNeeded and LocalPlayer():HasCompletedQuest(QuestTable.QuestNeeded)) then
+			local Quest = vgui.Create("FListItem")
+			Quest:SetHeaderSize(20)
+			Quest:SetFont("UiBold")
+			Quest:SetNameText(QuestTable.PrintName)
+			Quest:SetDescText("level " .. QuestTable.Level .. "+")
+			Quest.DoClick = function() self:SellectQuest(Quest) end
+			if LocalPlayer():CanAcceptQuest(Quest) then
+				Quest:AddButton("gui/accept", "Accept Quest", function() RunConsoleCommand("UD_AcceptQuest", Quest) end)
 			else
-				if LocalPlayer():GetQuest(strQuest) then
-					if LocalPlayer():GetQuest(strQuest).Done then
-						ltmQuest:SetDescText("Completed")
+				if LocalPlayer():GetQuest(Quest) then
+					if LocalPlayer():GetQuest(Quest).Done then
+						Quest:SetDescText("Completed")
 					else
-						if LocalPlayer():CanTurnInQuest(strQuest) then
-							ltmQuest:AddButton("gui/arrow_in", "Turn In Quest", function()
-								RunConsoleCommand("UD_TurnInQuest", strQuest)
-								self:SellectQuest(strQuest)
+						if LocalPlayer():CanTurnInQuest(Quest) then
+							Quest:AddButton("gui/arrow_in", "Turn In Quest", function()
+								RunConsoleCommand("UD_TurnInQuest", Quest)
+								self:SellectQuest(Quest)
 							end)
 						else
-							local btnTurnInButton = ltmQuest:AddButton("gui/arrow_in", "Can't Turn In Quest", function() end)
-							btnTurnInButton:SetAlpha(100)
+							local TurnInButton = Quest:AddButton("gui/arrow_in", "Can't Turn In Quest", function() end)
+							TurnInButton:SetAlpha(100)
 						end
 					end
 				else
-					--ltmQuest.DoClick = function() end
-					ltmQuest:SetAlpha(100)
+					Quest:SetAlpha(100)
 				end
 			end
-			self.QuestList:AddItem(ltmQuest)
+			self.QuestList:AddItem(Quest)
 		end
 	end
 end
 
-function PANEL:SellectQuest(strQuest)
+function PANEL:SellectQuest(Quest)
 	self.QuestDescription:Clear()
-	local tblQuestTable = QuestTable(strQuest)
-	local tblPlayerQuestTable = LocalPlayer():GetQuest(strQuest) or {}
-	if not tblQuestTable or not tblPlayerQuestTable then return end
-	self.QuestDescription:AddItem(CreateGenericLabel(nil, "MenuLarge", tblQuestTable.PrintName, clrWhite))
-	self.QuestDescription:AddItem(CreateGenericLabel(nil, nil, tblQuestTable.Story, clrDrakGray))
-	if tblPlayerQuestTable.Done and tblQuestTable.TurnInStory then
-		self.QuestDescription:AddItem(CreateGenericLabel(nil, nil, tblQuestTable.TurnInStory, clrDrakGray))
+	local QuestTable = QuestTable(Quest)
+	local PlayerQuestTable = LocalPlayer():GetQuest(Quest) or {}
+	if not QuestTable or not PlayerQuestTable then return end
+	self.QuestDescription:AddItem(CreateGenericLabel(nil, "MenuLarge", QuestTable.PrintName, White))
+	self.QuestDescription:AddItem(CreateGenericLabel(nil, nil, QuestTable.Story, DrakGray))
+	if PlayerQuestTable.Done and QuestTable.TurnInStory then
+		self.QuestDescription:AddItem(CreateGenericLabel(nil, nil, QuestTable.TurnInStory, DrakGray))
 	end
-	for strNPC, intAmount in pairs(tblQuestTable.Kill or {}) do
-		local tblNPCTable = NPCTable(strNPC)
-		local tblKillTable = tblPlayerQuestTable.Kills or {}
-		local intKillsGot = tblKillTable[strNPC] or 0
-		local strText = "Kill " .. math.Clamp(intKillsGot, 0, intAmount) .. "/" .. intAmount .. " " .. tblNPCTable.PrintName
-		if tblPlayerQuestTable.Done or intKillsGot >= intAmount then strText = strText .. " (Done)" end
-		self.QuestDescription:AddItem(CreateGenericLabel(nil, nil, strText, clrDrakGray))
+	for NPC, Amount in pairs(QuestTable.Kill or {}) do
+		local NPCTable = NPCTable(NPC)
+		local KillTable = PlayerQuestTable.Kills or {}
+		local KillsGot = KillTable[NPC] or 0
+		local Text = "Kill " .. math.Clamp(KillsGot, 0, Amount) .. "/" .. Amount .. " " .. NPCTable.PrintName
+		if PlayerQuestTable.Done or KillsGot >= Amount then Text = Text .. " (Done)" end
+		self.QuestDescription:AddItem(CreateGenericLabel(nil, nil, Text, DrakGray))
 	end
-	for strItem, intAmount in pairs(tblQuestTable.ObtainItems or {}) do
-		local tblItemTable = ItemTable(strItem)
-		local intItemsGot = LocalPlayer():GetItem(strItem) or 0
-		local strText = "Get " .. math.Clamp(intItemsGot, 0, intAmount) .. "/" .. intAmount .. " " .. tblItemTable.PrintName
-		if tblPlayerQuestTable.Done or intItemsGot >= intAmount then strText = strText .. " (Done)" end
-		self.QuestDescription:AddItem(CreateGenericLabel(nil, nil, strText, clrDrakGray))
+	for Item, Amount in pairs(QuestTable.ObtainItems or {}) do
+		local ItemTable = ItemTable(Item)
+		local ItemsGot = LocalPlayer():GetItem(Item) or 0
+		local Text = "Get " .. math.Clamp(ItemsGot, 0, Amount) .. "/" .. Amount .. " " .. ItemTable.PrintName
+		if PlayerQuestTable.Done or ItemsGot >= Amount then Text = Text .. " (Done)" end
+		self.QuestDescription:AddItem(CreateGenericLabel(nil, nil, Text, DrakGray))
 	end
-	self.QuestDescription:AddItem(CreateGenericLabel(nil, nil, "/n Rewards:", clrDrakGray))
-	if tblQuestTable.GainedExp or 0 > 0 then
-		self.QuestDescription:AddItem(CreateGenericLabel(nil, nil, tblQuestTable.GainedExp .. " Exp", clrDrakGray))
+	self.QuestDescription:AddItem(CreateGenericLabel(nil, nil, "/n Rewards:", DrakGray))
+	if QuestTable.GainedExp or 0 > 0 then
+		self.QuestDescription:AddItem(CreateGenericLabel(nil, nil, QuestTable.GainedExp .. " Exp", DrakGray))
 	end
-	local lstItemReward = nil
-	for strItem, intAmount in pairs(tblQuestTable.GainedItems or {}) do
-		if not lstItemReward then
-			lstItemReward = CreateGenericList(nil, 1, true, false)
-			lstItemReward:SetTall(self.ItemIconSize + 2)
-			lstItemReward.Paint = function() end
-			self.QuestDescription:AddItem(lstItemReward)
+	local ItemReward = nil
+	for Item, Amount in pairs(QuestTable.GainedItems or {}) do
+		if not ItemReward then
+			ItemReward = CreateGenericList(nil, 1, true, false)
+			ItemReward:SetTall(self.ItemIconSize + 2)
+			ItemReward.Paint = function() end
+			self.QuestDescription:AddItem(ItemReward)
 		end
-		local tblItemTable = ItemTable(strItem)
-		local icnItem = vgui.Create("FIconItem")
-		icnItem:SetSize(self.ItemIconSize, self.ItemIconSize)
-		icnItem:SetItem(tblItemTable, intAmount, "")
-		icnItem:SetDragable(false)
-		lstItemReward:AddItem(icnItem)
+		local ItemTable = ItemTable(Item)
+		local Item = vgui.Create("FIconItem")
+		Item:SetSize(self.ItemIconSize, self.ItemIconSize)
+		Item:SetItem(ItemTable, Amount, "")
+		Item:SetDragable(false)
+		ItemReward:AddItem(Item)
 	end
 
 	self.QuestDescription:InvalidateLayout()
@@ -121,8 +120,8 @@ vgui.Register("questmenu", PANEL, "Panel")
 
 concommand.Add("UD_OpenQuestMenu", function(ply, command, args)
 	local npc = ply:GetEyeTrace().Entity
-	local tblNPCTable = NPCTable(npc:GetNWString("npc"))
-	if not IsValid(npc) or not tblNPCTable or not tblNPCTable.Quest then return end
+	local NPCTable = NPCTable(npc:GetNWing("npc"))
+	if not IsValid(npc) or not NPCTable or not NPCTable.Quest then return end
 	GAMEMODE.QuestMenu = GAMEMODE.QuestMenu or vgui.Create("questmenu")
 	GAMEMODE.QuestMenu:SetSize(525, 320)
 	GAMEMODE.QuestMenu:Center()

@@ -3,13 +3,13 @@ PANEL = {}
 
 function PANEL:Init()
 	self.Frame = CreateGenericFrame("Book", true, true)
-	self.Frame.btnClose.DoClick = function(pnlPanel)
+	self.Frame.Close.DoClick = function(Panel)
 		GAMEMODE.ReadMenu.Frame:Close()
 		GAMEMODE.ReadMenu = nil
 	end
 	self.Frame:MakePopup()
 	self.TextList = CreateGenericList(self.Frame, 5, false, true)
-	self.StoryText = CreateGenericLabel(nil, nil, LocalPlayer().CurrentStory or "", clrDrakGray)
+	self.StoryText = CreateGenericLabel(nil, nil, LocalPlayer().CurrentStory or "", DrakGray)
 	self.TextList:AddItem(self.StoryText)
 	self:PerformLayout()
 end
