@@ -8,51 +8,51 @@ GM.ItemEditorSettings.CurrentEditingMat = nil
 GM.ItemEditorSettings.CurrentEditingScale = Vector(1, 1, 1)
 GM.ItemEditorSettings.CurrentCamRotation = nil
 GM.ItemEditorSettings.CurrentCamDistance = nil
-local intGlobalPadding = 5
-local intToolBarIconSize = 16
-local tblUsableMats = {}
-tblUsableMats[1] = "Models/props_c17/FurnitureMetal002a.vtf"
-tblUsableMats[2] = "Models/Gibs/metalgibs/metal_gibs.vtf"
-tblUsableMats[3] = "Models/props_building_details/courtyard_template001c_bars.vtf"
-tblUsableMats[4] = "Models/props_building_details/courtyard_template001c_bars_dark.vtf"
-tblUsableMats[5] = "Models/props_c17/Metalladder001.vtf"
-tblUsableMats[6] = "Models/props_c17/Metalladder002.vtf"
-tblUsableMats[7] = "Models/props_c17/Metalladder003.vtf"
-tblUsableMats[8] = "Models/props_junk/rock_junk001a.vtf"
-tblUsableMats[9] = "Models/props_lab/door_klab01.vtf"
-tblUsableMats[10] = "Models/props_pipes/GutterMetal01a.vtf"
-tblUsableMats[11] = "Models/props_pipes/pipeset_metal.vtf"
-tblUsableMats[12] = "Models/props_pipes/pipeset_metal02.vtf"
-tblUsableMats[13] = "Models/props_pipes/Pipesystem01a_skin3.vtf"
-tblUsableMats[14] = "Models/props_lab/cornerunit_cloud.vtf"
-tblUsableMats[15] = "Models/props_lab/glass_tint001.vtf"
-tblUsableMats[16] = "Models/props_wasteland/rockgranite02a.vtf"
-tblUsableMats[17] = "debug/env_cubemap_model.vtf"
-tblUsableMats[18] = "Models/props_mining/barrier.vtf"
-tblUsableMats[19] = "Models/props_mining/mesh_ceiling.vtf"
-tblUsableMats[20] = "Models/props_mining/stalactite_rock01.vtf"
-tblUsableMats[21] = "Models/props_mining/warehouse_ceiling01.vtf"
-tblUsableMats[22] = "Models/props_mining/wood_stack.vtf"
-tblUsableMats[23] = "Models/props_silo/de_train_handrails_01.vtf"
-tblUsableMats[24] = "Models/props_silo/de_train_handrails_02.vtf"
-tblUsableMats[25] = "Models/props_silo/fanglow.vtf"
-tblUsableMats[26] = "Models/props_silo/turret.vtf"
-tblUsableMats[27] = "Models/props_silo/transformer.vtf"
-tblUsableMats[28] = "Models/Magnusson_Teleporter/magnusson_teleporter_fxglow_off.vtf"
-tblUsableMats[29] = "Models/Magnusson_Teleporter/magnusson_teleporter_fxglow1.vtf"
-tblUsableMats[30] = "Models/grub_nugget/grub_nugget.vtf"
-tblUsableMats[31] = "Models/Combine_Turrets/combine_cannon.vtf"
-tblUsableMats[32] = "Models/effects/vol_lightmask01.vtf"
-tblUsableMats[33] = "Models/effects/vol_lightmask02.vtf"
-tblUsableMats[34] = "Models/Combine_Helicopter/helicopter_bomb01.vtf"
-tblUsableMats[35] = "Models/Combine_Helicopter/helicopter_bomb_off01.vtf"
+local GlobalPadding = 5
+local ToolBarIconSize = 16
+local UsableMats = {}
+UsableMats[1] = "Models/props_c17/FurnitureMetal002a.vtf"
+UsableMats[2] = "Models/Gibs/metalgibs/metal_gibs.vtf"
+UsableMats[3] = "Models/props_building_details/courtyard_template001c_bars.vtf"
+UsableMats[4] = "Models/props_building_details/courtyard_template001c_bars_dark.vtf"
+UsableMats[5] = "Models/props_c17/Metalladder001.vtf"
+UsableMats[6] = "Models/props_c17/Metalladder002.vtf"
+UsableMats[7] = "Models/props_c17/Metalladder003.vtf"
+UsableMats[8] = "Models/props_junk/rock_junk001a.vtf"
+UsableMats[9] = "Models/props_lab/door_klab01.vtf"
+UsableMats[10] = "Models/props_pipes/GutterMetal01a.vtf"
+UsableMats[11] = "Models/props_pipes/pipeset_metal.vtf"
+UsableMats[12] = "Models/props_pipes/pipeset_metal02.vtf"
+UsableMats[13] = "Models/props_pipes/Pipesystem01a_skin3.vtf"
+UsableMats[14] = "Models/props_lab/cornerunit_cloud.vtf"
+UsableMats[15] = "Models/props_lab/glass_tint001.vtf"
+UsableMats[16] = "Models/props_wasteland/rockgranite02a.vtf"
+UsableMats[17] = "debug/env_cubemap_model.vtf"
+UsableMats[18] = "Models/props_mining/barrier.vtf"
+UsableMats[19] = "Models/props_mining/mesh_ceiling.vtf"
+UsableMats[20] = "Models/props_mining/stalactite_rock01.vtf"
+UsableMats[21] = "Models/props_mining/warehouse_ceiling01.vtf"
+UsableMats[22] = "Models/props_mining/wood_stack.vtf"
+UsableMats[23] = "Models/props_silo/de_train_handrails_01.vtf"
+UsableMats[24] = "Models/props_silo/de_train_handrails_02.vtf"
+UsableMats[25] = "Models/props_silo/fanglow.vtf"
+UsableMats[26] = "Models/props_silo/turret.vtf"
+UsableMats[27] = "Models/props_silo/transformer.vtf"
+UsableMats[28] = "Models/Magnusson_Teleporter/magnusson_teleporter_fxglow_off.vtf"
+UsableMats[29] = "Models/Magnusson_Teleporter/magnusson_teleporter_fxglow1.vtf"
+UsableMats[30] = "Models/grub_nugget/grub_nugget.vtf"
+UsableMats[31] = "Models/Combine_Turrets/combine_cannon.vtf"
+UsableMats[32] = "Models/effects/vol_lightmask01.vtf"
+UsableMats[33] = "Models/effects/vol_lightmask02.vtf"
+UsableMats[34] = "Models/Combine_Helicopter/helicopter_bomb01.vtf"
+UsableMats[35] = "Models/Combine_Helicopter/helicopter_bomb_off01.vtf"
 
 if not game.SinglePlayer() then return end
 
 local PANEL = {}
 function PANEL:Init()
 	self.Frame = CreateGenericFrame("Item Editor", true, true)
-	self.Frame.btnClose.DoClick = function(pnlPanel)
+	self.Frame.Close.DoClick = function(Panel)
 		GAMEMODE.ItemEditor.Frame:Close()
 		GAMEMODE.ItemEditor = nil
 		GAMEMODE.ItemEditorSettings.CurrentCamRotation = nil
@@ -61,43 +61,43 @@ function PANEL:Init()
 
 	self.ToolBar = CreateGenericList(self.Frame, intGlobalPadding, true, false)
 	self:AddToolButton("icon16/folder_go.png", "Load Item", function()
-		local function fncGivePlayerItem(strItem)
-			RunConsoleCommand("ud_edit_items_giveitem", strItem)
+		local function fncGivePlayerItem(Item)
+			RunConsoleCommand("ud_edit_items_giveitem", Item)
 		end
-		local mnuLoadItems = DermaMenu()
-		local smnWeapons = mnuLoadItems:AddSubMenu("Weapons")
-			local smnWeaponsRanged = smnWeapons:AddSubMenu("Ranged")
-			local smnWeaponsMelee = smnWeapons:AddSubMenu("Melee")
-		local smnArmor = mnuLoadItems:AddSubMenu("Armor")
-			local smnArmorHelm = smnArmor:AddSubMenu("Helm")
-			local smnArmorChest = smnArmor:AddSubMenu("Chest")
-			local smnArmorShield = smnArmor:AddSubMenu("Shield")
-			local smnArmorShoulder = smnArmor:AddSubMenu("Shoulder")
-		for strItem, tblItemTable in pairs(GAMEMODE.DataBase.Items) do
-			if string.find(strItem, "weapon_") then
-				if string.find(strItem, "_ranged_") then
-					smnWeaponsRanged:AddOption(strItem, function() fncGivePlayerItem(strItem) end)
-				elseif string.find(strItem, "_melee_") then
-					smnWeaponsMelee:AddOption(strItem, function() fncGivePlayerItem(strItem) end)
+		local LoadItems = DermaMenu()
+		local Weapons = LoadItems:AddSubMenu("Weapons")
+			local WeaponsRanged = Weapons:AddSubMenu("Ranged")
+			local WeaponsMelee = Weapons:AddSubMenu("Melee")
+		local Armor = LoadItems:AddSubMenu("Armor")
+			local ArmorHelm = Armor:AddSubMenu("Helm")
+			local ArmorChest = Armor:AddSubMenu("Chest")
+			local ArmorShield = Armor:AddSubMenu("Shield")
+			local ArmorShoulder = Armor:AddSubMenu("Shoulder")
+		for Item, ItemTable in pairs(GAMEMODE.DataBase.Items) do
+			if string.find(Item, "weapon_") then
+				if string.find(Item, "_ranged_") then
+					WeaponsRanged:AddOption(Item, function() fncGivePlayerItem(Item) end)
+				elseif string.find(Item, "_melee_") then
+					WeaponsMelee:AddOption(Item, function() fncGivePlayerItem(Item) end)
 				else
-					smnWeapons:AddOption(strItem, function() fncGivePlayerItem(strItem) end)
+					Weapons:AddOption(Item, function() fncGivePlayerItem(Item) end)
 				end
 			end
-			if string.find(strItem, "armor_") then
-				if string.find(strItem, "_helm_") then
-					smnArmorHelm:AddOption(strItem, function() fncGivePlayerItem(strItem) end)
-				elseif string.find(strItem, "_chest_") then
-					smnArmorChest:AddOption(strItem, function() fncGivePlayerItem(strItem) end)
-				elseif string.find(strItem, "_sheild_") or string.find(strItem, "_shield_") then --Fuck my spelling ><
-					smnArmorShield:AddOption(strItem, function() fncGivePlayerItem(strItem) end)
-				elseif string.find(strItem, "_shoulder_") then
-					smnArmorShoulder:AddOption(strItem, function() fncGivePlayerItem(strItem) end)
+			if string.find(Item, "armor_") then
+				if string.find(Item, "_helm_") then
+					ArmorHelm:AddOption(Item, function() fncGivePlayerItem(Item) end)
+				elseif string.find(Item, "_chest_") then
+					ArmorChest:AddOption(Item, function() fncGivePlayerItem(Item) end)
+				elseif string.find(Item, "_sheild_") or string.find(Item, "_shield_") then --Fuck my spelling ><
+					ArmorShield:AddOption(Item, function() fncGivePlayerItem(Item) end)
+				elseif string.find(Item, "_shoulder_") then
+					ArmorShoulder:AddOption(Item, function() fncGivePlayerItem(Item) end)
 				else
-					smnArmor:AddOption(strItem, function() fncGivePlayerItem(strItem) end)
+					Armor:AddOption(Item, function() fncGivePlayerItem(Item) end)
 				end
 			end
 		end
-		mnuLoadItems:Open()
+		LoadItems:Open()
 	end)
 	self:AddToolButton("icon16/cross.png", "Clear Paperdoll", function()
 		RunConsoleCommand("ud_edit_items_clearpaperdoll")
@@ -124,168 +124,168 @@ function PANEL:PerformLayout()
 	self.ToolBar:SetSize(self:GetWide() - (intGlobalPadding * 2), intToolBarIconSize + (intGlobalPadding * 2))
 	self.ControlsList:SetPos(intGlobalPadding, 25 + self.ToolBar:GetTall() + intGlobalPadding)
 	self.ControlsList:SetSize(self:GetWide() - (intGlobalPadding * 2), self:GetTall() - (25 + self.ToolBar:GetTall() + (intGlobalPadding * 2)))
-	for _, pnlIcon in pairs(self.MatControls.Icons or {}) do
-		pnlIcon:SetSize(38, 38)
+	for _, Icon in pairs(self.MatControls.Icons or {}) do
+		Icon:SetSize(38, 38)
 	end
 end
 
-function PANEL:UpdateSellectors(strSlot)
+function PANEL:UpdateSellectors(Slot)
 	self.SlotSwitch:Clear()
-	for strInSlot, _ in pairs(LocalPlayer().Data.Paperdoll or {}) do
-		self.SlotSwitch:AddChoice(strInSlot)
+	for InSlot, _ in pairs(LocalPlayer().Data.Paperdoll or {}) do
+		self.SlotSwitch:AddChoice(InSlot)
 	end
-	timer.Simple(0.1, function() self.SlotSwitch:ChooseOption(strSlot) end)
+	timer.Simple(0.1, function() self.SlotSwitch:ChooseOption(Slot) end)
 end
 
-function PANEL:AddToolButton(strImage, strToolTip, fncFunction)
-	local ibnNewToolButton = CreateGenericImageButton(nil, strImage, strToolTip, fncFunction)
-	ibnNewToolButton:SetSize(intToolBarIconSize, intToolBarIconSize)
-	self.ToolBar:AddItem(ibnNewToolButton)
+function PANEL:AddToolButton(Image, ToolTip, fncFunction)
+	local NewToolButton = CreateGenericImageButton(nil, Image, ToolTip, fncFunction)
+	NewToolButton:SetSize(intToolBarIconSize, intToolBarIconSize)
+	self.ToolBar:AddItem(NewToolButton)
 end
 
-function PANEL:AddControl(pnlControl)
-	self.ControlsList:AddItem(pnlControl)
-	return pnlControl
+function PANEL:AddControl(Control)
+	self.ControlsList:AddItem(Control)
+	return Control
 end
 
 function PANEL:AddSlotControls()
-	local mlcSlotSellector = CreateGenericMultiChoice()
-	mlcSlotSellector:SetSize(120, intToolBarIconSize)
-	self.ToolBar:AddItem(mlcSlotSellector)
+	local SlotSellector = CreateGenericMultiChoice()
+	SlotSellector:SetSize(120, intToolBarIconSize)
+	self.ToolBar:AddItem(SlotSellector)
 
-	local mlcObjectSellector = CreateGenericMultiChoice()
-	mlcObjectSellector:SetSize(50, intToolBarIconSize)
-	self.ToolBar:AddItem(mlcObjectSellector)
+	local ObjectSellector = CreateGenericMultiChoice()
+	ObjectSellector:SetSize(50, intToolBarIconSize)
+	self.ToolBar:AddItem(ObjectSellector)
 
-	mlcSlotSellector.OnSelect = function(index, value, data)
+	SlotSellector.OnSelect = function(index, value, data)
 		if !LocalPlayer().Data.Paperdoll[data] then return false end
 		GAMEMODE.ItemEditorSettings.CurrentEditingSlot = data
-		mlcObjectSellector:Clear()
-		mlcObjectSellector:AddChoice(1)
-		mlcObjectSellector:ChooseOptionID(1)
+		ObjectSellector:Clear()
+		ObjectSellector:AddChoice(1)
+		ObjectSellector:ChooseOptionID(1)
 		if GAMEMODE.PaperDollEnts[LocalPlayer():SteamID64()] && GAMEMODE.PaperDollEnts[LocalPlayer():SteamID64()][data] then
 			for k, v in pairs(GAMEMODE.PaperDollEnts[LocalPlayer():SteamID64()][data].Children or {}) do
-				mlcObjectSellector:AddChoice(k + 1)
+				ObjectSellector:AddChoice(k + 1)
 			end
 		end
 	end
-	mlcObjectSellector.OnSelect = function(index, value, data)
+	ObjectSellector.OnSelect = function(index, value, data)
 		data = tonumber(data)
 		GAMEMODE.ItemEditorSettings.CurrentEditingItemModel = data
-		local strItem = LocalPlayer().Data.Paperdoll[GAMEMODE.ItemEditorSettings.CurrentEditingSlot]
-		local tblItemTable = GAMEMODE.DataBase.Items[strItem]
-		if tblItemTable && tblItemTable.Model[data] then
-			GAMEMODE.ItemEditorSettings.CurrentEditingVector = tblItemTable.Model[data].Position
-			GAMEMODE.ItemEditorSettings.CurrentEditingAngle = tblItemTable.Model[data].Angle
-			GAMEMODE.ItemEditorSettings.CurrentEditingMat = tblItemTable.Model[data].Material
-			GAMEMODE.ItemEditorSettings.CurrentEditingScale = tblItemTable.Model[data].Scale or Vector(1, 1, 1)
-			self.VectorControls.UpdateNewValues(tblItemTable.Model[data].Position)
-			self.AngleControls.UpdateNewValues(tblItemTable.Model[data].Angle)
-			self.ScaleControls.UpdateNewValues(tblItemTable.Model[data].Scale or Vector(1, 1, 1))
+		local Item = LocalPlayer().Data.Paperdoll[GAMEMODE.ItemEditorSettings.CurrentEditingSlot]
+		local ItemTable = GAMEMODE.DataBase.Items[Item]
+		if ItemTable && ItemTable.Model[data] then
+			GAMEMODE.ItemEditorSettings.CurrentEditingVector = ItemTable.Model[data].Position
+			GAMEMODE.ItemEditorSettings.CurrentEditingAngle = ItemTable.Model[data].Angle
+			GAMEMODE.ItemEditorSettings.CurrentEditingMat = ItemTable.Model[data].Material
+			GAMEMODE.ItemEditorSettings.CurrentEditingScale = ItemTable.Model[data].Scale or Vector(1, 1, 1)
+			self.VectorControls.UpdateNewValues(ItemTable.Model[data].Position)
+			self.AngleControls.UpdateNewValues(ItemTable.Model[data].Angle)
+			self.ScaleControls.UpdateNewValues(ItemTable.Model[data].Scale or Vector(1, 1, 1))
 		end
 	end
-	return mlcSlotSellector, mlcObjectSellector
+	return SlotSellector, ObjectSellector
 end
 
 function PANEL:AddVectorControls()
-	local cpcNewCollapseCat = CreateGenericCollapse(nil, "Offset Controls", intGlobalPadding, false)
-	local nmsNewXSlider = CreateGenericSlider(nil, "X Axis", -40, 40, 2)
-	nmsNewXSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentEditingVector.x = value end
-	cpcNewCollapseCat.List:AddItem(nmsNewXSlider)
-	local nmsNewYSlider = CreateGenericSlider(nil, "Y Axis", -40, 40, 2)
-	nmsNewYSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentEditingVector.y = value end
-	cpcNewCollapseCat.List:AddItem(nmsNewYSlider)
-	local nmsNewZSlider = CreateGenericSlider(nil, "Z Axis", -40, 40, 2)
-	nmsNewZSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentEditingVector.z = value end
-	cpcNewCollapseCat.List:AddItem(nmsNewZSlider)
-	cpcNewCollapseCat.UpdateNewValues = function(vecNewOffset)
-		nmsNewXSlider.UpdateSlider(vecNewOffset.x)
-		nmsNewYSlider.UpdateSlider(vecNewOffset.y)
-		nmsNewZSlider.UpdateSlider(vecNewOffset.z)
+	local NewCollapseCat = CreateGenericCollapse(nil, "Offset Controls", intGlobalPadding, false)
+	local NewXSlider = CreateGenericSlider(nil, "X Axis", -40, 40, 2)
+	NewXSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentEditingVector.x = value end
+	NewCollapseCat.List:AddItem(NewXSlider)
+	local NewYSlider = CreateGenericSlider(nil, "Y Axis", -40, 40, 2)
+	NewYSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentEditingVector.y = value end
+	NewCollapseCat.List:AddItem(NewYSlider)
+	local NewZSlider = CreateGenericSlider(nil, "Z Axis", -40, 40, 2)
+	NewZSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentEditingVector.z = value end
+	NewCollapseCat.List:AddItem(NewZSlider)
+	NewCollapseCat.UpdateNewValues = function(vecNewOffset)
+		NewXSlider.UpdateSlider(vecNewOffset.x)
+		NewYSlider.UpdateSlider(vecNewOffset.y)
+		NewZSlider.UpdateSlider(vecNewOffset.z)
 	end
-	return cpcNewCollapseCat
+	return NewCollapseCat
 end
 
 function PANEL:AddAngleControls()
-	local cpcNewCollapseCat = CreateGenericCollapse(nil, "Angle Controls", intGlobalPadding, false)
-	local nmsNewXSlider = CreateGenericSlider(nil, "Pitch", -180, 180, 2)
-	nmsNewXSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentEditingAngle.p = value end
-	cpcNewCollapseCat.List:AddItem(nmsNewXSlider)
-	local nmsNewYSlider = CreateGenericSlider(nil, "Yaw", -180, 180, 2)
-	nmsNewYSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentEditingAngle.y = value end
-	cpcNewCollapseCat.List:AddItem(nmsNewYSlider)
-	local nmsNewZSlider = CreateGenericSlider(nil, "Roll", -180, 180, 2)
-	nmsNewZSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentEditingAngle.r = value end
-	cpcNewCollapseCat.List:AddItem(nmsNewZSlider)
-	cpcNewCollapseCat.UpdateNewValues = function(angNewAngle)
-		nmsNewXSlider.UpdateSlider(angNewAngle.p)
-		nmsNewYSlider.UpdateSlider(angNewAngle.y)
-		nmsNewZSlider.UpdateSlider(angNewAngle.r)
+	local NewCollapseCat = CreateGenericCollapse(nil, "Angle Controls", intGlobalPadding, false)
+	local NewXSlider = CreateGenericSlider(nil, "Pitch", -180, 180, 2)
+	NewXSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentEditingAngle.p = value end
+	NewCollapseCat.List:AddItem(NewXSlider)
+	local NewYSlider = CreateGenericSlider(nil, "Yaw", -180, 180, 2)
+	NewYSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentEditingAngle.y = value end
+	NewCollapseCat.List:AddItem(NewYSlider)
+	local NewZSlider = CreateGenericSlider(nil, "Roll", -180, 180, 2)
+	NewZSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentEditingAngle.r = value end
+	NewCollapseCat.List:AddItem(NewZSlider)
+	NewCollapseCat.UpdateNewValues = function(angNewAngle)
+		NewXSlider.UpdateSlider(angNewAngle.p)
+		NewYSlider.UpdateSlider(angNewAngle.y)
+		NewZSlider.UpdateSlider(angNewAngle.r)
 	end
-	return cpcNewCollapseCat
+	return NewCollapseCat
 end
 
 function PANEL:AddMatControls()
-	local cpcNewCollapseCat = CreateGenericCollapse(nil, "Material Controls", intGlobalPadding, true)
-	cpcNewCollapseCat.Icons = {}
-	local ibnNewMatButton = CreateGenericImageButton(nil, "null", "", function() GAMEMODE.ItemEditorSettings.CurrentEditingMat = "" end)
-	cpcNewCollapseCat.List:AddItem(ibnNewMatButton)
-	table.insert(cpcNewCollapseCat.Icons, ibnNewMatButton)
-	for _, strTexture in pairs(tblUsableMats or {}) do
-		local ibnNewMatButton = CreateGenericImageButton(nil, strTexture, strTexture, function() GAMEMODE.ItemEditorSettings.CurrentEditingMat = strTexture end)
-		cpcNewCollapseCat.List:AddItem(ibnNewMatButton)
-		table.insert(cpcNewCollapseCat.Icons, ibnNewMatButton)
+	local NewCollapseCat = CreateGenericCollapse(nil, "Material Controls", intGlobalPadding, true)
+	NewCollapseCat.Icons = {}
+	local NewMatButton = CreateGenericImageButton(nil, "null", "", function() GAMEMODE.ItemEditorSettings.CurrentEditingMat = "" end)
+	NewCollapseCat.List:AddItem(NewMatButton)
+	table.insert(NewCollapseCat.Icons, NewMatButton)
+	for _, Texture in pairs(UsableMats or {}) do
+		local NewMatButton = CreateGenericImageButton(nil, Texture, Texture, function() GAMEMODE.ItemEditorSettings.CurrentEditingMat = Texture end)
+		NewCollapseCat.List:AddItem(NewMatButton)
+		table.insert(NewCollapseCat.Icons, NewMatButton)
 	end
-	return cpcNewCollapseCat
+	return NewCollapseCat
 end
 
 function PANEL:AddScaleControls()
-	local cpcNewCollapseCat = CreateGenericCollapse(nil, "Scale Controls", intGlobalPadding, false)
-	local nmsNewXSlider = CreateGenericSlider(nil, "Wide", 0, 5, 2)
-	nmsNewXSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentEditingScale.x = value end
-	cpcNewCollapseCat.List:AddItem(nmsNewXSlider)
-	local nmsNewYSlider = CreateGenericSlider(nil, "Long", 0, 5, 2)
-	nmsNewYSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentEditingScale.y = value end
-	cpcNewCollapseCat.List:AddItem(nmsNewYSlider)
-	local nmsNewZSlider = CreateGenericSlider(nil, "Tall", 0, 5, 2)
-	nmsNewZSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentEditingScale.z = value end
-	cpcNewCollapseCat.List:AddItem(nmsNewZSlider)
-	cpcNewCollapseCat.UpdateNewValues = function(vecNewScale)
+	local NewCollapseCat = CreateGenericCollapse(nil, "Scale Controls", intGlobalPadding, false)
+	local NewXSlider = CreateGenericSlider(nil, "Wide", 0, 5, 2)
+	NewXSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentEditingScale.x = value end
+	NewCollapseCat.List:AddItem(NewXSlider)
+	local NewYSlider = CreateGenericSlider(nil, "Long", 0, 5, 2)
+	NewYSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentEditingScale.y = value end
+	NewCollapseCat.List:AddItem(NewYSlider)
+	local NewZSlider = CreateGenericSlider(nil, "Tall", 0, 5, 2)
+	NewZSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentEditingScale.z = value end
+	NewCollapseCat.List:AddItem(NewZSlider)
+	NewCollapseCat.UpdateNewValues = function(vecNewScale)
 		if vecNewScale then
-			nmsNewXSlider.UpdateSlider(vecNewScale.x)
-			nmsNewYSlider.UpdateSlider(vecNewScale.y)
-			nmsNewZSlider.UpdateSlider(vecNewScale.z)
+			NewXSlider.UpdateSlider(vecNewScale.x)
+			NewYSlider.UpdateSlider(vecNewScale.y)
+			NewZSlider.UpdateSlider(vecNewScale.z)
 		end
 	end
-	return cpcNewCollapseCat
+	return NewCollapseCat
 end
 
 function PANEL:AddCameraControls()
-	local cpcNewCollapseCat = CreateGenericCollapse(nil, "Camera Controls", intGlobalPadding, false)
-	local nmsNewRotationSlider = CreateGenericSlider(nil, "Rotation", -180, 180, 3)
-	nmsNewRotationSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentCamRotation = value end
-	cpcNewCollapseCat.List:AddItem(nmsNewRotationSlider)
-	local nmsNewDistanceSlider = CreateGenericSlider(nil, "Distance", -120, 50)
-	nmsNewDistanceSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentCamDistance = value end
-	cpcNewCollapseCat.List:AddItem(nmsNewDistanceSlider)
-	return cpcNewCollapseCat
+	local NewCollapseCat = CreateGenericCollapse(nil, "Camera Controls", intGlobalPadding, false)
+	local NewRotationSlider = CreateGenericSlider(nil, "Rotation", -180, 180, 3)
+	NewRotationSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentCamRotation = value end
+	NewCollapseCat.List:AddItem(NewRotationSlider)
+	local NewDistanceSlider = CreateGenericSlider(nil, "Distance", -120, 50)
+	NewDistanceSlider.ValueChanged = function(self, value) GAMEMODE.ItemEditorSettings.CurrentCamDistance = value end
+	NewCollapseCat.List:AddItem(NewDistanceSlider)
+	return NewCollapseCat
 end
 
 function PANEL:PrintNewDementions()
-	local vecVector = GAMEMODE.ItemEditorSettings.CurrentEditingVector
-	local intX, intY, intZ = math.Round(vecVector.x * 100) / 100, math.Round(vecVector.y * 100) / 100, math.Round(vecVector.z * 100) / 100
-	local strVector = tostring(intX .. ", " .. intY .. ", " .. intZ)
-	local angAngle = GAMEMODE.ItemEditorSettings.CurrentEditingAngle
-	local intPitch, intYaw, intRoll = math.Round(angAngle.p * 100) / 100, math.Round(angAngle.y * 100) / 100, math.Round(angAngle.r * 100) / 100
-	local strAngle = tostring(intPitch .. ", " .. intYaw .. ", " .. intRoll)
-	local strMat = GAMEMODE.ItemEditorSettings.CurrentEditingMat
-	if strMat then strMat = '"' .. tostring(strMat) .. '"' end
-	if !strMat then strMat = "nil" end
-	local vecScale = GAMEMODE.ItemEditorSettings.CurrentEditingScale
-	local intX, intY, intZ = math.Round(vecScale.x * 100) / 100, math.Round(vecScale.y * 100) / 100, math.Round(vecScale.z * 100) / 100
-	local strScale = tostring(intX .. ", " .. intY .. ", " .. intZ)
-	print("Vector(" .. strVector .. "), Angle(" .. strAngle .. "), nil, " .. strMat .. ", Vector(" .. strScale .. ")")
-	SetClipboardText("Vector(" .. strVector .. "), Angle(" .. strAngle .. "), nil, " .. strMat .. ", Vector(" .. strScale .. ")")
+	local EVector = GAMEMODE.ItemEditorSettings.CurrentEditingVector
+	local X, Y, Z = math.Round(EVector.x * 100) / 100, math.Round(EVector.y * 100) / 100, math.Round(EVector.z * 100) / 100
+	local Vector_String = tostring(X .. ", " .. Y .. ", " .. Z)
+	local EAngle = GAMEMODE.ItemEditorSettings.CurrentEditingAngle
+	local Pitch, Yaw, Roll = math.Round(EAngle.p * 100) / 100, math.Round(EAngle.y * 100) / 100, math.Round(EAngle.r * 100) / 100
+	local Angle_String = tostring(Pitch .. ", " .. Yaw .. ", " .. Roll)
+	local Mat = GAMEMODE.ItemEditorSettings.CurrentEditingMat
+	if Mat then Mat = '"' .. tostring(Mat) .. '"' end
+	if !Mat then Mat = "nil" end
+	local Scale = GAMEMODE.ItemEditorSettings.CurrentEditingScale
+	local X, Y, Z = math.Round(Scale.x * 100) / 100, math.Round(Scale.y * 100) / 100, math.Round(Scale.z * 100) / 100
+	local Scale_String = tostring(intX .. ", " .. intY .. ", " .. intZ)
+	print("Vector(" .. Vector_String .. "), Angle(" .. Angle_String .. "), nil, " .. Mat .. ", Vector(" .. Scale_String .. ")")
+	SetClipboardText("Vector(" .. Vector_String .. "), Angle(" .. Angle_String .. "), nil, " .. Mat .. ", Vector(" .. Scale_String .. ")")
 end
 vgui.Register("editor_items", PANEL, "Panel")
 
@@ -296,15 +296,15 @@ concommand.Add("ud_edit_items", function(ply, command, args)
 end)
 
 concommand.Add("ud_edit_items_giveitem", function(ply, command, args)
-	local tblItemTable = ItemTable(args[1])
-	if tblItemTable.Use then
-		tblItemTable:Use(ply, tblItemTable)
+	local ItemTable = ItemTable(args[1])
+	if ItemTable.Use then
+		ItemTable:Use(ply, ItemTable)
 	end
 end)
 
 concommand.Add("ud_edit_items_clearpaperdoll", function(ply, command, args)
-	for strSlot, strItem in pairs(ply.Data.Paperdoll or {}) do
-		local tblItemTable = ItemTable(strItem)
-		if tblItemTable.Use then tblItemTable:Use(ply, tblItemTable) end
+	for Slot, Item in pairs(ply.Data.Paperdoll or {}) do
+		local ItemTable = ItemTable(Item)
+		if ItemTable.Use then ItemTable:Use(ply, ItemTable) end
 	end
 end)
