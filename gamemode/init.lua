@@ -8,7 +8,7 @@ include("core/sh_resource.lua")
 --Add network strings
 local NWStrings = {
 	"UD_UpdateItem",
-	"UD_UpdateBankItem"
+	"UD_UpdateBankItem",
 	"UD_UpdateMasters",
 	"UD_UpdateAuctions",
 	"UD_UpdateLibrary",
@@ -41,6 +41,7 @@ end
 -- TODO: likely not needed, shouldn't be called with playerclass?
 -- honestly, most of the data should be moved to a playerclass
 function GM:PlayerSpawn(ply)
+	print("playerspawn " .. ply)
 	hook.Run("PlayerLoadout", ply)
 	ply:SetModel(ply.Data and ply.Data.Model or "models/player/Group01/male_02.mdl")
 
