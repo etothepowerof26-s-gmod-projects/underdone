@@ -1,23 +1,23 @@
-local function AddModel(tblAddTable, strModel, vecPosition, angAngle, clrColor, strMaterial, vecScale)
-	tblAddTable.Model = tblAddTable.Model or {}
-	if type(tblAddTable.Model) ~= "table" then tblAddTable.Model = {} end
-	table.insert(tblAddTable.Model, {Model = strModel, Position = vecPosition, Angle = angAngle, Color = clrColor, Material = strMaterial, Scale = vecScale})
-	return tblAddTable
+local function AddModel(AddTable, Model, Position, Ang, Clr, Mat, Scale)
+	AddTable.Model = AddTable.Model or {}
+	if type(AddTable.Model) ~= "table" then AddTable.Model = {} end
+	table.insert(AddTable.Model, {Model = Model, Position = Position, Angle = Ang, Color = Clr, Material = Mat, Scale = Scale})
+	return AddTable
 end
-local function AddStats(tblAddTable, intPower, intFireRate)
-	tblAddTable.Power = intPower
-	tblAddTable.FireRate = intFireRate
-	tblAddTable.HoldType = "melee"
-	tblAddTable.Melee = true
-	return tblAddTable
+local function AddStats(AddTable, Power, FireRate)
+	AddTable.Power = Power
+	AddTable.FireRate = FireRate
+	AddTable.HoldType = "melee"
+	AddTable.Melee = true
+	return AddTable
 end
-local function AddBuff(tblAddTable, strBuff, intAmount)
-	tblAddTable.Buffs[strBuff] = intAmount
-	return tblAddTable
+local function AddBuff(AddTable, Buff, Amount)
+	AddTable.Buffs[Buff] = Amount
+	return AddTable
 end
-local function AddSound(tblAddTable, strShootSound)
-	tblAddTable.Sound = strShootSound
-	return tblAddTable
+local function AddSound(AddTable, ShootSound)
+	AddTable.Sound = ShootSound
+	return AddTable
 end
 
 local Item = QuickCreateItemTable(BaseWeapon, "weapon_melee_base", "<name>", "<desc>", "icons/weapon_axe")

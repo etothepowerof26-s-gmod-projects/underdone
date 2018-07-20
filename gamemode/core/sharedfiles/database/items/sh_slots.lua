@@ -36,10 +36,10 @@ SLOT.PrintName = "Primary Weapon"
 SLOT.Desc = "Your main weapon"
 SLOT.Position = Vector(25, 40, 0)
 SLOT.Attachment = "anim_attachment_RH"
-function SLOT:ShouldClear(ply, tblItemTable)
-	local tblPrimaryWeapon = ItemTable(ply:GetSlot("slot_primaryweapon"))
-	local tblSheild = ItemTable(ply:GetSlot("slot_offhand"))
-	if not tblSheild or (tblSheild and tblPrimaryWeapon.HoldType and tblPrimaryWeapon.HoldType == "melee") then
+function SLOT:ShouldClear(ply, ItemTable)
+	local PrimaryWeapon = ItemTable(ply:GetSlot("slot_primaryweapon"))
+	local Shield = ItemTable(ply:GetSlot("slot_offhand"))
+	if not Shield or (Shield and PrimaryWeapon.HoldType and PrimaryWeapon.HoldType == "melee") then
 		return false
 	end
 	return true
@@ -52,9 +52,9 @@ SLOT.PrintName = "Off Hand"
 SLOT.Desc = "A off hand object for melee weapons"
 SLOT.Position = Vector(75, 40, 0)
 SLOT.Attachment = "anim_attachment_LH"
-function SLOT:ShouldClear(ply, tblItemTable)
-	local tblPrimaryWeapon = ItemTable(ply:GetSlot("slot_primaryweapon"))
-	if not tblPrimaryWeapon or (tblPrimaryWeapon and tblPrimaryWeapon.HoldType and tblPrimaryWeapon.HoldType == "melee") then
+function SLOT:ShouldClear(ply, ItemTable)
+	local PrimaryWeapon = ItemTable(ply:GetSlot("slot_primaryweapon"))
+	if not PrimaryWeapon or (PrimaryWeapon and PrimaryWeapon.HoldType and PrimaryWeapon.HoldType == "melee") then
 		return false
 	end
 	return true

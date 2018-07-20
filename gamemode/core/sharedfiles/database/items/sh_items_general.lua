@@ -31,7 +31,7 @@ Item.Weight = 1
 Item.Stackable = true
 Register.Item(Item)
 
-local Item = QuickCreateItemTable(BaseFood, "item_chineese_box", "Chineese Box", "A Chineese Box of Chineese Noodles.", "icons/junk_metalcan1")
+local Item = QuickCreateItemTable(BaseFood, "item_Chinese_box", "Chinese Box", "A Chinese Box of Chinese Noodles.", "icons/junk_metalcan1")
 Item.Model = "models/Gibs/wood_gib01d.mdl"
 Item.SellPrice = 40
 Item.Weight = 1
@@ -65,7 +65,7 @@ function Item:Use(usr, itemtable)
 end
 Register.Item(Item)
 
-local Item = QuickCreateItemTable(BaseFood, "item_spoilednoodles", "Spoiled Chineese Noodles", "A Chineese Box of Spoiled Chineese Noodles.", "icons/junk_metalcan1")
+local Item = QuickCreateItemTable(BaseFood, "item_spoilednoodles", "Spoiled Chinese Noodles", "A Chinese Box of Spoiled Chinese Noodles.", "icons/junk_metalcan1")
 Item.Model = "models/props_junk/garbage_takeoutcarton001a.mdl"
 Item.SellPrice = 60
 Item.Weight = 1
@@ -145,18 +145,18 @@ function Item:Use(usr, itemtable)
 	if not IsValid(usr) or usr:Health() <= 0 then return end
 	if (usr.NextNade or CurTime()) > CurTime() then return end
 	usr:RestartGesture(ACT_ITEM_THROW)
-	local entNade = ents.Create("npc_grenade_frag")
+	local Nade = ents.Create("npc_grenade_frag")
 	timer.Simple(1, function()
-		if IsValid(entNade) and IsValid(usr) then
+		if IsValid(Nade) and IsValid(usr) then
 			local vecNadePos = usr:EyePos() + (usr:GetAimVector() * 50)
 			local intNadeDur = 3
-			entNade:SetOwner(usr)
-			entNade:Fire("SetTimer", intNadeDur)
-			entNade.OverrideDamge = 50
-			entNade:SetPos(vecNadePos)
-			entNade:SetAngles(usr:EyeAngles())
-			entNade:Spawn()
-			entNade:GetPhysicsObject():ApplyForceCenter(usr:GetAimVector():GetNormalized() * 600)
+			Nade:SetOwner(usr)
+			Nade:Fire("SetTimer", intNadeDur)
+			Nade.OverrideDamge = 50
+			Nade:SetPos(vecNadePos)
+			Nade:SetAngles(usr:EyeAngles())
+			Nade:Spawn()
+			Nade:GetPhysicsObject():ApplyForceCenter(usr:GetAimVector():GetNormalized() * 600)
 		end
 	end)
 	usr.NextNade = CurTime() + 2

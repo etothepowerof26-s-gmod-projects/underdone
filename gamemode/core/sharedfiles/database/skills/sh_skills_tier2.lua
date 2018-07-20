@@ -8,16 +8,16 @@ Skill.Desc[1] = "Every melee attack has a 5% chance to paralyze for 2 seconds"
 Skill.Desc[2] = "Every melee attack has a 8% chance to paralyze for 4 seconds"
 Skill.Tier = 2
 Skill.Levels = 2
-function Skill:BulletCallBack(plyPlayer, intSkill, trcTrace, tblDamageInfo)
+function Skill:BulletCallBack(Player, Skill, Trace, DamageInfo)
 	if not SERVER then return end
-	local entEntity = trcTrace.Entity
-	if plyPlayer:IsMelee() and intSkill > 0 and entEntity:IsNPC() and entEntity.Race ~= "human" then
-		local intChance = 0
-		local intTime = 0
-		if intSkill == 1 then intChance = 5 intTime = 2 end
-		if intSkill == 2 then intChance = 8 intTime = 4 end
-		if  math.random(1, 100 / intChance) == 1 then
-			entEntity:Stun(intTime, 0.1 / intSkill)
+	local TraceEntity = Trace.Entity
+	if Player:IsMelee() and Skill > 0 and TraceEntity:IsNPC() and TraceEntity.Race ~= "human" then
+		local Chance = 0
+		local Time = 0
+		if Skill == 1 then Chance = 5 Time = 2 end
+		if Skill == 2 then Chance = 8 Time = 4 end
+		if  math.random(1, 100 / Chance) == 1 then
+			TraceEntity:Stun(Time, 0.1 / Skill)
 		end
 	end
 end
@@ -31,20 +31,20 @@ Skill.SkillNeeded = "skill_basictraining"
 Skill.Desc = {}
 Skill.Desc["story"] = "Learn to master ranged weapons."
 Skill.Desc["SkillNeeded"] = "Basic Training"
-Skill.Desc[1] = "Increase Dexterity by 4"
-Skill.Desc[2] = "Increase Dexterity by 5"
-Skill.Desc[3] = "Increase Dexterity by 7"
-Skill.Desc[4] = "Increase Dexterity by 10"
+Skill.Desc[1] = "Increases dexterity by 4"
+Skill.Desc[2] = "Increases dexterity by 5"
+Skill.Desc[3] = "Increases dexterity by 7"
+Skill.Desc[4] = "Increases dexterity by 10"
 Skill.Tier = 2
 Skill.Levels = 4
-function Skill:OnSet(plyPlayer, intSkillLevel, intOldSkillLevel)
-	local tblStatTable = {}
-	tblStatTable[0] = 0
-	tblStatTable[1] = 4
-	tblStatTable[2] = 5
-	tblStatTable[3] = 7
-	tblStatTable[4] = 10
-	plyPlayer:AddStat("stat_dexterity", tblStatTable[intSkillLevel] - tblStatTable[intOldSkillLevel])
+function Skill:OnSet(Player, SkillLevel, OldSkillLevel)
+	local StatTable = {}
+	StatTable[0] = 0
+	StatTable[1] = 4
+	StatTable[2] = 5
+	StatTable[3] = 7
+	StatTable[4] = 10
+	Player:AddStat("stat_dexterity", StatTable[SkillLevel] - StatTable[OldSkillLevel])
 end
 Register.Skill(Skill)
 
@@ -56,18 +56,18 @@ Skill.Icon = "icons/weapon_pipe"
 Skill.Desc = {}
 Skill.Desc["story"] = "Your anger and brutality give you power."
 Skill.Desc["SkillNeeded"] = "Close Quarters Combat"
-Skill.Desc[1] = "Increase Strength by 3"
-Skill.Desc[2] = "Increase Strength by 4"
-Skill.Desc[3] = "Increase Strength by 8"
+Skill.Desc[1] = "Increases strength by 3"
+Skill.Desc[2] = "Increases strength by 4"
+Skill.Desc[3] = "Increases strength by 8"
 Skill.Tier = 2
 Skill.Levels = 3
-function Skill:OnSet(plyPlayer, intSkillLevel, intOldSkillLevel)
-	local tblStatTable = {}
-	tblStatTable[0] = 0
-	tblStatTable[1] = 3
-	tblStatTable[2] = 4
-	tblStatTable[3] = 8
-	plyPlayer:AddStat("stat_strength", tblStatTable[intSkillLevel] - tblStatTable[intOldSkillLevel])
+function Skill:OnSet(Player, SkillLevel, OldSkillLevel)
+	local StatTable = {}
+	StatTable[0] = 0
+	StatTable[1] = 3
+	StatTable[2] = 4
+	StatTable[3] = 8
+	Player:AddStat("stat_strength", StatTable[SkillLevel] - StatTable[OldSkillLevel])
 end
 Register.Skill(Skill)
 
@@ -79,18 +79,18 @@ Skill.SkillNeeded = "skill_consumeless"
 Skill.Desc = {}
 Skill.Desc["story"] = "Your old heart is enhanced by hydraulics, increasing blood flow and overall health."
 Skill.Desc["SkillNeeded"] = "Consume Less!"
-Skill.Desc[1] = "Increase Max Health by 10"
-Skill.Desc[2] = "Increase Max Health by 20"
-Skill.Desc[3] = "Increase Max Health by 35"
+Skill.Desc[1] = "Increases max health by 10"
+Skill.Desc[2] = "Increases max health by 20"
+Skill.Desc[3] = "Increases max health by 35"
 Skill.Tier = 2
 Skill.Levels = 3
-function Skill:OnSet(plyPlayer, intSkillLevel, intOldSkillLevel)
-	local tblStatTable = {}
-	tblStatTable[0] = 0
-	tblStatTable[1] = 10
-	tblStatTable[2] = 20
-	tblStatTable[3] = 35
-	plyPlayer:AddStat("stat_maxhealth", tblStatTable[intSkillLevel] - tblStatTable[intOldSkillLevel])
+function Skill:OnSet(Player, SkillLevel, OldSkillLevel)
+	local StatTable = {}
+	StatTable[0] = 0
+	StatTable[1] = 10
+	StatTable[2] = 20
+	StatTable[3] = 35
+	Player:AddStat("stat_maxhealth", StatTable[SkillLevel] - StatTable[OldSkillLevel])
 end
 Register.Skill(Skill)
 
@@ -100,15 +100,15 @@ Skill.PrintName = "Momentum"
 Skill.Icon = "icons/junk_gnome"
 Skill.Desc = {}
 Skill.Desc["story"] = "Learn to use your momentum as a weapon."
-Skill.Desc[1] = "Every melee attack has a 0.2% more damage for every Kg in your inventory"
+Skill.Desc[1] = "Every melee attack has a 0.2% more damage for every kilogram of weight in your inventory"
 Skill.Tier = 2
 Skill.Levels = 1
 Skill.Hooks = {}
-Skill.Hooks["damage_mod"] = function(plyPlayer, intSkillLevel, intDamage)
-	if plyPlayer:IsMelee() and intSkillLevel > 0 then
-		intDamage = intDamage + (intDamage * ((0.2 * (plyPlayer.Weight or 0)) / 100))
+Skill.Hooks["damage_mod"] = function(Player, SkillLevel, Damage)
+	if Player:IsMelee() and SkillLevel > 0 then
+		Damage = Damage + (Damage * ((0.2 * (Player.Weight or 0)) / 100))
 	end
-	return intDamage
+	return Damage
 end
 Register.Skill(Skill)
 
@@ -122,16 +122,16 @@ Skill.Desc[1] = "10% more ammo drops but 5% less money drops"
 Skill.Tier = 2
 Skill.Levels = 1
 Skill.Hooks = {}
-Skill.Hooks["drop_mod"] = function(plyPlayer, intSkillLevel, strItem, tblInfo)
-	if intSkillLevel > 0 then
-		local tblItemTable = ItemTable(strItem)
-		if tblItemTable.AmmoAmount then
-			plyPlayer.Chance = math.Clamp(tblInfo.Chance + 10, 0, 100)
+Skill.Hooks["drop_mod"] = function(Player, SkillLevel, Item, Info)
+	if SkillLevel > 0 then
+		local ItemTable = ItemTable(Item)
+		if ItemTable.AmmoAmount then
+			Player.Chance = math.Clamp(Info.Chance + 10, 0, 100)
 		end
-		if tblItemTable.Name == "money" then
-			plyPlayer.Chance = math.Clamp(tblInfo.Chance - 5, 0, 100)
+		if ItemTable.Name == "money" then
+			Player.Chance = math.Clamp(Info.Chance - 5, 0, 100)
 		end
 	end
-	return strItem, tblInfo
+	return Item, Info
 end
 Register.Skill(Skill)

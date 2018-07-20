@@ -1,7 +1,7 @@
 local Stat = {}
 Stat.Name = "stat_maxhealth"
 Stat.PrintName = "Max Health"
-Stat.Desc = "The Maximum amount of Health you can have"
+Stat.Desc = "The maximum amount of health you can have."
 Stat.Default = 100
 function Stat:OnSet(ply, intMaxHealth, intOldMaxHealth)
 	ply:SetMaxHealth(intMaxHealth)
@@ -27,29 +27,29 @@ Register.Stat(Stat)
 local Stat = {}
 Stat.Name = "stat_strength"
 Stat.PrintName = "Strength"
-Stat.Desc = "The more you have more damage melee attack will do"
+Stat.Desc = "The more you have, the more damage your melee attacks will do."
 Stat.Default = 1
-function Stat:OnSet(ply, intStrength, intOldStrength)
-	--ply:AddStat("stat_maxhealth", (intStrength - intOldStrength) * 1.5)
+function Stat:OnSet(ply, Strength, OldStrength)
+	--ply:AddStat("stat_maxhealth", (Strength - OldStrength) * 1.5)
 end
-function Stat:DamageMod(ply, intStrength, intDamage)
+function Stat:DamageMod(ply, Strength, Damage)
 	if ply:IsMelee() then
-		intDamage = intDamage * math.Clamp(intStrength / 3, 1, intStrength)
+		Damage = Damage * math.Clamp(Strength / 3, 1, Strength)
 	end
-	return intDamage
+	return Damage
 end
 Register.Stat(Stat)
 
 local Stat = {}
 Stat.Name = "stat_dexterity"
 Stat.PrintName = "Dexterity"
-Stat.Desc = "The more you have more damage ranged attack will do"
+Stat.Desc = "The more you have, the more damage your ranged attacks will do."
 Stat.Default = 1
-function Stat:DamageMod(ply, intDexterity, intDamage)
+function Stat:DamageMod(ply, Dexterity, Damage)
 	if not ply:IsMelee() then
-		intDamage = intDamage * math.Clamp(intDexterity / 3, 1, intDexterity)
+		Damage = Damage * math.Clamp(Dexterity / 3, 1, Dexterity)
 	end
-	return intDamage
+	return Damage
 end
 Register.Stat(Stat)
 
@@ -63,22 +63,22 @@ Register.Stat(Stat)
 local Stat = {}
 Stat.Name = "stat_agility"
 Stat.PrintName = "Agility"
-Stat.Desc = "The higher this is teh faster you run and reload and attack"
+Stat.Desc = "The higher this is, the faster you run, reload and attack."
 Stat.Default = 1
-function Stat:OnSet(ply, intAgility, intOldAgility)
-	ply:AddMoveSpeed((intAgility - intOldAgility) * 10)
+function Stat:OnSet(ply, Agility, OldAgility)
+	ply:AddMoveSpeed((Agility - OldAgility) * 10)
 end
-function Stat:FireRateMod(ply, intAgility, intFireRate)
-	if not intFireRate then return end
+function Stat:FireRateMod(ply, Agility, FireRate)
+	if not FireRate then return end
 	
-	intFireRate = intFireRate * math.Clamp(intAgility / 5, 1, intAgility)
-	return intFireRate
+	FireRate = FireRate * math.Clamp(Agility / 5, 1, Agility)
+	return FireRate
 end
 Register.Stat(Stat)
 
 local Stat = {}
 Stat.Name = "stat_luck"
 Stat.PrintName = "Luck"
-Stat.Desc = "You find your self to be more lucky, crit hits"
+Stat.Desc = "You find yourself to be more lucky. Increased chance of critical hits."
 Stat.Default = 1
 Register.Stat(Stat)

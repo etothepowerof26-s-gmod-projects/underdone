@@ -1,21 +1,21 @@
-local function AddModel(tblAddTable, strModel, vecPosition, angAngle, clrColor, strMaterial, vecScale)
-	tblAddTable.Model = tblAddTable.Model or {}
-	if type(tblAddTable.Model) ~= "table" then tblAddTable.Model = {} end
-	table.insert(tblAddTable.Model, {Model = strModel, Position = vecPosition, Angle = angAngle, Color = clrColor, Material = strMaterial, Scale = vecScale})
-	return tblAddTable
+local function AddModel(AddTable, Model, Position, Ang, Clr, Mat, Scale)
+	AddTable.Model = AddTable.Model or {}
+	if type(AddTable.Model) ~= "table" then AddTable.Model = {} end
+	table.insert(AddTable.Model, {Model = Model, Position = Position, Angle = Ang, Color = Clr, Material = Mat, Scale = Scale})
+	return AddTable
 end
-local function AddStats(tblAddTable, intPower, intAccuracy, intFireRate, intClipSize, intNumOfBullets)
-	tblAddTable.Power = intPower
-	tblAddTable.Accuracy = intAccuracy
-	tblAddTable.FireRate = intFireRate
-	tblAddTable.ClipSize = intClipSize
-	tblAddTable.NumOfBullets = intNumOfBullets or 1
-	return tblAddTable
+local function AddStats(AddTable, Power, Accuracy, FireRate, ClipSize, NumOfBullets)
+	AddTable.Power = Power
+	AddTable.Accuracy = Accuracy
+	AddTable.FireRate = FireRate
+	AddTable.ClipSize = ClipSize
+	AddTable.NumOfBullets = NumOfBullets or 1
+	return AddTable
 end
-local function AddSound(tblAddTable, strShootSound, strReloadSound)
-	tblAddTable.Sound = strShootSound
-	tblAddTable.ReloadSound = strReloadSound
-	return tblAddTable
+local function AddSound(AddTable, ShootSound, ReloadSound)
+	AddTable.Sound = ShootSound
+	AddTable.ReloadSound = ReloadSound
+	return AddTable
 end
 
 -- TODO: wtf? unished weapons?

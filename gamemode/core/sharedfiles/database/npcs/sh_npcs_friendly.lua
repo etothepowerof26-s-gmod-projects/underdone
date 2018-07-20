@@ -1,27 +1,27 @@
-local function QuickNPC(strName, strPrintName, strSpawnName, strRace, intDistance, strModel)
+local function QuickNPC(Name, PrintName, SpawnName, Race, Distance, Model)
 	local NPC = {}
-	NPC.Name = strName
-	NPC.PrintName = strPrintName
-	NPC.SpawnName = strSpawnName
-	NPC.Race = strRace
-	NPC.DistanceRetreat = intDistance
-	NPC.Model = strModel
+	NPC.Name = Name
+	NPC.PrintName = PrintName
+	NPC.SpawnName = SpawnName
+	NPC.Race = Race
+	NPC.DistanceRetreat = Distance
+	NPC.Model = Model
 	return NPC
 end
-local function AddBool(Table, strFrozen, strInvincible, strIdle)
-		Table.Frozen = strFrozen
-		Table.Invincible = strInvincible
-		Table.Idle = strIdle
+local function AddBool(Table, IsFrozen, IsInvincible, IsIdle)
+		Table.Frozen = IsFrozen
+		Table.Invincible = IsInvincible
+		Table.Idle = IsIdle
 	return Table
 end
-local function AddMultiplier(Table, strHealth, strDamage)
-	Table.HealthPerLevel = strHealth
-	Table.DamagePerLevel = strDamage
+local function AddMultiplier(Table, Health, Damage)
+	Table.HealthPerLevel = Health
+	Table.DamagePerLevel = Damage
 	return Table
 end
-local function AddDrop(Table, strName, strChance, strMin, strMax,strDefaultChance)
+local function AddDrop(Table, Name, Chance, Min, Max,strDefaultChance)
 	Table.Drops = Table.Drops or {}
-	Table.Drops[strName] = {Chance = strChance, Min = strMin, Max = strMax}
+	Table.Drops[Name] = {Chance = Chance, Min = Min, Max = Max}
 	return Table
 end
 

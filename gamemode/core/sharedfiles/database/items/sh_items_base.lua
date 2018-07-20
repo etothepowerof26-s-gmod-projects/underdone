@@ -1,23 +1,23 @@
-function DeriveTable(tblWantedTable)
-	local tblNewTable = {}
-	for k, v in pairs(tblWantedTable) do
+function DeriveTable(WantedTable)
+	local NewTable = {}
+	for k, v in pairs(WantedTable) do
 		if type(v) ~= "table" then
-			tblNewTable[k] = v
+			NewTable[k] = v
 		else
-			tblNewTable[k] = table.Copy(v)
+			NewTable[k] = table.Copy(v)
 		end
 	end
-	return tblNewTable
+	return NewTable
 end
-function QuickCreateItemTable(tblDeriveTable, strName, strPrintName, strDesc, strIcon)
-	local tblNewItem = DeriveTable(tblDeriveTable)
-	tblNewItem.Name = strName
-	tblNewItem.PrintName = strPrintName
-	tblNewItem.Desc = strDesc
-	tblNewItem.Icon = strIcon
-	tblNewItem.Dropable = true
-	tblNewItem.Giveable = true
-	return tblNewItem
+function QuickCreateItemTable(DeriveTable, Name, PrintName, strDesc, strIcon)
+	local NewItem = DeriveTable(DeriveTable)
+	NewItem.Name = Name
+	NewItem.PrintName = PrintName
+	NewItem.Desc = strDesc
+	NewItem.Icon = strIcon
+	NewItem.Dropable = true
+	NewItem.Giveable = true
+	return NewItem
 end
 
 BaseItem = {}
@@ -37,8 +37,8 @@ BaseFood.AddedHealth = 25
 BaseFood.AddTime = 10
 function BaseFood:Use(usr, itemtable)
 	if not IsValid(usr) or usr:Health() >= usr:GetStat("stat_maxhealth") or usr:Health() <= 0 then return end
-	local intHealthToAdd = itemtable.AddedHealth
-	intHealthToAdd = usr:CallSkillHook("food_mod",intHealthToAdd) 
+	local HealthToAdd = itemtable.AddedHealth
+	HealthToAdd = usr:CallSkillHook("food_mod",HealthToAdd) 
 	if itemtable.Message then usr:CreateNotification(itemtable.Message) end
 	if itemtable.UseSound then
 		usr:ConCommand("UD_PlaySound " .. itemtable.UseSound  )
@@ -46,14 +46,14 @@ function BaseFood:Use(usr, itemtable)
 			usr:ConCommand("UD_PlaySound " .. itemtable.UseSound .. " " .. itemtable.AltUseSound  )
 		end
 	end
-	local intHealthGiven = 0
+	local HealthGiven = 0
 	local function AddHealth()
-		if not usr or not usr:IsValid() or usr:Health() >= usr:GetStat("stat_maxhealth") or usr:Health() <= 0 or intHealthGiven >= intHealthToAdd then return end
+		if not usr or not usr:IsValid() or usr:Health() >= usr:GetStat("stat_maxhealth") or usr:Health() <= 0 or HealthGiven >= HealthToAdd then return end
 		usr:SetHealth(math.Clamp(usr:Health() + 1, 0, usr:GetStat("stat_maxhealth")))
-		intHealthGiven = intHealthGiven + 1
-		timer.Simple(itemtable.AddTime / intHealthToAdd, AddHealth)
+		HealthGiven = HealthGiven + 1
+		timer.Simple(itemtable.AddTime / HealthToAdd, AddHealth)
 	end
-	timer.Simple(itemtable.AddTime / intHealthToAdd, AddHealth)
+	timer.Simple(itemtable.AddTime / HealthToAdd, AddHealth)
 	usr:AddItem(itemtable.Name, -1)
 end
 
@@ -66,22 +66,22 @@ function BaseAmmo:Use(usr, itemtable)
 	usr:AddItem(itemtable.Name, -1)
 end
 
-BaseEquiptment = DeriveTable(BaseItem)
-BaseEquiptment.Slot = "slot_primaryweapon"
-BaseEquiptment.Level = 1
-BaseEquiptment.Buffs = {}
-function BaseEquiptment:Use(usr, tblItemTable)
-	if not IsValid(usr) or usr:Health() <= 0 or usr:GetLevel() < tblItemTable.Level then return false end
+BaseEquipment = DeriveTable(BaseItem)
+BaseEquipment.Slot = "slot_primaryweapon"
+BaseEquipment.Level = 1
+BaseEquipment.Buffs = {}
+function BaseEquipment:Use(usr, ItemTable)
+	if not IsValid(usr) or usr:Health() <= 0 or usr:GetLevel() < ItemTable.Level then return false end
 	if usr.Loaded and (usr.NextSwitch or 0) > CurTime() then return false end
-	usr:SetPaperDoll(tblItemTable.Slot, tblItemTable.Name)
+	usr:SetPaperDoll(ItemTable.Slot, ItemTable.Name)
 	usr.NextSwitch = CurTime() + 1
 	return true
 end
 
-BaseArmor = DeriveTable(BaseEquiptment)
+BaseArmor = DeriveTable(BaseEquipment)
 BaseArmor.Armor = 0
 
-BaseWeapon = DeriveTable(BaseEquiptment)
+BaseWeapon = DeriveTable(BaseEquipment)
 BaseWeapon.HoldType = "pistol"
 BaseWeapon.AmmoType = "none"
 BaseWeapon.NumOfBullets = 1
@@ -94,7 +94,7 @@ BaseWeapon.Sound = "weapons/pistol/pistol_fire2.wav"
 BaseWeapon.ReloadSound = nil
 function BaseWeapon:Use(usr, itemtable)
 	if not itemtable then return false end
-	if not BaseEquiptment:Use(usr, itemtable) then return false end
+	if not BaseEquipment:Use(usr, itemtable) then return false end
 	usr:StripWeapons()
 	if usr.Data.Paperdoll[itemtable.Slot] == itemtable.Name then
 		usr:Give("weapon_primaryweapon")

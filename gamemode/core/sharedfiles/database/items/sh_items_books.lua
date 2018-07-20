@@ -79,6 +79,7 @@ Register.Item(Item)
 
 local Item = QuickCreateItemTable(BaseBook, "book_polkmstail_ep1", "Polkm's Tail Ep1", "Were it all began!", "icons/item_book3")
 Item.Model = "models/props_lab/binderblue.mdl"
+--LMAO
 if SERVER then
 	Item.Story = "Once opon a time in the shit hole city of Manhatin a child was borned into this wourld his name was Polkm. Polkm's child hood was ruined by living in Manhatin, He vowed " ..
 	"that he would someday get out of Manhatin and into a real city like Boston were he would do real city things like rob banks and sell drugs. 17 years later his wish finally came true " ..
