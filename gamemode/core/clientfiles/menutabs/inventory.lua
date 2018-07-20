@@ -30,37 +30,37 @@ function PANEL:Init()
 		GAMEMODE.ActiveMenu = DermaMenu()
 		local ReadSubMenu = GAMEMODE.ActiveMenu:AddSubMenu("Read ...")
 		ReadSubMenu.Panels = {}
-		for strBook, _ in pairs(LocalPlayer().Data.Library or {}) do
-			local tbl = ItemTable(strBook)
-			local pnl = ReadSubMenu:AddOption(tbl.PrintName, function() RunConsoleCommand("UD_ReadBook", strBook) end)
-			ReadSubMenu.Panels[#ReadSubMenu.Panels] = pnl
-			ReadSubMenu.Panels[#ReadSubMenu.Panels]:SetToolTip(tbl.Desc)
+		for Book, _ in pairs(LocalPlayer().Data.Library or {}) do
+			local Item = ItemTable(Book)
+			local Panel = ReadSubMenu:AddOption(Item.PrintName, function() RunConsoleCommand("UD_ReadBook", Book) end)
+			ReadSubMenu.Panels[#ReadSubMenu.Panels] = Panel
+			ReadSubMenu.Panels[#ReadSubMenu.Panels]:SetToolTip(Item.Desc)
 		end
 		local CraftSubMenu = GAMEMODE.ActiveMenu:AddSubMenu("Craft ...")
 		CraftSubMenu.Panels = {}	
-		for strRecipe, _ in pairs(LocalPlayer().Recipes or {}) do
-			local tbl = RecipeTable(strRecipe)
-			local pnl = CraftSubMenu:AddOption(tbl.PrintName, function()
-				RunConsoleCommand("UD_CraftRecipe", strRecipe)
+		for Recipe, _ in pairs(LocalPlayer().Recipes or {}) do
+			local R = RecipeTable(Recipe)
+			local Panel = CraftSubMenu:AddOption(R.PrintName, function()
+				RunConsoleCommand("UD_CraftRecipe", Recipe)
 			end)
-			CraftSubMenu.Panels[#CraftSubMenu.Panels] = pnl
-			local strToolTip = "Ingredients:"
-			for strItem, intAmount in pairs(tbl.Ingredients) do
-				strToolTip = strToolTip .. "\n" .. intAmount .. " " .. ItemTable(strItem).PrintName
+			CraftSubMenu.Panels[#CraftSubMenu.Panels] = Panel
+			local ToolTip = "Ingredients:"
+			for Item, Amount in pairs(R.Ingredients) do
+				ToolTip = ToolTip .. "\n" .. Amount .. " " .. ItemTable(Item).PrintName
 			end
-			strToolTip = strToolTip .. "\n\nProducts:"
-			for strItem, intAmount in pairs(tbl.Products) do
-				strToolTip = strToolTip .. "\n" .. intAmount .. " " .. ItemTable(strItem).PrintName
+			ToolTip = ToolTip .. "\n\nProducts:"
+			for Item, Amount in pairs(R.Products) do
+				ToolTip = ToolTip .. "\n" .. Amount .. " " .. ItemTable(Item).PrintName
 			end
-			strToolTip = strToolTip .. "\n\nRequirements:"
-			if tbl.NearFire then
-				strToolTip = strToolTip .. "\nMust be done near fire"
+			ToolTip = ToolTip .. "\n\nRequirements:"
+			if R.NearFire then
+				ToolTip = ToolTip .. "\nMust be done near fire"
 			end
-			for strMaster, intLevel in pairs(tbl.RequiredMasters) do
-				strToolTip = strToolTip .. "\n" .. intLevel .. " " .. MasterTable(strMaster).PrintName
+			for Master, Level in pairs(R.RequiredMasters) do
+				ToolTip = ToolTip .. "\n" .. Level .. " " .. MasterTable(Master).PrintName
 			end
-			CraftSubMenu.Panels[#CraftSubMenu.Panels]:SetToolTip(strToolTip)
-			if not LocalPlayer():CanMake(strRecipe) then
+			CraftSubMenu.Panels[#CraftSubMenu.Panels]:SetToolTip(ToolTip)
+			if not LocalPlayer():CanMake(Recipe) then
 				CraftSubMenu.Panels[#CraftSubMenu.Panels]:SetDisabled(true)
 				CraftSubMenu.Panels[#CraftSubMenu.Panels]:SetAlpha(100)
 			end
@@ -70,11 +70,11 @@ function PANEL:Init()
 
 	self.Paperdoll = vgui.Create("FPaperDoll", self)
 	self.Paperdoll.Paint = function()
-		local tblPaintPanle = jdraw.NewPanel()
-		tblPaintPanle:SetDimensions(0, 0, self.Paperdoll:GetWide(), self.Paperdoll:GetTall())
-		tblPaintPanle:SetStyle(4, clrGray)
-		tblPaintPanle:SetBorder(1, clrDrakGray)
-		jdraw.DrawPanel(tblPaintPanle)
+		local PaintPanel = jdraw.NewPanel()
+		PaintPanel:SetDimensions(0, 0, self.Paperdoll:GetWide(), self.Paperdoll:GetTall())
+		PaintPanel:SetStyle(4, Gray)
+		PaintPanel:SetBorder(1, DrakGray)
+		jdraw.DrawPanel(PaintPanel)
 	end
 
 	self.StatsDisplay = CreateGenericList(self, 3, false, false)
@@ -105,8 +105,8 @@ function PANEL:PerformLayout()
 	self.AmmoDisplay:SetSize((self.Paperdoll:GetWide() - self.StatsDisplay:GetWide()) - 5, self:GetTall() - self.Paperdoll:GetTall() - 5)
 end
 
-function PANEL:LoadInventory(boolTemp)
-	local TempInv = boolTemp or false
+function PANEL:LoadInventory(Temp)
+	local TempInv = Temp or false
 	local WorkInv = LocalPlayer().Data.Inventory or {}
 	self.inventorylist:Clear()
 	if WorkInv["money"] and WorkInv["money"] > 0 then self:AddItem("money", WorkInv["money"]) end
@@ -127,22 +127,22 @@ function PANEL:LoadInventory(boolTemp)
 	end
 
 	self.StatsDisplay:Clear()
-	local tblAddTable = table.Copy(GAMEMODE.DataBase.Stats)
-	tblAddTable = table.ClearKeys(tblAddTable)
-	table.sort(tblAddTable, function(statA, statB) return statA.Index < statB.Index end)
-	for key, stat in pairs(tblAddTable) do
+	local AddTable = table.Copy(GAMEMODE.DataBase.Stats)
+	AddTable = table.ClearKeys(AddTable)
+	table.sort(AddTable, function(statA, statB) return statA.Index < statB.Index end)
+	for key, stat in pairs(AddTable) do
 		if LocalPlayer().Stats and not stat.Hide then
 			if not LocalPlayer().Stats[stat.Name] then
 				print("stat '"..stat.Name.."' doesn't exist for "..tostring(LocalPlayer()))
 				return
 			end
 
-			local lblNewStat = vgui.Create("DLabel")
-			lblNewStat:SetFont("UiBold")
-			lblNewStat:SetColor(clrDrakGray)
-			lblNewStat:SetText(stat.PrintName .. " " .. LocalPlayer().Stats[stat.Name])
-			lblNewStat:SizeToContents()
-			self.StatsDisplay:AddItem(lblNewStat)
+			local NewStat = vgui.Create("DLabel")
+			NewStat:SetFont("UiBold")
+			NewStat:SetColor(DrakGray)
+			NewStat:SetText(stat.PrintName .. " " .. LocalPlayer().Stats[stat.Name])
+			NewStat:SizeToContents()
+			self.StatsDisplay:AddItem(NewStat)
 		end
 	end
 
@@ -152,28 +152,28 @@ end
 
 function PANEL:ReloadAmmoDisplay()
 	self.AmmoDisplay:Clear()
-	for _, tblInfo in pairs(self.AmmoDisplayTable) do
-		local lblNewAmmoType = vgui.Create("DLabel")
-		lblNewAmmoType:SetFont("UiBold")
-		lblNewAmmoType:SetColor(clrDrakGray)
-		lblNewAmmoType:SetText(tblInfo.PrintName .. " " .. LocalPlayer():GetAmmoCount(tblInfo.Type))
-		lblNewAmmoType:SizeToContents()
-		self.AmmoDisplay:AddItem(lblNewAmmoType)
+	for _, Info in pairs(self.AmmoDisplayTable) do
+		local NewAmmoType = vgui.Create("DLabel")
+		NewAmmoType:SetFont("UiBold")
+		NewAmmoType:SetColor(DrakGray)
+		NewAmmoType:SetText(Info.PrintName .. " " .. LocalPlayer():GetAmmoCount(Info.Type))
+		NewAmmoType:SizeToContents()
+		self.AmmoDisplay:AddItem(NewAmmoType)
 	end
 end
 
 function PANEL:AddItem(item, amount)
-	local lstAddList = self.inventorylist
-	local tblItemTable = GAMEMODE.DataBase.Items[item]
-	local intListItems = 1
-	if not tblItemTable.Stackable then intListItems = amount or 1 end
-	if table.HasValue(LocalPlayer().Data.Paperdoll or {}, item) then intListItems = intListItems - 1 end
-	for i = 1, intListItems do
+	local AddList = self.inventorylist
+	local ItemTable = GAMEMODE.DataBase.Items[item]
+	local ListItems = 1
+	if not ItemTable.Stackable then ListItems = amount or 1 end
+	if table.HasValue(LocalPlayer().Data.Paperdoll or {}, item) then ListItems = ListItems - 1 end
+	for i = 1, ListItems do
 		local icnItem = vgui.Create("FIconItem")
 		icnItem:SetSize(self.ItemIconSize, self.ItemIconSize)
-		icnItem:SetItem(tblItemTable, amount)
+		icnItem:SetItem(ItemTable, amount)
 		icnItem.FromInventory = true
-		lstAddList:AddItem(icnItem)
+		AddList:AddItem(icnItem)
 	end
 end
 
