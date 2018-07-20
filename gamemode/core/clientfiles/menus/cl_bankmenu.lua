@@ -8,7 +8,7 @@ PANEL.ItemRow = 7
 
 function PANEL:Init()
 	self.Frame = CreateGenericFrame("Bank Menu", false, true)
-	self.Frame.btnClose.DoClick = function(btn)
+	self.Frame.Close.DoClick = function()
 		GAMEMODE.BankMenu.Frame:Close()
 		GAMEMODE.BankMenu = nil
 	end
@@ -39,43 +39,43 @@ end
 
 function PANEL:LoadBank()
 	self.BankWeightBar:Update(LocalPlayer():GetBankSize())
-	local tblBank = LocalPlayer().Data.Bank or {}
+	local Bank = LocalPlayer().Data.Bank or {}
 	self.BankInventoryPanel:Clear()
-	if tblBank["money"] and tblBank["money"] > 0 then
-		self:AddItem(self.BankInventoryPanel, "money", tblBank["money"], "withdraw")
+	if Bank["money"] and Bank["money"] > 0 then
+		self:AddItem(self.BankInventoryPanel, "money", Bank["money"], "withdraw")
 	end
-	for strItem, intAmount in pairs(tblBank or {}) do
-		if intAmount > 0 and strItem ~= "money" then
-			local tblItemTable = ItemTable(strItem)
-			self:AddItem(self.BankInventoryPanel, strItem, intAmount, "withdraw")
+	for Item, Amount in pairs(Bank or {}) do
+		if Amount > 0 and Item ~= "money" then
+			local ItemTable = ItemTable(Item)
+			self:AddItem(self.BankInventoryPanel, Item, Amount, "withdraw")
 		end
 	end
 end
 
 function PANEL:LoadPlayer()
 	self.WeightBar:Update(LocalPlayer().Weight or 0)
-	local tblInventory = LocalPlayer().Data.Inventory or {}
+	local Inventory = LocalPlayer().Data.Inventory or {}
 	self.PlayerInventoryPanel:Clear()
-	if tblInventory["money"] and tblInventory["money"] > 0 then
-		self:AddItem(self.PlayerInventoryPanel, "money", tblInventory["money"], "deposit")
+	if Inventory["money"] and Inventory["money"] > 0 then
+		self:AddItem(self.PlayerInventoryPanel, "money", Inventory["money"], "deposit")
 	end
-	for strItem, intAmount in pairs(tblInventory or {}) do
-		if intAmount > 0 and strItem ~= "money" then
-			local tblItemTable = ItemTable(strItem)
-			self:AddItem(self.PlayerInventoryPanel, strItem, intAmount, "deposit")
+	for Item, Amount in pairs(Inventory or {}) do
+		if Amount > 0 and Item ~= "money" then
+			local ItemTable = ItemTable(Item)
+			self:AddItem(self.PlayerInventoryPanel, Item, Amount, "deposit")
 		end
 	end
 end
 
-function PANEL:AddItem(lstAddList, item, amount, strCommand)
-	local tblItemTable = ItemTable(item)
-	local intListItems = 1
-	if not tblItemTable.Stackable then intListItems = amount or 1 end
-	for i = 1, intListItems do
-		local icnItem = vgui.Create("FIconItem")
-		icnItem:SetSize(self.ItemIconSize, self.ItemIconSize)
-		icnItem:SetItem(tblItemTable, amount, strCommand or "use")
-		lstAddList:AddItem(icnItem)
+function PANEL:AddItem(AddList, item, amount, Command)
+	local ItemTable = ItemTable(item)
+	local ListItems = 1
+	if not ItemTable.Stackable then ListItems = amount or 1 end
+	for i = 1, ListItems do
+		local Item = vgui.Create("FIconItem")
+		Item:SetSize(self.ItemIconSize, self.ItemIconSize)
+		Item:SetItem(ItemTable, amount, Command or "use")
+		AddList:AddItem(Item)
 	end
 end
 
@@ -102,8 +102,8 @@ vgui.Register("bankmenu", PANEL, "Panel")
 
 concommand.Add("UD_OpenBankMenu", function(ply, command, args)
 	local npc = ply:GetEyeTrace().Entity
-	local tblNPCTable = NPCTable(npc:GetNWString("npc"))
-	if not IsValid(npc) or not tblNPCTable or not tblNPCTable.Bank then return end
+	local NPCTable = NPCTable(npc:GetNWString("npc"))
+	if not IsValid(npc) or not NPCTable or not NPCTable.Bank then return end
 	GAMEMODE.BankMenu = GAMEMODE.BankMenu or vgui.Create("bankmenu")
 	GAMEMODE.BankMenu:SetSize(505, 340)
 	GAMEMODE.BankMenu:Center()
