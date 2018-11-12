@@ -1,12 +1,15 @@
 --[[
-	+oooooo+-`    `:oyyys+-`    +oo.       /oo-   .oo+-  ooo+`   `ooo+  
-	NMMhyhmMMm-  omMNyosdMMd:   NMM:       hMM+ `oNMd:  `MMMMy`  yMMMN  
-	NMM:  .NMMo /MMN:    sMMN`  NMM:       hMMo/dMm/`   `MMMmMs`oMmMMN  
-	NMMhyhmMNh. yMMm     -MMM:  NMM:       hMMmNMMo     `MMM:mMhMd/MMN  
-	NMMyoo+/.   /MMN:    sMMN`  NMM:       hMMy:dMMh-   `MMM`:NMN.:MMN  
-	NMM:         +NMNyosdMMd:   NMMdyyyyy. hMM+ `+NMNo` `MMM` ... :MMN  
+	+oooooo+-`    `:oyyys+-`    +oo.       /oo-   .oo+-  ooo+`   `ooo+
+	NMMhyhmMMm-  omMNyosdMMd:   NMM:       hMM+ `oNMd:  `MMMMy`  yMMMN
+	NMM:  .NMMo /MMN:    sMMN`  NMM:       hMMo/dMm/`   `MMMmMs`oMmMMN
+	NMMhyhmMNh. yMMm     -MMM:  NMM:       hMMmNMMo     `MMM:mMhMd/MMN
+	NMMyoo+/.   /MMN:    sMMN`  NMM:       hMMy:dMMh-   `MMM`:NMN.:MMN
+	NMM:         +NMNyosdMMd:   NMMdyyyyy. hMM+ `+NMNo` `MMM` ... :MMN
 	+oo.          `:oyyys+-`    +oooooooo` /oo-   .ooo/  ooo`     .oo+  2009
 ]]
+
+-- > 2009
+-- > 2018
 
 local PANEL = {}
 PANEL.Color = nil
@@ -15,22 +18,20 @@ PANEL.NameText = nil
 PANEL.DescText = nil
 PANEL.AvatarImage = nil
 PANEL.ContentList = nil
-PANEL.strName = nil
+PANEL.Name = nil
 PANEL.Expanded = false
 PANEL.Expandable = false
 PANEL.ExpandedSize = nil
 PANEL.HeaderSize = nil
 PANEL.GradientTexture = nil
-PANEL.NameFont = "Default"
+PANEL.NameFont = "MenuLarge"
 
 function PANEL:Init()
-	self.Color = clrGray
-	self.Color_hover = clrGray
-	self:SetColor(clrGray)
+	self.Color = Gray
+	self.Color_hover = Gray
+	self:SetColor(Gray)
 	self.NameText = "Test"
 	self.DescText = ""
-	self.ExpandedSize = 50
-	self.HeaderSize = 18
 	--RightClick Dectection--
 	self:SetMouseInputEnabled(true)
 	self.OnMousePressed = function(self,mousecode) self:MouseCapture(true) end
@@ -38,22 +39,25 @@ function PANEL:Init()
 	if mousecode == MOUSE_RIGHT then pcall(self.DoRightClick,self) end
 	if mousecode == MOUSE_LEFT then pcall(self.DoClick,self) end end
 	-------------------------
-	self.DoClick = function() self:SetExpanded(!self:GetExpanded()) end
+	self.DoClick = function() self:SetExpanded(not self:GetExpanded()) end
 	self.DoRightClick = function() end
 	-------------------------
 	self.GradientTexture = surface.GetTextureID("VGUI/gradient-d")
 end
 
 function PANEL:PerformLayout()
+	self.ExpandedSize = 50
+	self.HeaderSize = 18
+	
 	if self.Expanded then self:SetSize(self:GetWide(), self.ExpandedSize) end
 	if not self.Expanded then self:SetSize(self:GetWide(), self.HeaderSize) end
 	if self.CommonButton then
 		self.CommonButton:SetPos(self:GetWide() - 17, (self.HeaderSize / 2) - (self.CommonButton:GetTall() / 2))
 	end
-	for key, btnButton in pairs(self.Buttons or {}) do
-		btnButton:SetPos(self:GetWide() - (key * (btnButton:GetWide() + 5)), (self.HeaderSize / 2) - (btnButton:GetTall() / 2))
+	for key, Button in pairs(self.Buttons or {}) do
+		Button:SetPos(self:GetWide() - (key * (Button:GetWide() + 5)), (self.HeaderSize / 2) - (Button:GetTall() / 2))
 	end
-	
+
 	if self.ContentList then
 		self.ContentList:SetSize(self:GetWide() - 10, self:GetTall() - self.HeaderSize - 7)
 		self.ContentList:SetPos(5, self.HeaderSize + 2)
@@ -64,76 +68,76 @@ function PANEL:PerformLayout()
 	self:GetParent():InvalidateLayout()
 end
 
-function PANEL:Paint()
-	local intIconSize = 16
-	local intIconSize_small = 12
-	local clrBackGroundColor
+function PANEL:Paint(w, h)
+	local IconSize = 16
+	local IconSize_small = 12
+	local BackGroundColor
 	local x, y = self:CursorPos()
-	if x > 0 and x < self:GetWide() and y > 0 and y < self:GetTall() then
-		clrBackGroundColor = self.Color_hover
+	if x > 0 and x < w and y > 0 and y < h then
+		BackGroundColor = self.Color_hover
 	else
-		clrBackGroundColor = self.Color
+		BackGroundColor = self.Color
 	end
-	local tblPaintPanle = jdraw.NewPanel()
-	tblPaintPanle:SetDemensions(0, 0, self:GetWide(), self:GetTall())
-	tblPaintPanle:SetStyle(4, clrBackGroundColor)
-	tblPaintPanle:SetBoarder(1, clrDrakGray)
-	jdraw.DrawPanel(tblPaintPanle)
+	local PaintPanel = jdraw.NewPanel()
+	PaintPanel:SetDimensions(0, 0, w, h)
+	PaintPanel:SetStyle(4, BackGroundColor)
+	PaintPanel:SetBorder(1, DrakGray)
+	jdraw.DrawPanel(PaintPanel)
 	--Text
 	surface.SetFont(self.NameFont)
 	local wide, high = surface.GetTextSize(self.NameText)
-	local intXOffSet = 5
-	if self.AvatarImage then intXOffSet = self.AvatarImage:GetWide() + 8 end
-	if self.Icon and not self.AvatarImage then intXOffSet = 20 end
-	draw.SimpleText(self.NameText, self.NameFont, intXOffSet, (self.HeaderSize / 2) - 1, clrWhite, 0, 1)
-	draw.SimpleText(self.DescText, "DefaultSmall", wide + intXOffSet + 5, (self.HeaderSize / 2), clrDrakGray, 0, 1)
+	local XOffSet = 5
+	if self.AvatarImage then XOffSet = self.AvatarImage:GetWide() + 8 end
+	if self.Icon and not self.AvatarImage then XOffSet = 20 end
+	draw.SimpleText(self.NameText, self.NameFont, XOffSet, (self.HeaderSize / 2) - 1, White, 0, 1)
+	draw.SimpleText(self.DescText, "DefaultSmall", wide + XOffSet + 5, (self.HeaderSize / 2), DrakGray, 0, 1)
 	--Icon
 	if self.Icon and not self.AvatarImage then
 		surface.SetDrawColor(255, 255, 255, 255)
 		surface.SetMaterial(self:GetIcon())
 		if x > 0 and x < self:GetWide() and y > 0 and y < self:GetTall() then
-			surface.DrawTexturedRect(1, (self.HeaderSize / 2) - (intIconSize / 2), intIconSize, intIconSize)
+			surface.DrawTexturedRect(1, (self.HeaderSize / 2) - (IconSize / 2), IconSize, IconSize)
 		else
-			surface.DrawTexturedRect(3, (self.HeaderSize / 2) - (intIconSize_small / 2), intIconSize_small, intIconSize_small)
+			surface.DrawTexturedRect(3, (self.HeaderSize / 2) - (IconSize_small / 2), IconSize_small, IconSize_small)
 		end
 	end
 	return true
 end
 
-function PANEL:SetColor(clrColor)
-	self.Color = clrColor
-	local intHoverChange = 20
+function PANEL:SetColor(clr)
+	self.Color = clr
+	local HoverChange = 20
 	local HoverColor = Color(
-		math.Clamp(clrColor.r + intHoverChange, 0, 255),
-		math.Clamp(clrColor.g + intHoverChange, 0, 255),
-		math.Clamp(clrColor.b + intHoverChange, 0, 255),
-		clrColor.a)
+		math.Clamp(clr.r + HoverChange, 0, 255),
+		math.Clamp(clr.g + HoverChange, 0, 255),
+		math.Clamp(clr.b + HoverChange, 0, 255),
+		clr.a)
 	self.Color_hover = HoverColor
 end
 function PANEL:GetIcon()
 	return self.Icon
 end
-function PANEL:SetIcon(strIconText)
-	self.Icon = Material(strIconText)
+function PANEL:SetIcon(IconText)
+	self.Icon = Material(IconText)
 end
-function PANEL:SetNameText(strNameText)
-	self.NameText = strNameText
+function PANEL:SetNameText(NameText)
+	self.NameText = NameText
 end
-function PANEL:SetDescText(strDescText)
-	self.DescText = strDescText
+function PANEL:SetDescText(DescText)
+	self.DescText = DescText
 end
-function PANEL:SetHeaderSize(intHeaderSize)
-	self.HeaderSize = intHeaderSize
+function PANEL:SetHeaderSize(HeaderSize)
+	self.HeaderSize = HeaderSize
 end
-function PANEL:SetExpandable(boolExpandable)
-	self.Expandable = boolExpandable
+function PANEL:SetExpandable(Expandable)
+	self.Expandable = Expandable
 end
-function PANEL:SetFont(strFont)
-	self.NameFont = strFont
+function PANEL:SetFont(Font)
+	self.NameFont = Font
 end
-function PANEL:SetExpanded(boolExpanded)
+function PANEL:SetExpanded(Expanded)
 	if self.Expandable then
-		self.Expanded = boolExpanded
+		self.Expanded = Expanded
 		if self.Expanded then self:SetTall(self.ExpandedSize) end
 		if not self.Expanded then self:SetTall(self.HeaderSize) end
 		self:GetParent():InvalidateLayout()
@@ -143,44 +147,43 @@ function PANEL:GetExpanded()
 	return self.Expanded
 end
 
-
-
-function PANEL:SetCommonButton(strTexture, fncPressedFunction, strToolTip)
+function PANEL:SetCommonButton(Texture, PressedFunction, ToolTip)
 	if not self.CommonButton then  self.CommonButton = vgui.Create("DImageButton", self) end
-	self.CommonButton:SetMaterial(strTexture)
+	self.CommonButton:SetMaterial(Texture)
 	self.CommonButton:SizeToContents()
-	self.CommonButton.DoClick = fncPressedFunction
-	self.CommonButton:SetTooltip(strToolTip)
+	self.CommonButton.DoClick = PressedFunction
+	self.CommonButton:SetTooltip(ToolTip)
 end
 
-
-
-function PANEL:AddButton(strTexture, strToolTip, fncPressedFunction)
-	local btnNewButton = vgui.Create("DImageButton", self)
-	btnNewButton:SetMaterial(strTexture)
-	btnNewButton:SizeToContents()
-	btnNewButton:SetTooltip(strToolTip)
-	btnNewButton.DoClick = fncPressedFunction
+function PANEL:AddButton(Texture, ToolTip, PressedFunction)
+	local NewButton = vgui.Create("DImageButton", self)
+	NewButton:SetMaterial(Texture)
+	NewButton:SizeToContents()
+	NewButton:SetTooltip(ToolTip)
+	NewButton.DoClick = PressedFunction
 	self.Buttons = self.Buttons or {}
-	table.insert(self.Buttons, btnNewButton)
-	return btnNewButton
+	table.insert(self.Buttons, NewButton)
+	return NewButton
 end
 
-function PANEL:SetAvatar(plyPlayer, intAvatarSize)
+function PANEL:SetAvatar(Player, AvatarSize)
 	self.AvatarImage = vgui.Create("AvatarImage", self)
-	self.AvatarImage:SetSize(intAvatarSize, intAvatarSize)
-	self.AvatarImage:SetPlayer(plyPlayer)
+	self.AvatarImage:SetSize(AvatarSize, AvatarSize)
+	self.AvatarImage:SetPlayer(Player)
 end
 
-function PANEL:SetItemIcon(strItem, strText, intAvatarSize)
+function PANEL:SetItemIcon(Item, Text, AvatarSize)
 	self.AvatarImage = vgui.Create("FIconItem", self)
-	self.AvatarImage:SetSize(intAvatarSize, intAvatarSize)
-	self.AvatarImage:SetItem(ItemTable(strItem), strText, "none")
+	self.AvatarImage:SetSize(AvatarSize, AvatarSize)
+	self.AvatarImage:SetItem(ItemTable(Item), Text, "none")
 	self.AvatarImage:SetDragable(false)
-	self.AvatarImage:SetText(strText)
+	self.AvatarImage:SetText(Text)
 end
 
-function PANEL:AddContent(objItem)
+function PANEL:AddContent(Item)
+	self.ExpandedSize = 50
+	self.HeaderSize = 18
+	
 	if not self.ContentList then
 		self.ContentList = vgui.Create("DPanelList", self)
 		self.ContentList:SetSpacing(1)
@@ -188,14 +191,14 @@ function PANEL:AddContent(objItem)
 		self.ContentList:EnableHorizontal(false)
 		self.ContentList:EnableVerticalScrollbar(true)
 		self.ContentList.Paint = function()
-			local tblPaintPanle = jdraw.NewPanel()
-			tblPaintPanle:SetDemensions(0, 0, self.ContentList:GetWide(), self.ContentList:GetTall())
-			tblPaintPanle:SetStyle(4, clrGray)
-			tblPaintPanle:SetBoarder(1, clrDrakGray)
-			jdraw.DrawPanel(tblPaintPanle)
+			local PaintPanel = jdraw.NewPanel()
+			PaintPanel:SetDimensions(0, 0, self.ContentList:GetWide(), self.ContentList:GetTall())
+			PaintPanel:SetStyle(4, Gray)
+			PaintPanel:SetBorder(1, DrakGray)
+			jdraw.DrawPanel(PaintPanel)
 		end
 	end
-	self.ContentList:AddItem(objItem)
+	self.ContentList:AddItem(Item)
 	local ExpandSize = self.HeaderSize + 10
 	for _, ListItem in pairs(self.ContentList:GetItems()) do ExpandSize = ExpandSize + ListItem.HeaderSize + 1 end
 	self.ExpandedSize = ExpandSize

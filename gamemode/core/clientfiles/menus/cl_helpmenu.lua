@@ -12,14 +12,15 @@ function PANEL:Init()
 		self.Admin = self.TabSheet:NewTab("Admin", "admintab", "gui/admin", "For admins only.")
 	end
 
-	self.Frame.btnClose = vgui.Create("Button", self.Frame)
-	self.Frame.btnClose:SetText("Close")
-	self.Frame.btnClose.DoClick = function(pnlPanel)
+	self.Frame.CloseButton = vgui.Create("DButton", self.Frame)
+	self.Frame.CloseButton:SetFont("Marlett")
+	self.Frame.CloseButton:SetText("r")
+	self.Frame.CloseButton.DoClick = function(Panel)
 		GAMEMODE.HelpMenu.Frame:Close()
 		GAMEMODE.HelpMenu = nil
 	end
-	self.Frame.btnClose.Paint = function()
-		jdraw.QuickDrawPanel(clrGray, 0, 0, self.Frame.btnClose:GetWide() - 1, self.Frame.btnClose:GetTall() - 1)
+	self.Frame.CloseButton.Paint = function(w, h)
+		jdraw.QuickDrawPanel(Gray, 0, 0, w - 1, h - 1)
 	end
 	self.Frame:MakePopup()
 	self:PerformLayout()
@@ -28,7 +29,7 @@ end
 function PANEL:PerformLayout()
 	self.Frame:SetPos(self:GetPos())
 	self.Frame:SetSize(self:GetSize())
-	self.Frame.btnClose:SetPos(self.Frame:GetWide() - 5, 10)
+	self.Frame.CloseButton:SetPos(self.Frame:GetWide() - 5, 10)
 
 	self.TabSheet:SetPos(5, 5)
 	self.TabSheet:SetSize(self.Frame:GetWide() - 10, self.Frame:GetTall() - 10)

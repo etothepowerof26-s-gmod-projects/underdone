@@ -1,35 +1,23 @@
-PANEL = {}
-PANEL.Min = 0
+local PANEL = {}
 PANEL.Max = 1
 PANEL.Value = 1
 PANEL.Text = ""
 
+AccessorFunc(PANEL, "Max", "Max")
+AccessorFunc(PANEL, "Value", "Value")
+AccessorFunc(PANEL, "Text", "Text")
+
 function PANEL:Init()
-end
-
-function PANEL:Paint()
 	self.PercentBar = jdraw.NewProgressBar()
-	self.PercentBar:SetDemensions(0, 0, self:GetWide(), self:GetTall())
-	self.PercentBar:SetStyle(4, clrBlue)
-	self.PercentBar:SetBoarder(1, clrDrakGray)
+		self.PercentBar:SetStyle(4, Blue)
+		self.PercentBar:SetBorder(1, DrakGray)
+end
+
+function PANEL:Paint(w, h)
+	self.PercentBar:SetDimensions(0, 0, w, h)
 	self.PercentBar:SetValue(self.Value, self.Max)
-	self.PercentBar:SetText("Default", self.Text, clrDrakGray)
+	self.PercentBar:SetText("UiBold", self.Text, DrakGray)
 	jdraw.DrawProgressBar(self.PercentBar)
-end
-
-function PANEL:SetMax(intMax)
-	self.Max = intMax
-end
-
-function PANEL:SetValue(intValue)
-	self.Value = intValue
-end
-function PANEL:GetValue()
-	return self.Value
-end
-
-function PANEL:SetText(strText)
-	self.Text = strText
 end
 
 vgui.Register("FPercentBar", PANEL, "Panel")

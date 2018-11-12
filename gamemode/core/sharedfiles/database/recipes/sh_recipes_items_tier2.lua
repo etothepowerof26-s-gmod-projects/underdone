@@ -39,7 +39,7 @@ Register.Recipe(Recipe)
 
 local Recipe = {}
 Recipe.Name = "recipe_cook_noodles"
-Recipe.PrintName = "Cooking Chineese Noodles"
+Recipe.PrintName = "Cooking Chinese Noodles"
 Recipe.NearFire = true
 Recipe.MakeTime = 20
 Recipe.GainExp = 10

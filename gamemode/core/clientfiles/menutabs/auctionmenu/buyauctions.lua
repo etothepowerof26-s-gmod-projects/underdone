@@ -1,22 +1,22 @@
-local intDefaultAuctionTime = 24 --1 Day
-local intCleanUpTime = 168 --1 Week
+local DefaultAuctionTime = 24 --1 Day
+local CleanUpTime = 168 --1 Week
 PANEL = {}
 function PANEL:Init()
 	self.AuctionsList = CreateGenericList(self, 3, false, true)
 
 	self.CreateAuction = CreateGenericPanel(self)
 	self.ItemSellector = CreateGenericMultiChoice(self.CreateAuction)
-	for strItem, intAmount in pairs(LocalPlayer().Data.Inventory or {}) do
-		if (ItemTable(strItem).SellPrice or 0) > 0 then
+	for Item, Amount in pairs(LocalPlayer().Data.Inventory or {}) do
+		if (ItemTable(Item).SellPrice or 0) > 0 then
 			self.ItemSellector.NewChoices = self.ItemSellector.NewChoices or {}
-			self.ItemSellector.NewChoices[self.ItemSellector:AddChoice(ItemTable(strItem).PrintName)] = strItem
+			self.ItemSellector.NewChoices[self.ItemSellector:AddChoice(ItemTable(Item).PrintName)] = Item
 		end
 	end
-	local strItem = ""
+	local Item = ""
 	self.ItemSellector.OnSelect = function(index, value, data)
-		strItem = self.ItemSellector.NewChoices[value]
+		Item = self.ItemSellector.NewChoices[value]
 		self.AmountEntry:SetValue(1)
-		self.AmountEntry:SetMax(LocalPlayer().Data.Inventory[strItem])
+		self.AmountEntry:SetMax(LocalPlayer().Data.Inventory[Item])
 	end
 	self.AmountEntry = vgui.Create("DNumberWang", self.CreateAuction)
 	self.AmountEntry:SetDecimals(0)
@@ -26,27 +26,29 @@ function PANEL:Init()
 	self.PriceEntry = vgui.Create("DTextEntry", self.CreateAuction)
 	self.PriceEntry:SetText("Price")
 	self.CreateAuctionButton = CreateGenericImageButton(self.CreateAuction, "gui/accept", "Create Auction", function()
-		RunConsoleCommand("UD_CreateAuction", strItem, tonumber(self.AmountEntry:GetValue()), tonumber(self.PriceEntry:GetValue()))
+		RunConsoleCommand("UD_CreateAuction", Item, tonumber(self.AmountEntry:GetValue()), tonumber(self.PriceEntry:GetValue()))
 		timer.Simple(0.5, function()
 			self.AmountEntry:SetValue(1)
-			self.AmountEntry:SetMax(LocalPlayer().Data.Inventory[strItem])
+			self.AmountEntry:SetMax(LocalPlayer().Data.Inventory[Item])
 		end)
 	end)
 
 	self.PagesPanel = CreateGenericPanel(self)
-	self.PageRight = vgui.Create("DSysButton", self.PagesPanel)
-	self.PageLeft = vgui.Create("DSysButton", self.PagesPanel)
-	self.PageLeft:SetType("left")
+	self.PageRight = vgui.Create("DButton", self.PagesPanel)
+	self.PageLeft = vgui.Create("DButton", self.PagesPanel)
+	self.PageLeft:SetFont("Marlett")
+	self.PageLeft:SetText("3")
 	self.PageLeft.DoClick = function()
 		self.PageLabel:SetText("Page " .. math.Clamp((LocalPlayer():GetNWInt("AuctionPage") + 1) - 1, 1, 100))
 		RunConsoleCommand("UD_SetAuctionPage", math.Clamp(LocalPlayer():GetNWInt("AuctionPage") - 1, 0, 100))
 	end
-	self.PageRight:SetType("right")
+	self.PageRight:SetFont("Marlett")
+	self.PageRight:SetText("4")
 	self.PageRight.DoClick = function()
 		self.PageLabel:SetText("Page " .. math.Clamp((LocalPlayer():GetNWInt("AuctionPage") + 1) + 1, 1, 100))
 		RunConsoleCommand("UD_SetAuctionPage", math.Clamp(LocalPlayer():GetNWInt("AuctionPage") + 1, 0, 100))
 	end
-	self.PageLabel = CreateGenericLabel(self.PagesPanel, "Default", "Page " .. (LocalPlayer():GetNWInt("AuctionPage") + 1), clrDrakGray)
+	self.PageLabel = CreateGenericLabel(self.PagesPanel, "UiBold", "Page " .. (LocalPlayer():GetNWInt("AuctionPage") + 1), clrDrakGray)
 
 	self:LoadAuctions()
 end
@@ -77,25 +79,25 @@ end
 
 function PANEL:LoadAuctions()
 	self.AuctionsList:Clear()
-	local intCounter = 0
-	for intKey, tblInfo in pairs(GAMEMODE.Auctions) do
-		if tblInfo.TimeLeft > intCleanUpTime - intDefaultAuctionTime then
-			if intCounter >= (LocalPlayer():GetNWInt("AuctionPage") * GAMEMODE.AuctionsPerPage) and intCounter < ((LocalPlayer():GetNWInt("AuctionPage") + 1) * GAMEMODE.AuctionsPerPage) then
-				local ltmAuction = vgui.Create("FListItem")
-				ltmAuction:SetHeaderSize(35)
-				ltmAuction:SetFont("Default")
-				ltmAuction:SetItemIcon(tblInfo.Item, tblInfo.Amount, 30)
-				ltmAuction:SetNameText(ItemTable(tblInfo.Item).PrintName)
-				ltmAuction:SetDescText("$" .. tblInfo.Price .. "   " .. math.Round(tblInfo.TimeLeft - (intCleanUpTime - intDefaultAuctionTime)) .. " Hours Left")
-				if tblInfo.SellerID == LocalPlayer():SteamID() or game.SinglePlayer() then
-					ltmAuction:AddButton("icon16/check_off.png", "Cancel Auction", function() RunConsoleCommand("UD_CancelAuction", intKey) end)
+	local Counter = 0
+	for Key, Info in pairs(GAMEMODE.Auctions) do
+		if Info.TimeLeft > CleanUpTime - DefaultAuctionTime then
+			if Counter >= (LocalPlayer():GetNWInt("AuctionPage") * GAMEMODE.AuctionsPerPage) and Counter < ((LocalPlayer():GetNWInt("AuctionPage") + 1) * GAMEMODE.AuctionsPerPage) then
+				local Auction = vgui.Create("FListItem")
+				Auction:SetHeaderSize(35)
+				Auction:SetFont("MenuLarge")
+				Auction:SetItemIcon(Info.Item, Info.Amount, 30)
+				Auction:SetNameText(ItemTable(Info.Item).PrintName)
+				Auction:SetDescText("$" .. Info.Price .. "   " .. math.Round(Info.TimeLeft - (CleanUpTime - DefaultAuctionTime)) .. " Hours Left")
+				if Info.SellerID == LocalPlayer():SteamID() or game.SinglePlayer() then
+					Auction:AddButton("icon16/check_off.png", "Cancel Auction", function() RunConsoleCommand("UD_CancelAuction", Key) end)
 				end
-				if tblInfo.SellerID ~= LocalPlayer():SteamID() or game.SinglePlayer() then
-					ltmAuction:AddButton("gui/money", "Buy out Auction", function() RunConsoleCommand("UD_BuyOutAuction", intKey) end)
+				if Info.SellerID ~= LocalPlayer():SteamID() or game.SinglePlayer() then
+					Auction:AddButton("gui/money", "Buy out Auction", function() RunConsoleCommand("UD_BuyOutAuction", Key) end)
 				end
-				self.AuctionsList:AddItem(ltmAuction)
+				self.AuctionsList:AddItem(Auction)
 			end
-			intCounter = intCounter + 1
+			Counter = Counter + 1
 		end
 	end
 end

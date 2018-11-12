@@ -1,42 +1,42 @@
 local Player = FindMetaTable("Player")
-local intDefaultPlayerSpeed = 270
+local DefaultPlayerSpeed = 270
 
-function Player:AddMoveSpeed(intAmount)
-	self.MoveSpeed = self.MoveSpeed or intDefaultPlayerSpeed
-	self:SetMoveSpeed(self.MoveSpeed + intAmount)
+function Player:AddMoveSpeed(Amount)
+	self.MoveSpeed = self.MoveSpeed or DefaultPlayerSpeed
+	self:SetMoveSpeed(self.MoveSpeed + Amount)
 end
-function Player:SetMoveSpeed(intAmount)
-	self.MoveSpeed = self.MoveSpeed or intDefaultPlayerSpeed
-	self.MoveSpeed = math.Clamp(intAmount or self.MoveSpeed, 0, 1000)
+function Player:SetMoveSpeed(Amount)
+	self.MoveSpeed = self.MoveSpeed or DefaultPlayerSpeed
+	self.MoveSpeed = math.Clamp(Amount or self.MoveSpeed, 0, 1000)
 	self:SetWalkSpeed(math.Clamp(self.MoveSpeed, 0, 1000))
 	self:SetRunSpeed(math.Clamp(self.MoveSpeed, 0, 1000))
 end
 function Player:GetMoveSpeed()
-	self.MoveSpeed = self.MoveSpeed or intDefaultPlayerSpeed
+	self.MoveSpeed = self.MoveSpeed or DefaultPlayerSpeed
 	return self.MoveSpeed
 end
 
-local function CreateSlowTimer(ply, intTime, intAmount)
-	timer.Simple(intTime, function()
+local function CreateSlowTimer(ply, Time, Amount)
+	timer.Simple(Time, function()
 		if ply and ply:IsValid() then
 			table.remove(ply.SlowDownTimes, 1)
 			if ply.SlowDownTimes[1] then
-				CreateSlowTimer(ply, ply.SlowDownTimes[1], intAmount)
+				CreateSlowTimer(ply, ply.SlowDownTimes[1], Amount)
 			else
 				ply.IsSlowingDown = false
-				ply:AddMoveSpeed(intAmount)
+				ply:AddMoveSpeed(Amount)
 			end
 		end
 	end)
 end
-function Player:SlowDown(intTime)
+function Player:SlowDown(Time)
 	self.SlowDownTimes = self.SlowDownTimes or {}
-	table.insert(self.SlowDownTimes, intTime)
+	table.insert(self.SlowDownTimes, Time)
 	if not self.IsSlowingDown then
 		self.IsSlowingDown = true
-		local intAmount = math.Round(self:GetMoveSpeed() * 0.90)
-		self:AddMoveSpeed(-intAmount)
-		CreateSlowTimer(self, intTime, intAmount)
+		local Amount = math.Round(self:GetMoveSpeed() * 0.90)
+		self:AddMoveSpeed(-Amount)
+		CreateSlowTimer(self, Time, Amount)
 	end
 end
 

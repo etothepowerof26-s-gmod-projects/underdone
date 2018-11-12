@@ -18,7 +18,7 @@ Register.Recipe(Recipe)
 
 local Recipe = {}
 Recipe.Name = "recipe_canofmeat"
-Recipe.PrintName = "Cooking Meat"
+Recipe.PrintName = "Cook Meat"
 Recipe.NearFire = true
 Recipe.MakeTime = 5
 Recipe.GainExp = 3

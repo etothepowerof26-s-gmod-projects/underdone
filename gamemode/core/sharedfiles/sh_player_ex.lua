@@ -150,29 +150,30 @@ if SERVER then
 		end
 	end
 
-	local tblComplements = {}
-	tblComplements[1] = "Holy_Shit_Your_Cool"
-	tblComplements[2] = "Nice_Man!"
-	tblComplements[3] = "You_Are_Epic!"
-	tblComplements[4] = "I_Wish_I_Was_As_Cool_As_You!"
-	tblComplements[5] = "I_Jizzed!"
-	tblComplements[6] = "Gratz!"
-	tblComplements[7] = "I_Just_Shat_My_Pants!"
-	tblComplements[8] = "Call_Me!"
-	tblComplements[9] = "You_Should_Model!"
-	tblComplements[10] = "God_Damn_I_Love_You!"
-	tblComplements[11] = "You_Make_Me_Hot"
-	tblComplements[12] = "I_Wish_I_Could_Touch_You"
-	tblComplements[13] = "You_Now_With_10%_More_Cowbell"
-	tblComplements[14] = "My_Girlfriend_Left_Me_For_You"
-	tblComplements[15] = "Lets_Make_Party"
-	local tblColors = {}
-	tblColors[1] = "purple"
-	tblColors[2] = "blue"
-	tblColors[3] = "orange"
-	tblColors[4] = "red"
-	tblColors[5] = "green"
-	tblColors[6] = "white"
+	local Complements = {}
+	--TODO: table.insert or stay same?
+	Complements[#Complements + 1] = "Holy_Shit_Your_Cool"
+	Complements[#Complements + 1] = "Nice_Man!"
+	Complements[#Complements + 1] = "You_Are_Epic!"
+	Complements[#Complements + 1] = "I_Wish_I_Was_As_Cool_As_You!"
+	Complements[#Complements + 1] = "I_Jizzed!"
+	Complements[#Complements + 1] = "Gratz!"
+	Complements[#Complements + 1] = "I_Just_Shat_My_Pants!"
+	Complements[#Complements + 1] = "Call_Me!"
+	Complements[#Complements + 1] = "You_Should_Model!"
+	Complements[#Complements + 1] = "God_Damn_I_Love_You!"
+	Complements[#Complements + 1] = "You_Make_Me_Hot"
+	Complements[#Complements + 1] = "I_Wish_I_Could_Touch_You"
+	Complements[#Complements + 1] = "You_Now_With_10%_More_Cowbell"
+	Complements[#Complements + 1] = "My_Girlfriend_Left_Me_For_You"
+	Complements[#Complements + 1] = "Lets_Make_Party"
+	local Colors = {}
+	Colors[1] = "purple"
+	Colors[2] = "blue"
+	Colors[3] = "orange"
+	Colors[4] = "red"
+	Colors[5] = "green"
+	Colors[6] = "white"
 	function Player:GiveExp(intAmount, boolShowExp)
 		local PlayerExp = tonumber(self:GetNWInt("exp")) or 0
 		local intCurrentExp = PlayerExp
@@ -182,15 +183,15 @@ if SERVER then
 			local intTotal = math.Clamp(intCurrentExp + intAmount, toExp(intPreExpLevel), intCurrentExp + intAmount)
 			self:SetNWInt("exp", tonumber(intTotal))
 			if boolShowExp then
-				self:CreateIndacator("+_" .. intAmount .. "_Exp", self:GetPos() + Vector(0, 0, 70), "green")
+				self:CreateIndicator("+_" .. intAmount .. "_Exp", self:GetPos() + Vector(0, 0, 70), "green")
 			end
 			local intPostExpLevel = self:GetLevel()
 			if intPreExpLevel < intPostExpLevel then
 				hook.Call("UD_Hook_PlayerLevelUp", GAMEMODE, self, intPostExpLevel - intPreExpLevel)
 				self:SetHealth(self:GetMaximumHealth())
-				self:CreateIndacator("+1_Level", self:GetPos() + Vector(0, 0, 70), "green", true)
+				self:CreateIndicator("+1_Level", self:GetPos() + Vector(0, 0, 70), "green", true)
 				for i = 1, self:GetLevel() do
-					self:CreateIndacator(tblComplements[math.random(1, #tblComplements)], self:GetPos() + Vector(0, 0, 70), tblColors[math.random(1, #tblColors)], true)
+					self:CreateIndicator(Complements[math.random(1, #Complements)], self:GetPos() + Vector(0, 0, 70), Colors[math.random(1, #Colors)], true)
 				end
 			end
 		end
@@ -235,9 +236,9 @@ if SERVER then
 			dmg:SetDamage(math.Clamp(math.Round(dmg:GetDamage() + math.random(-1, 1)), 0, 9999))
 			if tblNPCTable.Race == "human" then dmg:SetDamage(0) end
 			if dmg:GetDamage() > 0 then
-				entVictim:CreateIndacator(dmg:GetDamage(), dmg:GetDamagePosition(), clrDisplayColor)
+				entVictim:CreateIndicator(dmg:GetDamage(), dmg:GetDamagePosition(), clrDisplayColor)
 			else
-				entVictim:CreateIndacator("Miss!", dmg:GetDamagePosition(), "orange")
+				entVictim:CreateIndicator("Miss!", dmg:GetDamagePosition(), "orange")
 			end
 		end
 	end

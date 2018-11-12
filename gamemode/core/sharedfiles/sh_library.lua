@@ -11,7 +11,7 @@ function Player:AddBookToLibrary(strBook)
 		if ItemTable(strBook).LibraryLoad then
 			ItemTable(strBook):LibraryLoad(self, ItemTable(strBook))
 		end
-		SendUsrMsg("UD_UpdateLibrary", self, {strBook})
+		SendNetworkMessage("UD_UpdateLibrary", self, {strBook})
 	end
 	return true
 end
@@ -24,9 +24,9 @@ end
 if SERVER then
 	function Player:RequestBookStory(strBook)
 		if self:HasReadBook(strBook) then
-			SendUsrMsg("UD_UpdateCurrentBook", self, {true})
+			SendNetworkMessage("UD_UpdateCurrentBook", self, {true})
 			for i = 0, math.ceil(string.len(ItemTable(strBook).Story) / 150) - 1 do
-				SendUsrMsg("UD_UpdateCurrentBook", self, {false, string.sub(ItemTable(strBook).Story, (i * 150) + 1, (i + 1) * 150)})
+				SendNetworkMessage("UD_UpdateCurrentBook", self, {false, string.sub(ItemTable(strBook).Story, (i * 150) + 1, (i + 1) * 150)})
 			end
 		end
 	end
@@ -34,13 +34,13 @@ if SERVER then
 end
 
 if CLIENT then
-	usermessage.Hook("UD_UpdateLibrary", function(usrMsg)
-		LocalPlayer():AddBookToLibrary(usrMsg:ReadString())
+	net.Receive("UD_UpdateLibrary", function()
+		LocalPlayer():AddBookToLibrary(net.ReadString())
 	end)
-	usermessage.Hook("UD_UpdateCurrentBook", function(usrMsg)
+	net.Receive("UD_UpdateCurrentBook", function()
 		LocalPlayer().CurrentStory = LocalPlayer().CurrentStory or ""
-		if not usrMsg:ReadBool() then
-			LocalPlayer().CurrentStory = LocalPlayer().CurrentStory .. usrMsg:ReadString()
+		if not net.ReadBool() then
+			LocalPlayer().CurrentStory = LocalPlayer().CurrentStory .. net.ReadString()
 		else
 			LocalPlayer().CurrentStory = ""
 		end

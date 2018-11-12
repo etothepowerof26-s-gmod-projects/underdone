@@ -4,8 +4,8 @@ local Player = FindMetaTable("Player")
 local Quest = {}
 Quest.Name = "quest_gatherantlionshell"
 Quest.PrintName = "The Legendary Beast!"
-Quest.Story = "Hey! You! Yeah, you! I can help you. Have you ever heard of a beast called, the Antlion Guard!? I hear it has a shell as hard as rock! Bring me its shell, and i can make you a sheild. It wont be free tho. I'll need some cash too!"
-Quest.Level = 16
+Quest.Story = "Hey! You! Yeah, you! I can help you. Have you ever heard of a beast called, the Antlion Guard!? I hear it has a shell as hard as rock! Bring me its shell, and i can make you a shield. It wont be free tho. I'll need some cash too!"
+Quest.Level = 40
 Quest.ObtainItems = {}
 Quest.ObtainItems["antlion_shell"] = 1
 Quest.ObtainItems["money"] = 500
@@ -58,7 +58,7 @@ function Player:UpdateQuest(strQuest, tblInfo)
 	if self:GetQuest(strQuest) then
 		table.Merge(self.Data.Quests[strQuest], tblInfo or self.Data.Quests[strQuest] or {})
 		if SERVER then
-			SendUsrMsg("UD_UpdateQuest", self, {strQuest, tblInfo or self.Data.Quests[strQuest]})
+			SendNetworkMessage("UD_UpdateQuest", self, {strQuest, tblInfo or self.Data.Quests[strQuest]})
 			self:SaveGame()
 		end
 		if CLIENT and GAMEMODE.QuestMenu then
@@ -157,9 +157,9 @@ if SERVER then
 end
 
 if CLIENT then
-	usermessage.Hook("UD_UpdateQuest", function(usrMsg)
-		local strQuest = usrMsg:ReadString()
-		local strIncomingInfo = usrMsg:ReadString()
+	net.Receive("UD_UpdateQuest", function()
+		local strQuest = net.ReadString()
+		local strIncomingInfo = net.ReadString()
 		--print(string.len(strQuest .. strIncomingInfo))
 		--print(strQuest .. strIncomingInfo)
 		LocalPlayer():UpdateQuest(strQuest, util.JSONToTable(strIncomingInfo))

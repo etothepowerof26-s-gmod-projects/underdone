@@ -8,20 +8,20 @@ local function QuickNPC(strName, strPrintName, strSpawnName, strRace, intDistanc
 	NPC.Model = strModel
 	return NPC
 end
-local function AddBool(Table, strFrozen, strInvincible, strIdle)
-		Table.Frozen = strFrozen
-		Table.Invincible = strInvincible
-		Table.Idle = strIdle
+local function AddBool(Table, IsFrozen, IsInvincible, IsIdle)
+		Table.Frozen = IsFrozen
+		Table.Invincible = IsInvincible
+		Table.Idle = IsIdle
 	return Table
 end
-local function AddMultiplier(Table, strHealth, strDamage)
-	Table.HealthPerLevel = strHealth
-	Table.DamagePerLevel = strDamage
+local function AddMultiplier(Table, Health, Damage)
+	Table.HealthPerLevel = Health
+	Table.DamagePerLevel = Damage
 	return Table
 end
-local function AddDrop(Table, strName, intChance, intMin, intMax, intMinLevel)
+local function AddDrop(Table, Name, Chance, Min, Max, MinLevel)
 	Table.Drops = Table.Drops or {}
-	Table.Drops[strName] = {Chance = intChance, Min = intMin, Max = intMax, MinLevel = intMinLevel}
+	Table.Drops[Name] = {Chance = Chance, Min = Min, Max = Max, MinLevel = MinLevel}
 	return Table
 end
 
@@ -64,10 +64,10 @@ NPC.DeathDistance = 14
 NPC.Resistance = "Fire"
 NPC.Color = {200,0,0,255}
 function NPC:DamageCallBack(npc, victim)
-	local intChance = 8
-	local intTime = 7
-	if  math.random(1, 100 / intChance) == 1 then
-		victim:IgniteFor(intTime, 1, victim)
+	local Chance = 8
+	local Time = 7
+	if  math.random(1, 100 / Chance) == 1 then
+		victim:IgniteFor(Time, 1, victim)
 	end
 end
 Register.NPC(NPC)
@@ -88,8 +88,8 @@ NPC.DeathDistance = 14
 NPC.Resistance = "Ice"
 NPC.Color = {0,0,200,255}
 function NPC:DamageCallBack(npc, victim)
-	intChance = 8
-	if  math.random(1, 100 / intChance) == 1 then
+	Chance = 8
+	if  math.random(1, 100 / Chance) == 1 then
 		victim:SlowDown(7)
 	end
 end
@@ -243,7 +243,7 @@ NPC = AddMultiplier(NPC, 1, 3)
 NPC.DeathDistance = 10
 Register.NPC(NPC)
 
-local NPC = QuickNPC("vortigaunt", "Metro police", "npc_metropolice", "combine", 1000)
+local NPC = QuickNPC("metropolice", "Metro police", "npc_metropolice", "combine", 1000)
 NPC = AddDrop(NPC, "money", 300, 350, 400)
 NPC = AddDrop(NPC, "weapon_melee_skele", 0.5, nil, nil, 50)
 NPC = AddDrop(NPC, "armor_shield_tyrant", 1, nil, nil, 40)
@@ -257,8 +257,8 @@ NPC.Weapon = "weapon_pistol"
 NPC.DeathDistance = 14 --Do not edit.
 NPC.Resistance = "Ice"
 function NPC:DamageCallBack(npc, victim)
-	intChance = 50
-	if  math.random(1, 100 / intChance) == 1 then
+	Chance = 50
+	if  math.random(1, 100 / Chance) == 1 then
 		victim:SlowDown(3)
 	end
 end

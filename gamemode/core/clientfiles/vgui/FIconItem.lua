@@ -1,8 +1,8 @@
--- Polkm 2015
+-- Polkm 2015 | Still, your code is bad! ~26
 local PANEL = {}
-local matGlossIcon = Material("icons/icon_gloss")
-local matBoarderIcon = Material("icons/icon_boarder2")
-local matGradiantDown = Material("gui/gradient_down")
+local GlossIcon = Material("icons/icon_gloss")
+local BorderIcon = Material("icons/icon_border2")
+local GradiantDown = Material("gui/gradient_down")
 PANEL.Icon = nil
 PANEL.Text = nil
 PANEL.LastClick = 0
@@ -59,33 +59,33 @@ function PANEL:OnMouseReleased(mousecode)
 end
 
 function PANEL:Paint(w, h)
-	local texDrawTexture = self.Icon or matGradiantDown
+	local DrawTexture = self.Icon or GradiantDown
 	surface.SetDrawColor(0, 0, 0, 50)
-	if texDrawTexture == self.Icon then
-		surface.SetDrawColor(table.Split(self.Color or Color(255, 255, 255, 255)))
+	if DrawTexture == self.Icon then
+		surface.SetDrawColor(self.Color or Color(255, 255, 255, 255))
 	end
-	surface.SetMaterial(texDrawTexture)
+	surface.SetMaterial(DrawTexture)
 	surface.DrawTexturedRect(0, 0, w, h)
-	if texDrawTexture == self.Icon then
+	if DrawTexture == self.Icon then
 		surface.SetDrawColor(255, 255, 255, 70)
-		surface.SetMaterial(matGlossIcon)
+		surface.SetMaterial(GlossIcon)
 		surface.DrawTexturedRect(0, 0, w, h)
 	end
 	surface.SetDrawColor(255, 255, 255, 255)
-	surface.SetMaterial(matBoarderIcon)
+	surface.SetMaterial(BorderIcon)
 	surface.DrawTexturedRect(0, 0, w, h)
 
 	if self.Text then
 		if tonumber(self.Text) and tonumber(self.Text) >= 1000  then
-			local IntAmount = math.Round(tonumber(self.Text) / 1000)
-			local strPrefix = "K"
-			if IntAmount > 1000 then
-				IntAmount = math.Round(tonumber(self.Text) / 1000000)
-				strPrefix = "M"
+			local Amount = math.Round(tonumber(self.Text) / 1000)
+			local Prefix = "K"
+			if Amount > 1000 then
+				Amount = math.Round(tonumber(self.Text) / 1000000)
+				Prefix = "M"
 			end
-			self.Text = IntAmount .. "" .. strPrefix
+			self.Text = Amount .. "" .. Prefix
 		end
-		surface.SetFont("DebugFixedSmall")
+		surface.SetFont("DefaultFixedOutline")
 		local width, tall = surface.GetTextSize(tostring(self.Text))
 		surface.SetTextColor(255, 255, 255, 255)
 		surface.SetTextPos(w - width - 2, h - tall - 1)
@@ -113,144 +113,144 @@ do -- spawnicon hover effect
 	end
 end
 
-function PANEL:SetIcon(strIconText)
-	self.Icon = strIconText and Material(strIconText)
+function PANEL:SetIcon(IconText)
+	self.Icon = IconText and Material(IconText)
 end
 
-function PANEL:SetText(strText)
-	self.Text = strText
+function PANEL:SetText(Text)
+	self.Text = Text
 end
 
-function PANEL:SetDragable(boolDraggable)
-	self.Draggable = boolDraggable
+function PANEL:SetDragable(Draggable)
+	self.Draggable = Draggable
 end
 
-function PANEL:SetRightClick(fncRightClick)
-	self.DoRightClick = fncRightClick
+function PANEL:SetRightClick(RightClick)
+	self.DoRightClick = RightClick
 end
 
-function PANEL:SetDoubleClick(fncDoubleClick)
-	self.DoDoubleClick = fncDoubleClick
+function PANEL:SetDoubleClick(DoubleClick)
+	self.DoDoubleClick = DoubleClick
 end
 
-function PANEL:SetDropedOn(fncDropedOn)
-	self.DoDropedOn = fncDropedOn
+function PANEL:SetDropedOn(DropedOn)
+	self.DoDropedOn = DropedOn
 end
 
-function PANEL:SetColor(clrColor)
-	self.Color = clrColor
+function PANEL:SetColor(Color)
+	self.Color = Color
 end
 
-function PANEL:SetItem(tblItemTable, intAmount, strUseCommand, intCost)
-	if not tblItemTable then
+function PANEL:SetItem(ItemTable, Amount, UseCommand, Cost)
+	if not ItemTable then
 		self:SetIcon(nil)
-		self:SetText(intAmount or nil)
+		self:SetText(Amount or nil)
 		self:SetDragable(false)
 		self:SetRightClick(function() end)
 		self:SetDoubleClick(function() end)
 		self:SetTooltip(nil)
 		return
 	end
-	intCost = intCost or 0
-	strUseCommand = strUseCommand or "use"
-	self.UseCommand = strUseCommand
-	intAmount = intAmount or 1
+	Cost = Cost or 0
+	UseCommand = UseCommand or "use"
+	self.UseCommand = UseCommand
+	Amount = Amount or 1
 	self:SetDragable(true)
-	if tblItemTable.Icon then self:SetIcon(tblItemTable.Icon) end
-	if tblItemTable.Stackable and intAmount > 1 then self:SetText(intAmount) end
-	if tblItemTable.Name then self.Item = tblItemTable.Name end
-	if tblItemTable.Slot then self.Slot = tblItemTable.Slot end
-	if strUseCommand == "use" and tblItemTable.Dropable then
+	if ItemTable.Icon then self:SetIcon(ItemTable.Icon) end
+	if ItemTable.Stackable and Amount > 1 then self:SetText(Amount) end
+	if ItemTable.Name then self.Item = ItemTable.Name end
+	if ItemTable.Slot then self.Slot = ItemTable.Slot end
+	if UseCommand == "use" and ItemTable.Dropable then
 		self.DoDropItem = function()
-			self:RunPromtAmount(tblItemTable, intAmount, "How many to drop", "UD_DropItem")
+			self:RunPromptAmount(ItemTable, Amount, "How many to drop", "UD_DropItem")
 		end
 	end
-	if strUseCommand == "use" and tblItemTable.Giveable then
+	if UseCommand == "use" and ItemTable.Giveable then
 		self.DoGiveItem = function(plyGivePlayer)
-			if tblItemTable.Stackable or intAmount >= 5 then
-				GAMEMODE:DisplayPromt("number", "How many to give", function(itemamount)
-					RunConsoleCommand("UD_GiveItem", tblItemTable.Name, itemamount, plyGivePlayer:EntIndex())
-				end, tblItemTable.Name)
+			if ItemTable.Stackable or Amount >= 5 then
+				GAMEMODE:DisplayPrompt("number", "How many to give", function(itemamount)
+					RunConsoleCommand("UD_GiveItem", ItemTable.Name, itemamount, plyGivePlayer:EntIndex())
+				end, Amount)
 			else
-				RunConsoleCommand("UD_GiveItem", tblItemTable.Name, 1, plyGivePlayer:EntIndex())
+				RunConsoleCommand("UD_GiveItem", ItemTable.Name, 1, plyGivePlayer:EntIndex())
 			end
 		end
 	end
-	if strUseCommand == "use" and tblItemTable.Use then
-		self.DoUseItem = function() RunConsoleCommand("UD_UseItem", tblItemTable.Name) end
+	if UseCommand == "use" and ItemTable.Use then
+		self.DoUseItem = function() RunConsoleCommand("UD_UseItem", ItemTable.Name) end
 	end
-	if strUseCommand == "buy" then
-		self.DoUseItem = function() RunConsoleCommand("UD_BuyItem", tblItemTable.Name) end
+	if UseCommand == "buy" then
+		self.DoUseItem = function() RunConsoleCommand("UD_BuyItem", ItemTable.Name) end
 	end
-	if strUseCommand == "sell" then
-		self.DoUseItem = function(intAmountToSell)
-			self:RunPromtAmount(tblItemTable, intAmount, "How many to sell", "UD_SellItem", intAmountToSell)
+	if UseCommand == "sell" then
+		self.DoUseItem = function(AmountToSell)
+			self:RunPromptAmount(ItemTable, Amount, "How many to sell", "UD_SellItem", AmountToSell)
 		end
 	end
-	if strUseCommand == "deposit" then
-		self.DoUseItem = function(intAmountToDipostite)
-			self:RunPromtAmount(tblItemTable, intAmount, "How many to deposit", "UD_DipostiteItem", intAmountToDipostite)
+	if UseCommand == "deposit" then
+		self.DoUseItem = function(AmountToDeposit)
+			self:RunPromptAmount(ItemTable, Amount, "How many to deposit", "UD_DepositItem", AmountToDeposit)
 		end
 	end
-	if strUseCommand == "withdraw" then
-		self.DoUseItem = function(intAmountToWithdraw)
-			self:RunPromtAmount(tblItemTable, intAmount, "How many to withdraw", "UD_WithdrawItem", intAmountToWithdraw)
+	if UseCommand == "withdraw" then
+		self.DoUseItem = function(AmountToWithdraw)
+			self:RunPromptAmount(ItemTable, Amount, "How many to withdraw", "UD_WithdrawItem", AmountToWithdraw)
 		end
 	end
 	---------ToolTip---------
-	local strTooltip = Format("%s", tblItemTable.PrintName)
-	if intAmount and intAmount >= 1000 then strTooltip = Format("%s (x%s)", strTooltip, intAmount) end
-	if tblItemTable.Level and tblItemTable.Level > 1 then strTooltip = Format("%s (lv. %s)", strTooltip, tblItemTable.Level) end
-	if tblItemTable.Level and tblItemTable.Level > LocalPlayer():GetLevel() then self:SetColor(clrRed) end
-	if tblItemTable.Weight and tblItemTable.Weight > 0 then strTooltip = Format("%s (%s Kgs)", strTooltip, tblItemTable.Weight) end
-	if tblItemTable.Desc then strTooltip = Format("%s\n%s", strTooltip, tblItemTable.Desc) end
-	if tblItemTable.Power then strTooltip = Format("%s\nDamage: %s", strTooltip, tblItemTable.Power) end
-	if tblItemTable.NumOfBullets and tblItemTable.NumOfBullets > 1 then strTooltip = Format("%sx%s", strTooltip, tblItemTable.NumOfBullets) end
-	if tblItemTable.FireRate then strTooltip = Format("%s (%s)", strTooltip, tblItemTable.Power * tblItemTable.NumOfBullets * tblItemTable.FireRate) end
-	if tblItemTable.FireRate then strTooltip = Format("%s\nSpeed: %s", strTooltip, tblItemTable.FireRate) end
-	if tblItemTable.ClipSize and tblItemTable.ClipSize >= 0 then strTooltip = Format("%s\nClipsize: %s", strTooltip, tblItemTable.ClipSize) end
-	if tblItemTable.Slot and tblItemTable.Slot ~= "slot_primaryweapon" then strTooltip = Format("%s\nSlot: %s", strTooltip, SlotTable(tblItemTable.Slot).PrintName) end
-	if tblItemTable.Armor then strTooltip = Format("%s\nArmor: %s", strTooltip, tblItemTable.Armor) end
-	for strStat, intAmount in pairs(tblItemTable.Buffs or {}) do
-		local tblStatTable = StatTable(strStat)
-		strTooltip = Format("%s\n+%s %s", strTooltip, intAmount, tblStatTable.PrintName)
+	local Tooltip = Format("%s", ItemTable.PrintName)
+	if Amount and Amount >= 1000 then Tooltip = Format("%s (x%s)", Tooltip, Amount) end
+	if ItemTable.Level and ItemTable.Level > 1 then Tooltip = Format("%s (lv. %s)", Tooltip, ItemTable.Level) end
+	if ItemTable.Level and ItemTable.Level > LocalPlayer():GetLevel() then self:SetColor(Red) end
+	if ItemTable.Weight and ItemTable.Weight > 0 then Tooltip = Format("%s (%s Kgs)", Tooltip, ItemTable.Weight) end
+	if ItemTable.Desc then Tooltip = Format("%s\n%s", Tooltip, ItemTable.Desc) end
+	if ItemTable.Power then Tooltip = Format("%s\nDamage: %s", Tooltip, ItemTable.Power) end
+	if ItemTable.NumOfBullets and ItemTable.NumOfBullets > 1 then Tooltip = Format("%sx%s", Tooltip, ItemTable.NumOfBullets) end
+	if ItemTable.FireRate then Tooltip = Format("%s (%s)", Tooltip, ItemTable.Power * ItemTable.NumOfBullets * ItemTable.FireRate) end
+	if ItemTable.FireRate then Tooltip = Format("%s\nSpeed: %s", Tooltip, ItemTable.FireRate) end
+	if ItemTable.ClipSize and ItemTable.ClipSize >= 0 then Tooltip = Format("%s\nClipsize: %s", Tooltip, ItemTable.ClipSize) end
+	if ItemTable.Slot and ItemTable.Slot ~= "slot_primaryweapon" then Tooltip = Format("%s\nSlot: %s", Tooltip, SlotTable(ItemTable.Slot).PrintName) end
+	if ItemTable.Armor then Tooltip = Format("%s\nArmor: %s", Tooltip, ItemTable.Armor) end
+	for Stat, Amount in pairs(ItemTable.Buffs or {}) do
+		local StatTable = StatTable(Stat)
+		Tooltip = Format("%s\n+%s %s", Tooltip, Amount, StatTable.PrintName)
 	end
-	local tblSetTable = EquipmentSetTable(tblItemTable.Set) or {}
-	if tblSetTable.Items then
-		strTooltip = Format("%s\n\nSet: %s", strTooltip, tblSetTable.PrintName)
+	local SetTable = EquipmentSetTable(ItemTable.Set) or {}
+	if SetTable.Items then
+		Tooltip = Format("%s\n\nSet: %s", Tooltip, SetTable.PrintName)
 	end
-	for _, strItem in pairs(tblSetTable.Items or {}) do
-		local tblItemTable = ItemTable(strItem)
-		local boolWearing = LocalPlayer():GetSlot(tblItemTable.Slot) == tblItemTable.Name
-		if boolWearing then boolWearing = 1 end
-		if not boolWearing then boolWearing = 0 end
-		strTooltip = Format("%s\n%s/%s %s", strTooltip, tonumber(boolWearing), 1, tblItemTable.PrintName)
+	for _, Item in pairs(SetTable.Items or {}) do
+		local ItemTable = ItemTable(Item)
+		local Wearing = LocalPlayer():GetSlot(ItemTable.Slot) == ItemTable.Name
+		if Wearing then Wearing = 1 end
+		if not Wearing then Wearing = 0 end
+		Tooltip = Format("%s\n%s/%s %s", Tooltip, tonumber(Wearing), 1, ItemTable.PrintName)
 	end
-	for strStat, intAmount in pairs(tblSetTable.Buffs or {}) do
-		local tblStatTable = StatTable(strStat)
-		strTooltip = Format("%s\n+%s %s", strTooltip, intAmount, tblStatTable.PrintName)
+	for Stat, Amount in pairs(SetTable.Buffs or {}) do
+		local StatTable = StatTable(Stat)
+		Tooltip = Format("%s\n+%s %s", Tooltip, Amount, StatTable.PrintName)
 	end
 
-	if strUseCommand == "buy" and intCost > 0 then strTooltip = Format("%s\n\nBuy For $%s", strTooltip, intCost) end
-	if strUseCommand == "sell" and intCost > 0 then strTooltip = Format("%s\n\nSell For $%s", strTooltip, intCost) end
-	self:SetTooltip(strTooltip)
+	if UseCommand == "buy" and Cost > 0 then Tooltip = Format("%s\n\nBuy For $%s", Tooltip, Cost) end
+	if UseCommand == "sell" and Cost > 0 then Tooltip = Format("%s\n\nSell For $%s", Tooltip, Cost) end
+	self:SetTooltip(Tooltip)
 	------Double Click------
 	if self.DoUseItem then self:SetDoubleClick(self.DoUseItem) end
 	-------Right Click-------
 	local menuFunc = function()
 		GAMEMODE.ActiveMenu = nil
 		GAMEMODE.ActiveMenu = DermaMenu()
-		if strUseCommand == "use" and tblItemTable.Use and self.DoUseItem then GAMEMODE.ActiveMenu:AddOption("Use", function() self.DoUseItem() end) end
-		if strUseCommand == "buy" and self.DoUseItem then GAMEMODE.ActiveMenu:AddOption("Buy", function() self.DoUseItem() end) end
-		if strUseCommand == "sell" and intCost > 0 and self.DoUseItem then GAMEMODE.ActiveMenu:AddOption("Sell", function() self.DoUseItem() end) end
-		if strUseCommand == "sell" and intCost > 0 and intAmount > 1 then GAMEMODE.ActiveMenu:AddOption("Sell All", function() self.DoUseItem(intAmount) end) end
-		if strUseCommand == "deposit" and self.DoUseItem then GAMEMODE.ActiveMenu:AddOption("deposit", function() self.DoUseItem() end) end
-		if strUseCommand == "withdraw" and self.DoUseItem then GAMEMODE.ActiveMenu:AddOption("Withdraw", function() self.DoUseItem() end) end
-		if strUseCommand == "use" and tblItemTable.Dropable then GAMEMODE.ActiveMenu:AddOption("Drop", function() self.DoDropItem() end) end
-		if strUseCommand == "use" and tblItemTable.Giveable and #player.GetAll() > 1 then
+		if UseCommand == "use" and ItemTable.Use and self.DoUseItem then GAMEMODE.ActiveMenu:AddOption("Use", function() self.DoUseItem() end) end
+		if UseCommand == "buy" and self.DoUseItem then GAMEMODE.ActiveMenu:AddOption("Buy", function() self.DoUseItem() end) end
+		if UseCommand == "sell" and Cost > 0 and self.DoUseItem then GAMEMODE.ActiveMenu:AddOption("Sell", function() self.DoUseItem() end) end
+		if UseCommand == "sell" and Cost > 0 and Amount > 1 then GAMEMODE.ActiveMenu:AddOption("Sell All", function() self.DoUseItem(Amount) end) end
+		if UseCommand == "deposit" and self.DoUseItem then GAMEMODE.ActiveMenu:AddOption("Deposit", function() self.DoUseItem() end) end
+		if UseCommand == "withdraw" and self.DoUseItem then GAMEMODE.ActiveMenu:AddOption("Withdraw", function() self.DoUseItem() end) end
+		if UseCommand == "use" and ItemTable.Dropable then GAMEMODE.ActiveMenu:AddOption("Drop", function() self.DoDropItem() end) end
+		if UseCommand == "use" and ItemTable.Giveable and player.GetCount() > 1 then
 			local GiveSubMenu = nil
-			for _, player in pairs(player.GetAll()) do
-				if player:GetPos():Distance(LocalPlayer():GetPos()) < 250 and player ~= LocalPlayer() then
+			for _, player in ipairs(player.GetAll()) do
+				if player:GetPos():DistToSqr(LocalPlayer():GetPos()) < 62500 and player ~= LocalPlayer() then
 					GiveSubMenu = GiveSubMenu or GAMEMODE.ActiveMenu:AddSubMenu("Give ...")
 					GiveSubMenu:AddOption(player:Nick(), function() self.DoGiveItem(player) end)
 				end
@@ -261,29 +261,29 @@ function PANEL:SetItem(tblItemTable, intAmount, strUseCommand, intCost)
 	self:SetRightClick(menuFunc)
 end
 
-function PANEL:RunPromtAmount(tblItemTable, intAmount, strQuestion, strCommand, intCallAmount)
-	if (intAmount >= 5) and not intCallAmount then
-		GAMEMODE:DisplayPromt("number", strQuestion, function(intItemAmount)
-			RunConsoleCommand(strCommand, tblItemTable.Name, intItemAmount)
-		end, intAmount)
+function PANEL:RunPromptAmount(ItemTable, Amount, Question, Command, CallAmount)
+	if (Amount >= 5) and not CallAmount then
+		GAMEMODE:DisplayPrompt("number", Question, function(ItemAmount)
+			RunConsoleCommand(Command, ItemTable.Name, ItemAmount)
+		end, Amount)
 	else
-		RunConsoleCommand(strCommand, tblItemTable.Name, intCallAmount or 1)
+		RunConsoleCommand(Command, ItemTable.Name, CallAmount or 1)
 	end
 end
 
-function PANEL:SetSlot(tblSlotTable)
-	local strToolTip = ""
-	if tblSlotTable then
-		if tblSlotTable.PrintName then strToolTip = Format("%s", tblSlotTable.PrintName) end
-		if tblSlotTable.Desc then strToolTip = Format("%s\n%s", strToolTip, tblSlotTable.Desc) end
+function PANEL:SetSlot(SlotTable)
+	local Tooltip = ""
+	if SlotTable then
+		if SlotTable.PrintName then Tooltip = Format("%s", SlotTable.PrintName) end
+		if SlotTable.Desc then Tooltip = Format("%s\n%s", Tooltip, SlotTable.Desc) end
 	end
-	self.IsPapperDollSlot = true
+	self.IsPaperDollSlot = true
 	self:SetDragable(false)
 	self:SetIcon(nil)
-	self:SetTooltip(strToolTip)
+	self:SetTooltip(Tooltip)
 	self:SetDropedOn(function()
-		if GAMEMODE.DraggingPanel and GAMEMODE.DraggingPanel.Slot and GAMEMODE.DraggingPanel.Slot == tblSlotTable.Name then
-			if GAMEMODE.DraggingPanel.Item and LocalPlayer().Data.Paperdoll[tblSlotTable.Name] ~= GAMEMODE.DraggingPanel.Item then
+		if GAMEMODE.DraggingPanel and GAMEMODE.DraggingPanel.Slot and GAMEMODE.DraggingPanel.Slot == SlotTable.Name then
+			if GAMEMODE.DraggingPanel.Item and LocalPlayer().Data.Paperdoll[SlotTable.Name] ~= GAMEMODE.DraggingPanel.Item then
 				GAMEMODE.DraggingPanel.DoDoubleClick()
 			end
 		end
@@ -292,20 +292,20 @@ function PANEL:SetSlot(tblSlotTable)
 	self:SetRightClick(function() end)
 end
 
-function PANEL:SetSkill(tblSkillTable, intSkillLevel)
-	if not tblSkillTable then return false end
-	local strToolTip = ""
-	if tblSkillTable.PrintName then strToolTip = Format("%s", tblSkillTable.PrintName) end
-	if tblSkillTable.Desc["SkillNeeded"] then strToolTip = Format("%s\n%s", strToolTip, "Skill Needed: " .. tblSkillTable.Desc["SkillNeeded"]) end
-	if tblSkillTable.Desc["story"] then strToolTip = Format("%s\n%s", strToolTip, tblSkillTable.Desc["story"]) end
-	if tblSkillTable.Desc[intSkillLevel] then strToolTip = Format("%s\n%s", strToolTip, tblSkillTable.Desc[intSkillLevel]) end
-	if tblSkillTable.Desc[intSkillLevel + 1] and tblSkillTable.Desc[intSkillLevel] then strToolTip = Format("%s\n\n%s", strToolTip, "Next Level") end
-	if tblSkillTable.Desc[intSkillLevel + 1] then strToolTip = Format("%s\n%s", strToolTip, tblSkillTable.Desc[intSkillLevel + 1]) end
-	self:SetTooltip(strToolTip)
-	self:SetIcon(tblSkillTable.Icon or nil)
-	self:SetText((intSkillLevel or 0) .. "/" .. tblSkillTable.Levels)
+function PANEL:SetSkill(SkillTable, SkillLevel)
+	if not SkillTable then return false end
+	local Tooltip = ""
+	if SkillTable.PrintName then Tooltip = Format("%s", SkillTable.PrintName) end
+	if SkillTable.Desc["SkillNeeded"] then Tooltip = Format("%s\n%s", Tooltip, "Skill Needed: " .. SkillTable.Desc["SkillNeeded"]) end
+	if SkillTable.Desc["story"] then Tooltip = Format("%s\n%s", Tooltip, SkillTable.Desc["story"]) end
+	if SkillTable.Desc[SkillLevel] then Tooltip = Format("%s\n%s", Tooltip, SkillTable.Desc[SkillLevel]) end
+	if SkillTable.Desc[SkillLevel + 1] and SkillTable.Desc[SkillLevel] then Tooltip = Format("%s\n\n%s", Tooltip, "Next Level") end
+	if SkillTable.Desc[SkillLevel + 1] then Tooltip = Format("%s\n%s", Tooltip, SkillTable.Desc[SkillLevel + 1]) end
+	self:SetTooltip(Tooltip)
+	self:SetIcon(SkillTable.Icon or nil)
+	self:SetText((SkillLevel or 0) .. "/" .. SkillTable.Levels)
 	self:SetDragable(false)
 
-	self:SetDoubleClick(function() RunConsoleCommand("UD_BuySkill", tblSkillTable.Name) end)
+	self:SetDoubleClick(function() RunConsoleCommand("UD_BuySkill", SkillTable.Name) end)
 end
 vgui.Register("FIconItem", PANEL, "Panel")

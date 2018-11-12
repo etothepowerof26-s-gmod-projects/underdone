@@ -17,37 +17,36 @@ function Player:SetStat(strStat, intAmount)
 	if tblStatTable.OnSet then
 		tblStatTable:OnSet(self, intAmount, intOldStat)
 	end
-	SendUsrMsg("UD_UpdateStats", self, {strStat, intAmount})
+	SendNetworkMessage("UD_UpdateStats", self, {strStat, intAmount})
 	end
 end
 
 function Player:GetStat(strStat)
 	self.Stats = self.Stats or {}
 	if self.Stats and self.Stats[strStat] then
-	return self.Stats[strStat]
+		return self.Stats[strStat]
 	end
 	return StatTable(strStat).Default
 end
 
 if SERVER then
 	hook.Add("PlayerSpawn", "PlayerSpawn_Stats", function(ply)
-	for name, stat in pairs(GAMEMODE.DataBase.Stats) do
-		if ply.Stats then
-		ply:SetStat(name, ply:GetStat(name))
-		if stat.OnSpawn then
-			stat:OnSpawn(ply, ply:GetStat(name))
+		for name, stat in pairs(GAMEMODE.DataBase.Stats) do
+			if ply.Stats then
+				ply:SetStat(name, ply:GetStat(name))
+				if stat.OnSpawn then
+					stat:OnSpawn(ply, ply:GetStat(name))
+				end
+			end
 		end
-		end
-	end
-	ply:AddStat("stat_agility", ply.ToMakeUpAgility or 0)
-	ply.ToMakeUpAgility = 0
+		ply:AddStat("stat_agility", ply.ToMakeUpAgility or 0)
+		ply.ToMakeUpAgility = 0
 	end)
 end
 
 if CLIENT then
-	usermessage.Hook("UD_UpdateStats", function(usrMsg)
+	net.Receive("UD_UpdateStats", function()
 		if not LocalPlayer().SetStat then return end
-
-	LocalPlayer():SetStat(usrMsg:ReadString(), usrMsg:ReadLong())
+		LocalPlayer():SetStat(net.ReadString(), net.ReadInt(16))
 	end)
 end

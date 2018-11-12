@@ -1,23 +1,13 @@
---This code is a mess but its basicly a dump for useful functions we cant live with out.
+-- This code is a mess but its basicly a dump for useful functions we cant live with out.
 local Entity = FindMetaTable("Entity")
 local Player = FindMetaTable("Player")
 
-function toExp(intLevel)
-	local intExp = tonumber(intLevel) or 0
-	if intExp <= 1 then intExp = 0 end
-	intExp = intExp * 6
-	intExp = math.pow(intExp, 2)
-	intExp = math.floor(intExp)
-	return tonumber(intExp)
+function toExp(Level)
+	return math.floor(math.pow(math.max(0, tonumber(Level) or 0), 2))
 end
 
-function toLevel(intExp)
-	if not intExp then return end
-	local intLevel = math.sqrt(tonumber(intExp) or 0)
-	intLevel = intLevel / 6
-	intLevel = math.Clamp(intLevel, 1, intLevel)
-	intLevel = math.floor(intLevel)
-	return tonumber(intLevel)
+function toLevel(Exp)
+	return math.floor(math.Clamp(math.sqrt(tonumber(Exp) or 0) / 6, 1, Level))
 end
 
 function Entity:GetLevel()
@@ -29,339 +19,421 @@ function Entity:GetLevel()
 end
 
 function Entity:CreateGrip()
-	local entGrip = ents.Create("prop_physics")
-	entGrip:SetModel("models/props_junk/cardboard_box004a.mdl")
-	entGrip:SetPos(self:GetPos())
-	entGrip:SetAngles(self:GetAngles())
-	entGrip:SetCollisionGroup(COLLISION_GROUP_WORLD)
-	entGrip:SetColor(0, 0, 0, 0)
-	entGrip:Spawn()
-	self:SetParent(entGrip)
-	self.Grip = entGrip
+	local Grip = ents.Create("prop_physics")
+		Grip:SetModel("models/props_junk/cardboard_box004a.mdl")
+		Grip:SetPos(self:GetPos())
+		Grip:SetAngles(self:GetAngles())
+		Grip:SetCollisionGroup(COLLISION_GROUP_WORLD)
+		Grip:SetRenderMode(RENDERMODE_TRANSALPHA)
+		Grip:SetColor(Color(0, 0, 0, 0))
+	Grip:Spawn()
+	self:SetParent(Grip)
+	self.Grip = Grip
 end
 
 function GetPropClass(strModel)
-	local strEntType = "prop_physics"
-	if SERVER and strModel and not util.IsValidProp(strModel) then strEntType = "prop_dynamic" end
-	return strEntType
+	local EntClass = "prop_physics"
+	if SERVER and strModel and not util.IsValidProp(strModel) then
+		EntClass = "prop_dynamic"
+	end
+	return EntClass
 end
 
-function StringatizeVector(vecVector)
-	local tblVector = {}
-	tblVector[1] = math.Round(vecVector.x * 100) / 100
-	tblVector[2] = math.Round(vecVector.y * 100) / 100
-	tblVector[3] = math.Round(vecVector.z * 100) / 100
-	return table.concat(tblVector, "!")
+function StringatizeVector(vec)
+	local Vector_Table = {}
+	Vector_Table[1] = math.Round(vec.x * 100) / 100
+	Vector_Table[2] = math.Round(vec.y * 100) / 100
+	Vector_Table[3] = math.Round(vec.z * 100) / 100
+	return table.concat(Vector_Table, "!")
 end
 
-function VectortizeString(strVectorString)
-	local tblDecodeTable = string.Explode("!", strVectorString)
-	return Vector(tblDecodeTable[1], tblDecodeTable[2], tblDecodeTable[3])
+function VectortizeString(VectorString)
+	local DecodeTable = string.Explode("!", VectorString)
+	return Vector(DecodeTable[1] or 0, DecodeTable[2] or 0, DecodeTable[3] or 0)
 end
 
 function GetFlushToGround(entEntity)
-	local tblTrace = {}
-	tblTrace.start = entEntity:GetPos()
-	tblTrace.endpos = entEntity:GetPos() + (entEntity:GetAngles():Up() * -500)
-	tblTrace.filter = entEntity
-	local trcNewTrace = util.TraceLine(tblTrace)
-	local vecNewPostion = trcNewTrace.HitPos - (trcNewTrace.HitNormal * 512)
-	vecNewPostion = entEntity:NearestPoint(vecNewPostion)
-	vecNewPostion = entEntity:GetPos() - vecNewPostion
-	vecNewPostion = trcNewTrace.HitPos + vecNewPostion
-	return vecNewPostion
+	local Trace  = {}
+	Trace.start  = entEntity:GetPos()
+	Trace.endpos = entEntity:GetPos() + (entEntity:GetAngles():Up() * -500)
+	Trace.filter = entEntity
+	local NewTrace = util.TraceLine(Trace)
+
+	local NewPosition = NewTrace.HitPos - (NewTrace.HitNormal * 512)
+	NewPosition = entEntity:NearestPoint(NewPosition)
+	NewPosition = entEntity:GetPos() - NewPosition
+	NewPosition = NewTrace.HitPos + NewPosition
+	return NewPosition
 end
 
-function Player:ApplyBuffTable(tblBuffTable, intMultiplier)
-	if not SERVER then return end
-	for strSkill, intAmount in pairs(tblBuffTable or {}) do
-		self:AddStat(strSkill, intAmount * (intMultiplier or 1))
+function Player:ApplyBuffTable(BuffTable, Multiplier)
+	if not SERVER or not BuffTable then return end
+
+	for Skill, Amount in pairs(BuffTable) do
+		self:AddStat(Skill, Amount * (Multiplier or 1))
 	end
 end
 
-function table.Split(tblTable)
-	if tblTable.r and tblTable.g and tblTable.b then
-		return tblTable.r, tblTable.g, tblTable.b, tblTable.a
-	end
-	return tblTable[1], tblTable[2], tblTable[3], tblTable[4], tblTable[5], tblTable[6], tblTable[7]
+function ColorCopy(ToCopy, Alpha)
+	return Color(ToCopy.r, ToCopy.g, ToCopy.b, Alpha or ToCopy.a)
 end
 
-function ColorCopy(clrToCopy, intAlpha)
-	return Color(clrToCopy.r, clrToCopy.g, clrToCopy.b, intAlpha or clrToCopy.a)
-end
-
-function GM:NotificateAll(strText)
-	for _,ply in pairs(player.GetAll()) do
-		if IsValid(ply) then
-			ply:CreateNotification(strText)
-		end
+function GM:NotifyAll(Text)
+	for _, ply in ipairs(player.GetAll()) do
+		if not ply.CreateNotification then continue end
+		
+		ply:CreateNotification(Text)
 	end
 end
 
 if SERVER then
-	function SendUsrMsg(strName, plyTarget, tblArgs)
-		umsg.Start(strName, plyTarget)
-		for _, value in pairs(tblArgs or {}) do
-			if type(value) == "string" then umsg.String(value)
-			elseif type(value) == "number" then umsg.Long(value)
-			elseif type(value) == "boolean" then umsg.Bool(value)
-			elseif type(value) == "Entity" or type(value) == "Player" then umsg.Entity(value)
-			elseif type(value) == "Vector" then umsg.Vector(value)
-			elseif type(value) == "Angle" then umsg.Angle(value)
-			elseif type(value) == "table" then umsg.String(util.TableToJSON(value)) end
+	--SendUsrMsg -> SendNetworkMessage
+	function SendNetworkMessage(Name, Target, Args) -- TODO: Replace with net ✓ 
+		net.Start(Name)
+		for _, value in pairs(Args or {}) do
+			if (next(Args) == nil) then return end
+		
+			if type(value) == "string" then
+				net.WriteString(value)
+			elseif type(value) == "number" then
+				net.WriteInt(value, 16)
+			elseif type(value) == "boolean" then
+				net.WriteBool(value)
+			elseif IsEntity(value) then
+				net.WriteEntity(value)
+			elseif type(value) == "Vector" then
+				net.WriteVector(value)
+			elseif type(value) == "Angle" then
+				net.WriteAngle(value)
+			elseif type(value) == "table" then
+				net.WriteString(util.TableToJSON(value))
+			end
 		end
-		umsg.End()
+		net.Send(Target)
 	end
 
-	function CreateWorldItem(strItem, intAmount, vecPostion)
-		local tblItemTable = ItemTable(strItem)
-		if tblItemTable then
-			local entWorldProp = GAMEMODE:BuildModel(tblItemTable.Model)
-			entWorldProp.Item = strItem
-			entWorldProp.Amount = intAmount or 1
-			entWorldProp:Spawn()
-			entWorldProp:SetPos(vecPostion or Vector(0, 0, 0))
-			if not tblItemTable.QuestItem then
-				timer.Simple(15 ,function() if IsValid(entWorldProp) then entWorldProp:SetOwner(nil) end end)
-			end
-			SafeRemoveEntityDelayed(entWorldProp, 45)
-			entWorldProp:SetNWString("PrintName", tblItemTable.PrintName)
-			entWorldProp:SetNWInt("Amount", entWorldProp.Amount)
-			if not util.IsValidProp(entWorldProp:GetModel()) then
-				entWorldProp:CreateGrip()
-			end
-			return entWorldProp
-		end
-	end
+	local origin = Vector(0, 0, 0)
+	function CreateWorldItem(Item, Amount, Position)
+		local ItemTable = ItemTable(Item)
+		if not ItemTable then return NULL end -- type correct
 
-	function Entity:Stun(intTime, intSeverity)
-		if self.Resistance then if self.Resistance == "Ice" then return end end
-		if not self.BeingSlowed then
-			intTime = intTime or 3
-			local intTotalTime = 0
-			local intSlowRate = 0.1
-			local startingcolor = self:GetColor()
-			local function SlowEnt()
-				if self and self:IsValid() then
-					if intTotalTime < intTime then
-						self:SetPlaybackRate(intSeverity or 0.1)
-						intTotalTime = intTotalTime + intSlowRate
-						timer.Simple(intSlowRate, SlowEnt, self)
-					else
-						self:SetPlaybackRate(1)
-						self:SetColor(self:GetColor())
-						self.BeingSlowed = false
-					end
+		local WorldProp = GAMEMODE:BuildModel(ItemTable.Model)
+		if not IsValid(WorldProp) then return NULL end
+			WorldProp.Item = Item
+			WorldProp.Amount = Amount or 1
+			WorldProp:SetPos(Position or origin)
+		WorldProp:Spawn()
+
+		WorldProp:SetNWString("PrintName", ItemTable.PrintName)
+		WorldProp:SetNWInt("Amount", WorldProp.Amount)
+
+		if not util.IsValidProp(WorldProp:GetModel()) then
+			WorldProp:CreateGrip()
+		end
+
+		if not ItemTable.QuestItem then
+			-- After 15 seconds the item can be picked up by anyone
+			-- TODO: config?
+			timer.Simple(15 ,function()
+				if IsValid(WorldProp) then
+					WorldProp:SetOwner(nil)
 				end
-			end
-			self:SetColor(200, 200, 255, 255)
-			self.BeingSlowed = true
-			SlowEnt()
+			end)
 		end
+
+		-- Clean up if nobody wants it after a minute
+		SafeRemoveEntityDelayed(WorldProp, 60) -- TODO: config?
+
+		return WorldProp
 	end
 
-	function Entity:IgniteFor(intTime, intDamage, plyPlayer)
-		if self.Resistance then if self.Resistance == "Fire" then return end end
-		if not self.Ignited then
-			intTime = intTime or 3
-			local intTotalTime = 0
-			local intIgnitedRate = 0.35
-			local function IgniteEnt()
-				if self and self:IsValid() then
-					if intTotalTime < intTime then
-						plyPlayer:CreateIndacator(intDamage, self:GetPos(), "red", true)
-						local StartingHealth = self:Health() -- Hacky way around self:Ignite dropping npc down to 40 health
-						self:SetNWInt("Health", self:Health())
-						intTotalTime = intTotalTime + intIgnitedRate
-						self:Ignite(intTime,0) -- Used for the effect
-						self:SetHealth(StartingHealth - intDamage) -- Starts taking damage
-						timer.Simple(intIgnitedRate, IgniteEnt, self)
-					else
-						self:Extinguish()
-						self:SetColor(200, 255, 255, 255)
-						self.Ignited = false
-					end
+	function Entity:Stun(Time, Severity)
+		if self.Resistance and self.Resistance == "Ice" then return end
+		if self.UD_BeingSlowed then return end
+		
+		Time = Time or 3
+		Severity = Severity or 0.1
+
+		local TotalTime = 0
+		local SlowRate = 0.1
+		self.UD_originalColor = self.UD_originalColor or self:GetColor()
+
+		timer.Create("UD_Stun" .. self:EntIndex(), SlowRate, 0, function()
+			if not IsValid(self) then return end
+			
+			if TotalTime < Time then
+				self:SetPlaybackRate(Severity)
+				TotalTime = TotalTime + SlowRate
+			else
+				self:SetPlaybackRate(1)
+				self.UD_BeingSlowed = false
+				if self.UD_originalColor then
+					self:SetColor(self.UD_originalColor)
+					self.UD_originalColor = nil
 				end
+				timer.Remove("UD_Stun" .. self:EntIndex())
 			end
-			self:SetColor(200, 0, 0, 255)
-			self.Ignited = true
-			IgniteEnt()
-		end
+		end)
+		
+		self:SetColor(Color(200, 200, 255, 255))
+		self.UD_BeingSlowed = true
 	end
 
-	function GM:RemoveAll(strClass, intTime)
-		table.foreach(ents.FindByClass(strClass .. "*"), function(_, ent) SafeRemoveEntityDelayed(ent, intTime or 0) end)
+	function Entity:IgniteFor(Time, Damage, Player)
+		if self.Resistance and self.Resistance == "Fire" then return end
+		if self.UD_BeingBurned then return end
+
+		Time = Time or 3
+		Damage = Damage or 1
+
+		local TotalTime = 0
+		local IgnitedRate = 0.35
+		local startingHealth = self:Health()
+		
+		self.UD_originalColor = self.UD_originalColor or self:GetColor()
+		
+		timer.Create("UD_Burn", IgnitedRate, 0, function()
+			if TotalTime < Time then
+				if IsValid(Player) then
+					Player:CreateIndicator(Damage, self:GetPos(), "red", true)
+				end
+				
+				self:SetNWInt("Health", self:Health())
+				self:Ignite(Time, 0) -- Used for the effect
+				self:SetHealth(startingHealth - Damage) -- Starts taking damage
+				TotalTime = TotalTime + IgnitedRate
+			else
+				self:Extinguish()
+				self.UD_BeingBurned = false
+				if self.UD_originalColor then
+					self:SetColor(self.UD_originalColor)
+					self.UD_originalColor = nil
+				end
+				timer.Remove("UD_Burn" .. self:EntIndex())
+			end
+		end)
+		self:SetColor(Color(200, 0, 0, 255))
+		self.UD_BeingBurned = true
+	end
+
+	function GM:RemoveAll(strClass, Time)
+		table.foreach(ents.FindByClass(strClass .. "*"), function(_, ent) SafeRemoveEntityDelayed(ent, Time or 0) end)
 	end
 end
 
 if CLIENT then
-	function CreateGenericFrame(strTitle, boolDrag, boolClose)
-		local frmNewFrame = vgui.Create("DFrame")
-		frmNewFrame:SetTitle(strTitle)
-		frmNewFrame:SetDraggable(boolDrag)
-		frmNewFrame:ShowCloseButton(boolClose)
-		frmNewFrame:SetAlpha(255)
-		frmNewFrame.Paint = function()
-			local tblPaintPanel = jdraw.NewPanel()
-			tblPaintPanel:SetDemensions(0, 0, frmNewFrame:GetWide(), frmNewFrame:GetTall())
-			tblPaintPanel:SetStyle(4, clrTan)
-			tblPaintPanel:SetBoarder(1, clrDrakGray)
-			jdraw.DrawPanel(tblPaintPanel)
-			local tblPaintPanel = jdraw.NewPanel()
-			tblPaintPanel:SetDemensions(5, 5, frmNewFrame:GetWide() - 10, 15)
-			tblPaintPanel:SetStyle(4, clrGray)
-			tblPaintPanel:SetBoarder(1, clrDrakGray)
-			jdraw.DrawPanel(tblPaintPanel)
+	function CreateGenericFrame(Title, Draggable, Close)
+		local NewFrame = vgui.Create("DFrame")
+		NewFrame:SetTitle(Title)
+		NewFrame:SetDraggable(Draggable)
+		NewFrame:ShowCloseButton(Close)
+
+		if Close then
+			NewFrame.Close:SetFont("Marlett")
+			NewFrame.Close:SetText("r")
+			NewFrame.Close:SetColor(Color(200, 200, 200, 255))
+			NewFrame.Close.Paint = function() end
+
+			NewFrame.Maxim:SetVisible(false)
+			NewFrame.Minim:SetVisible(false)
 		end
-		return frmNewFrame
+
+		local PaintPanel = jdraw.NewPanel()
+		NewFrame.PaintPanel = PaintPanel
+			PaintPanel:SetStyle(4, Tan)
+			PaintPanel:SetBorder(1, DrakGray)
+
+		local PaintPanel2 = jdraw.NewPanel()
+		NewFrame.PaintPanel2 = PaintPanel2
+			PaintPanel2:SetStyle(4, Gray)
+			PaintPanel2:SetBorder(1, DrakGray)
+
+		function NewFrame:Paint(w, h)
+			self.PaintPanel:SetDimensions(0, 0, w, h)
+			jdraw.DrawPanel(self.PaintPanel)
+
+			self.PaintPanel2:SetDimensions(5, 5, w - 10, 15)
+			jdraw.DrawPanel(self.PaintPanel2)
+		end
+
+		return NewFrame
 	end
 
-	function CreateGenericList(pnlParent, intSpacing, boolHorz, boolScrollz)
-		local pnlNewList = vgui.Create("DPanelList", pnlParent)
-		pnlNewList:SetSpacing(intSpacing)
-		pnlNewList:SetPadding(intSpacing)
-		pnlNewList:EnableHorizontal(boolHorz)
-		pnlNewList:EnableVerticalScrollbar(boolScrollz)
-		pnlNewList.Paint = function()
-			local tblPaintPanel = jdraw.NewPanel()
-			tblPaintPanel:SetDemensions(0, 0, pnlNewList:GetWide(), pnlNewList:GetTall())
-			tblPaintPanel:SetStyle(4, clrGray)
-			tblPaintPanel:SetBoarder(1, clrDrakGray)
-			jdraw.DrawPanel(tblPaintPanel)
+	function CreateGenericList(Parent, Spacing, HorizontalScrollEnabled, VerticalScrollEnabled)
+		local NewList = vgui.Create("DPanelList", Parent)
+		NewList:SetSpacing(Spacing)
+		NewList:SetPadding(Spacing)
+		NewList:EnableHorizontal(HorizontalScrollEnabled)
+		NewList:EnableVerticalScrollbar(VerticalScrollEnabled)
+
+		local PaintPanel = jdraw.NewPanel()
+		NewList.PaintPanel = PaintPanel
+			PaintPanel:SetStyle(4, Gray)
+			PaintPanel:SetBorder(1, DrakGray)
+
+		function NewList:Paint(w, h)
+			self.PaintPanel:SetDimensions(0, 0, w, h)
+			jdraw.DrawPanel(self.PaintPanel)
 		end
-		return pnlNewList
+
+		return NewList
 	end
 
-	function CreateGenericLabel(pnlParent, strFont, strText, clrColor)
-		local lblNewLabel = vgui.Create("FMultiLabel", pnlParent)
-		lblNewLabel:SetFont(strFont or "Default")
-		lblNewLabel:SetText(strText or "Default")
-		lblNewLabel:SetColor(clrColor or clrWhite)
-		return lblNewLabel
+	function CreateGenericLabel(Parent, Font, Text, Color)
+		local Label = vgui.Create("FMultiLabel", Parent)
+		Label:SetFont(Font or "Default")
+		Label:SetText(Text or "Default")
+		Label:SetColor(Color or White)
+
+		return Label
 	end
 
-	function CreateGenericWeightBar(pnlParent, intWeight, intMaxWeight)
-		local fpbWeightBar = vgui.Create("FPercentBar", pnlParent)
-		fpbWeightBar:SetMax(intMaxWeight)
-		fpbWeightBar:SetValue(intWeight)
-		fpbWeightBar:SetText("Weight " .. intWeight .. "/" ..  intMaxWeight)
-		fpbWeightBar.Update = function(pnlSelf, intNewValue)
-			fpbWeightBar:SetValue(tonumber(intNewValue))
-			fpbWeightBar:SetText("Weight " .. tostring(intNewValue) .. "/" ..  intMaxWeight)
+	local weight_format = "Weight %d/%d"
+	function CreateGenericWeightBar(Parent, Weight, MaxWeight)
+		local WeightBar = vgui.Create("FPercentBar", Parent)
+		WeightBar:SetMax(MaxWeight)
+		WeightBar:SetValue(Weight)
+		WeightBar:SetText(string.format(weight_format, Weight, MaxWeight))
+
+		function WeightBar:Update(NewValue)
+			NewValue = tonumber(NewValue) or 0
+
+			WeightBar:SetValue(NewValue)
+			WeightBar:SetText(string.format(weight_format, NewValue, self:GetMax()))
 		end
-		return fpbWeightBar
+
+		return WeightBar
 	end
 
-	function CreateGenericTabPanel(pnlParent)
-		local tbsNewTabSheet = vgui.Create("DPropertySheet", pnlParent)
-		tbsNewTabSheet.Paint = function()
-			jdraw.QuickDrawPanel(clrTan, 0, 20, tbsNewTabSheet:GetWide(), tbsNewTabSheet:GetTall() - 20)
+	function CreateGenericTabPanel(Parent)
+		local TabSheet = vgui.Create("DPropertySheet", Parent)
+
+		function TabSheet:Paint(w, h)
+			jdraw.QuickDrawPanel(Tan, 0, 20, w, h - 20)
 		end
-		function tbsNewTabSheet:NewTab(strName, strPanelObject, strIcon, strDesc)
-			local pnlNewPanel = vgui.Create(strPanelObject)
-			tbsNewTabSheet:AddSheet(strName, pnlNewPanel, strIcon, false, false, strDesc)
-			tbsNewTabSheet.TabPanels = tbsNewTabSheet.TabPanels or {}
-			table.insert(tbsNewTabSheet.TabPanels, pnlNewPanel)
-			for _, pnlSheet in pairs(tbsNewTabSheet.Items) do
-				pnlSheet.Tab.Paint = function(tbsNewTabSheet)
-					local clrBackColor = clrGray
-					if tbsNewTabSheet:GetPropertySheet():GetActiveTab() == tbsNewTabSheet then clrBackColor = clrTan end
-					jdraw.QuickDrawPanel(clrBackColor, 0, 0, pnlSheet.Tab:GetWide(), pnlSheet.Tab:GetTall() - 1)
-					if tbsNewTabSheet:GetPropertySheet():GetActiveTab() == tbsNewTabSheet then
-						draw.RoundedBox(0, 1, pnlSheet.Tab:GetTall() - 4, pnlSheet.Tab:GetWide() - 2, 5, clrBackColor)
-					else
-						draw.RoundedBox(0, 1, pnlSheet.Tab:GetTall() - 4, pnlSheet.Tab:GetWide() - 2, 2, clrBackColor)
-					end
+
+		function TabSheet:NewTab(Name, PanelObject, Icon, Desc)
+			local NewPanel = vgui.Create(PanelObject)
+			local tab = self:AddSheet(Name, NewPanel, Icon, false, false, Desc).Tab
+
+			function tab:Paint(w, h)
+				local active = TabSheet:GetActiveTab() == self
+				local BackColor = active and Tan or Gray
+
+				if active then
+					jdraw.QuickDrawPanel(BackColor, 0, 0, w, h - 6)
+					draw.RoundedBox(0, 0, h - 8, w, 2, BackColor)
+				else
+					jdraw.QuickDrawPanel(BackColor, 0, 0, w, h + 2)
+					draw.RoundedBox(0, 0, h - 4, w, 2, BackColor)
 				end
 			end
-			return pnlNewPanel
+
+			return NewPanel
 		end
-		return tbsNewTabSheet
+
+		return TabSheet
 	end
 
-	function CreateGenericListItem(intHeaderSize, strNameText, strDesc, strIcon, clrColor, boolExpandable, boolExpanded)
-		local lstNewListItem = vgui.Create("FListItem")
-		lstNewListItem:SetHeaderSize(intHeaderSize)
-		lstNewListItem:SetNameText(strNameText)
-		lstNewListItem:SetDescText(strDesc)
-		lstNewListItem:SetIcon(strIcon)
-		lstNewListItem:SetColor(clrColor)
-		lstNewListItem:SetExpandable(boolExpandable)
-		lstNewListItem:SetExpanded(boolExpanded)
-		return lstNewListItem
+	function CreateGenericListItem(HeaderSize, NameText, Desc, Icon, Color, Expandable, Expanded)
+		local NewListItem = vgui.Create("FListItem")
+		NewListItem:SetHeaderSize(intHeaderSize)
+		NewListItem:SetNameText(NameText)
+		NewListItem:SetDescText(Desc)
+		NewListItem:SetIcon(Icon)
+		NewListItem:SetColor(Color)
+		NewListItem:SetExpandable(Expandable)
+		NewListItem:SetExpanded(Expanded)
+
+		return NewListItem
 	end
 
-	function CreateGenericSlider(pnlParent, strText, intMin, intMax, intDecimals, strConVar)
-		local nmsNewNumSlider = vgui.Create("DNumSlider", pnlParent)
-		nmsNewNumSlider:SetText(strText)
-		nmsNewNumSlider:SetMin(intMin)
-		nmsNewNumSlider:SetMax(intMax or intMin)
-		nmsNewNumSlider:SetDecimals(intDecimals or 0)
-		nmsNewNumSlider:SetConVar(strConVar)
-		return nmsNewNumSlider
+	function CreateGenericSlider(Parent, Text, Min, Max, Decimals, ConVar)
+		local NewNumSlider = vgui.Create("DNumSlider", Parent)
+		NewNumSlider:SetText(Text)
+		NewNumSlider:SetMin(Min)
+		NewNumSlider:SetMax(Max or Min)
+		NewNumSlider:SetDecimals(Decimals or 0)
+		NewNumSlider:SetConVar(ConVar)
+
+		return NewNumSlider
 	end
 
-	function CreateGenericCheckBox(pnlParent, strText, strConVar)
-		local ckbNewCheckBox = vgui.Create( "DCheckBoxLabel", pnlParent)
-		ckbNewCheckBox:SetText(strText)
-		ckbNewCheckBox:SetConVar(strConVar)
-		ckbNewCheckBox:SizeToContents()
-		return ckbNewCheckBox
+	function CreateGenericCheckbox(Parent, Text, ConVar)
+		local NewCheckbox = vgui.Create("DCheckboxLabel", Parent)
+		NewCheckbox:SetText(Text)
+		NewCheckbox:SetConVar(ConVar)
+		NewCheckbox:SizeToContents()
+
+		return NewCheckbox
 	end
 
-	function CreateGenericImageButton(pnlParent, strImage, strToolTip, fncFunction)
-		local btnNewButton = vgui.Create("DImageButton", pnlParent)
-		btnNewButton:SetImage(strImage)
-		btnNewButton:SetToolTip(strToolTip)
-		btnNewButton:SizeToContents()
-		btnNewButton.DoClick = fncFunction
-		return btnNewButton
+	function CreateGenericImageButton(Parent, Image, ToolTip, Callback)
+		local NewButton = vgui.Create("DImageButton", Parent)
+		NewButton:SetImage(Image)
+		NewButton:SetTooltip(ToolTip)
+		NewButton:SizeToContents()
+		NewButton.DoClick = Callback
+
+		return NewButton
 	end
 
-	function CreateGenericButton(pnlParent, strText)
-		local btnNewButton = vgui.Create("DButton", pnlParent)
-		btnNewButton:SetText(strText)
-		btnNewButton.Paint = function(btnNewButton)
-			local clrDrawColor = ColorCopy(clrGray)
-			local intGradDir = 1
-			if btnNewButton:GetDisabled() then
-				clrDrawColor = ColorCopy(clrGray, 100)
-			elseif btnNewButton.Depressed or btnNewButton:IsDown() then
-				intGradDir = -1
-			elseif btnNewButton.Hovered then
+	local shade = Color(0, 0, 0, 100)
+	function CreateGenericButton(Parent, Text)
+		local NewButton = vgui.Create("DButton", Parent)
+		NewButton:SetText(Text)
+		NewButton:SetTextColor(Color(200, 200, 200, 255))
+
+		function NewButton:Paint(w, h)
+			local DrawColor = Gray
+			local GradDir = 1
+
+			if self:GetDisabled() then
+				DrawColor = ColorCopy(Gray, 100)
+			elseif self.Depressed or self:IsDown() then
+				GradDir = -1
+			elseif NewButton.Hovered then
+				-- TODO: maybe more visual feedback?
 			end
-			jdraw.QuickDrawPanel(clrDrawColor, 0, 0, btnNewButton:GetWide(), btnNewButton:GetTall())
-			jdraw.QuickDrawGrad(Color(0, 0, 0, 100), 0, 0, btnNewButton:GetWide(), btnNewButton:GetTall(), intGradDir)
+
+			jdraw.QuickDrawPanel(DrawColor, 0, 0, w, h)
+			jdraw.QuickDrawGrad(shade, 0, 0, w, h, GradDir)
 		end
-		return btnNewButton
+
+		return NewButton
 	end
 
-	function CreateGenericPanel(pnlParent, intX, intY, intWidth, intHieght)
-		local pnlNewPanel = vgui.Create("DPanel", pnlParent)
-		pnlNewPanel:SetPos(intX, intY)
-		pnlNewPanel:SetSize(intWidth, intHieght)
-		pnlNewPanel.Paint = function()
-			jdraw.QuickDrawPanel(clrGray, 0, 0, pnlNewPanel:GetWide(), pnlNewPanel:GetTall())
+	function CreateGenericPanel(Parent, X, Y, Width, Hieght)
+		local NewPanel = vgui.Create("DPanel", Parent)
+		NewPanel:SetPos(X, Y)
+		NewPanel:SetSize(Width, Hieght)
+
+		function NewPanel:Paint(w, h)
+			jdraw.QuickDrawPanel(Gray, 0, 0, w, h)
 		end
-		return pnlNewPanel
+
+		return NewPanel
 	end
 
-	function CreateGenericMultiChoice(pnlParent, strText, boolEditable)
-		local mlcNewMultiChoice = vgui.Create("DComboBox", pnlParent)
-		mlcNewMultiChoice:SetText(strText or "")
-		mlcNewMultiChoice:SetDisabled(not (boolEditable or false))
-		return mlcNewMultiChoice
+	function CreateGenericMultiChoice(Parent, Text, IsEditable)
+		local NewMultiChoice = vgui.Create("DComboBox", Parent)
+		NewMultiChoice:SetText(Text or "")
+		NewMultiChoice:SetEnabled(IsEditable)
+
+		return NewMultiChoice
 	end
 
-	function CreateGenericCollapse(pnlParent, strName, intSpacing, boolHorz)
-		local cpcNewCollapseCat = vgui.Create("DCollapsibleCategory", pnlParent)
-		cpcNewCollapseCat:SetLabel(strName)
-		cpcNewCollapseCat.List = vgui.Create("DPanelList")
-		cpcNewCollapseCat.List:SetAutoSize(true)
-		cpcNewCollapseCat.List:SetSpacing(intSpacing)
-		cpcNewCollapseCat.List:SetPadding(intSpacing)
-		cpcNewCollapseCat.List:EnableHorizontal(boolHorz)
-		cpcNewCollapseCat:SetContents(cpcNewCollapseCat.List)
-		return cpcNewCollapseCat
+	function CreateGenericCollapse(Parent, Name, Spacing, HorizontalScrollEnabled)
+		local NewCollapseCat = vgui.Create("DCollapsibleCategory", Parent)
+		NewCollapseCat:SetLabel(Name)
+
+		NewCollapseCat.List = vgui.Create("DPanelList")
+		NewCollapseCat.List:SetAutoSize(true)
+		NewCollapseCat.List:SetSpacing(Spacing)
+		NewCollapseCat.List:SetPadding(Spacing)
+		NewCollapseCat.List:EnableHorizontal(HorizontalScrollEnabled)
+		NewCollapseCat:SetContents(NewCollapseCat.List)
+
+		return NewCollapseCat
 	end
 end

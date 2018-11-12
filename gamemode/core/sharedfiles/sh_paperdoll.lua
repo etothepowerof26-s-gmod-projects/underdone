@@ -58,7 +58,7 @@ function Player:SetPaperDoll(strSlot, strItem)
 				self:UseItem(strChkItem)
 			end
 		end
-		SendUsrMsg("UD_UpdatePapperDoll", player.GetAll(), {self, strSlot, self:GetSlot(strSlot)})
+		SendNetworkMessage("UD_UpdatePaperDoll", player.GetAll(), {self, strSlot, self:GetSlot(strSlot)})
 		self:SaveGame()
 	end
 end
@@ -69,31 +69,31 @@ function Player:GetSlot(strSlot)
 end
 
 if CLIENT then
-	GM.PapperDollEnts = {}
-	function UpdatePapperDollUsrMsg(usrMsg)
-		local plyPlayer = usrMsg:ReadEntity()
+	GM.PaperDollEnts = {}
+
+	net.Receive("UD_UpdatePaperDoll", function()
+		local plyPlayer = net.ReadEntity()
 		if not IsValid(plyPlayer) then return end
-		local strSlot = usrMsg:ReadString()
-		local strItem = usrMsg:ReadString()
+		local strSlot = net.ReadString()
+		local strItem = net.ReadString()
 		if strItem == "" then strItem = nil end
 		plyPlayer:SetPaperDoll(strSlot, strItem)
-		plyPlayer:PapperDollBuildSlot(strSlot, strItem)
+		plyPlayer:PaperDollBuildSlot(strSlot, strItem)
 		if plyPlayer == LocalPlayer() and GAMEMODE.MainMenu then
 			GAMEMODE.MainMenu.InventoryTab:LoadInventory()
 		end
-	end
-	usermessage.Hook("UD_UpdatePapperDoll", UpdatePapperDollUsrMsg)
+	end)
 
-	function Player:PapperDollBuildSlot(strSlot, strItem)
+	function Player:PaperDollBuildSlot(strSlot, strItem)
 		if not self:Alive() then return end
-		GAMEMODE.PapperDollEnts[self:EntIndex()] = GAMEMODE.PapperDollEnts[self:EntIndex()] or {}
-		local tblPlayerTable = GAMEMODE.PapperDollEnts[self:EntIndex()]
+		GAMEMODE.PaperDollEnts[self:SteamID64()] = GAMEMODE.PaperDollEnts[self:SteamID64()] or {}
+		local tblPlayerTable = GAMEMODE.PaperDollEnts[self:SteamID64()]
 		tblPlayerTable = tblPlayerTable or {}
-		local entPapperDollEnt = tblPlayerTable[strSlot]
-		if entPapperDollEnt and entPapperDollEnt:IsValid() then
-			for _, kid in pairs(entPapperDollEnt.Children or {}) do SafeRemoveEntity(kid) end
-			SafeRemoveEntity(entPapperDollEnt)
-			GAMEMODE.PapperDollEnts[self:EntIndex()][strSlot] = nil
+		local entPaperDollEnt = tblPlayerTable[strSlot]
+		if entPaperDollEnt and entPaperDollEnt:IsValid() then
+			for _, kid in pairs(entPaperDollEnt.Children or {}) do SafeRemoveEntity(kid) end
+			SafeRemoveEntity(entPaperDollEnt)
+			GAMEMODE.PaperDollEnts[self:SteamID64()][strSlot] = nil
 		end
 		if strItem and strSlot then
 			local tblItemTable = ItemTable(strItem)
@@ -104,28 +104,31 @@ if CLIENT then
 				entNewPart:SetParent(self)
 				entNewPart.Item = strItem
 				entNewPart.Attachment = tblSlotTable.Attachment
-				GAMEMODE.PapperDollEnts[self:EntIndex()][strSlot] = entNewPart
+				GAMEMODE.PaperDollEnts[self:SteamID64()][strSlot] = entNewPart
 			end
 		end
 	end
 
-	local function DrawPapperDoll()
+	local function DrawPaperDoll()
 		if LocalPlayer() and not LocalPlayer().Data then LocalPlayer().Data = {} end
 		if LocalPlayer() and LocalPlayer().Data and not LocalPlayer().Data.Paperdoll then LocalPlayer().Data.Paperdoll = {} end
-		for intEntID, tblPlayerTable in pairs(GAMEMODE.PapperDollEnts) do
-			local plyPlayer = ents.GetByIndex(intEntID)
+		for steamID64, tblPlayerTable in pairs(GAMEMODE.PaperDollEnts) do
+			local plyPlayer = player.GetBySteamID64(steamID64)
 			for strSlot, entTarget in pairs(tblPlayerTable or {}) do
 				if not plyPlayer or not plyPlayer:IsValid() then
-					for _, kid in pairs(entTarget.Children or {}) do SafeRemoveEntity(kid) end
-					SafeRemoveEntity(entTarget)
+					for _, kid in pairs(entTarget.Children or {}) do SafeRemoveEntityDelayed(kid, 0) end
+					SafeRemoveEntityDelayed(entTarget, 0)
 					break
 				end
 				local tblItemTable = ItemTable(entTarget.Item)
 				if tblItemTable then
 					local tblAttachment = plyPlayer:GetAttachment(plyPlayer:LookupAttachment(entTarget.Attachment))
 					if not tblAttachment then
-						local vecBonePostion, angBoneAngle = plyPlayer:GetBonePosition(plyPlayer:LookupBone(entTarget.Attachment))
-						tblAttachment = {Pos = vecBonePostion, Ang = angBoneAngle}
+						local bone = plyPlayer:LookupBone(entTarget.Attachment)
+						if bone then
+							local vecBonePosition, angBoneAngle = plyPlayer:GetBonePosition(bone)
+							tblAttachment = {Pos = vecBonePosition, Ang = angBoneAngle}
+						end
 					end
 					if tblAttachment then
 						entTarget:SetAngles(tblAttachment.Ang)
@@ -144,7 +147,7 @@ if CLIENT then
 			end
 		end
 	end
-	hook.Add("RenderScreenspaceEffects", "DrawPapperDoll", DrawPapperDoll)
+	hook.Add("RenderScreenspaceEffects", "UD_DrawPaperDoll", DrawPaperDoll)
 end
 
 function GM:BuildModel(tblModelTable)
@@ -156,10 +159,12 @@ function GM:BuildModel(tblModelTable)
 	local entReturnEnt = nil
 	local entNewPart = nil
 	for key, tblModelInfo in pairs(tblLoopTable) do
-		if CLIENT then
-			entNewPart = ents.CreateClientProp(tblModelInfo.Model)
+		if SERVER then
+			entNewPart = ents.Create("prop_physics")
+		elseif CLIENT then
+			entNewPart = ents.CreateClientProp("prop_physics")
 		end
-		-- entNewPart:SetModel(tblModelInfo.Model)
+		entNewPart:SetModel(tblModelInfo.Model)
 		if entReturnEnt then entNewPart:SetAngles(entReturnEnt:GetAngles()) end
 		if entReturnEnt then entNewPart:SetAngles(entNewPart:LocalToWorldAngles(tblModelInfo.Angle)) end
 		if not entReturnEnt then entNewPart:SetAngles(tblModelInfo.Angle) end
@@ -169,7 +174,7 @@ function GM:BuildModel(tblModelTable)
 		entNewPart:SetParent(entReturnEnt)
 		if SERVER then entNewPart:SetCollisionGroup(COLLISION_GROUP_WORLD) end
 		if tblModelInfo.Material then entNewPart:SetMaterial(tblModelInfo.Material) end
-		if tblModelInfo.Color then entNewPart:SetColor(tblModelInfo.Color.r, tblModelInfo.Color.g, tblModelInfo.Color.b, tblModelInfo.Color.a) end
+		if tblModelInfo.Color then entNewPart:SetColor(Color(tblModelInfo.Color.r, tblModelInfo.Color.g, tblModelInfo.Color.b, tblModelInfo.Color.a)) end
 		if tblModelInfo.Scale then
 			local scale = type(tblModelInfo.Scale) == "Vector" and tblModelInfo.Scale or tonumber(tblModelInfo.Scale)
 			if not scale then return ErrorNoHalt("scale is nil") end

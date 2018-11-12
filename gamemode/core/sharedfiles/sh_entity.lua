@@ -90,10 +90,15 @@ if SERVER then
 end
 if CLIENT then
 	concommand.Add("UD_SetEtityScale", function(ply, command, args)
-		local entEtity = ents.GetByIndex(args[1])
+		if not tonumber(args[1]) then return end
+		
+		local ent = ents.GetByIndex(args[1])
 		local vecScale = VectortizeString(args[2])
-		if IsValid(entEtity) and vecScale then
-			entEtity:SetModelScale(vecScale)
+		if IsValid(ent) and vecScale then
+			local matrix = Matrix()
+			matrix:Scale(vecScale)
+
+			ent:EnableMatrix("RenderMultiply", matrix)
 		end
 	end)
 end

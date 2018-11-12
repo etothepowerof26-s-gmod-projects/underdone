@@ -1,8 +1,8 @@
 local Quest = {}
 Quest.Name = "quest_killzombies"
 Quest.PrintName = "Kill zombie"
-Quest.Story = "Zombies a always attacking newcommers here. Say, tell you what, you kill a couple of them things and I will give you some cash for it."
-Quest.TurnInStory = "Nice job, I like the way you handled those zombies lets do this more often."
+Quest.Story = "Zombies are always attacking newcommers here. I tell you what, you kill a couple of them things and I will give you some cash for it."
+Quest.TurnInStory = "Nice job, I like the way you handled those zombies. Lets do this more often."
 Quest.Level = 5
 Quest.Kill = {}
 Quest.Kill["zombie"] = 8
@@ -14,8 +14,8 @@ Register.Quest(Quest)
 local Quest = {}
 Quest.Name = "quest_beer"
 Quest.PrintName = "Obtain Beer"
-Quest.Story = "Hey you not  Yea i'm talking to you I need something to quench my thurst\n Go find me some beer to drink I don't care if you have to steal it from someones case just go not \n"
-Quest.TurnInStory = "Whoa not  , *Takes the beer bottle* Many thanks man *Hands him some money* Thank you for getting 'my' beer."
+Quest.Story = "Hey you! Yea, I'm talking to you! I need something to quench my thurst.\n Go find me some beer to drink, I don't care if you have to steal it from someones case, just do it.\n"
+Quest.TurnInStory = "Whoa! Many thanks man! Thank you for getting 'my' beer."
 Quest.Level = 1
 Quest.ObtainItems = {}
 Quest.ObtainItems["quest_beer"] = 1
@@ -27,8 +27,8 @@ Register.Quest(Quest)
 local Quest = {}
 Quest.Name = "quest_cooking"
 Quest.PrintName = "Learn to cook"
-Quest.Story = "Greetings Good Sir not  , I currently have some meat here but \nI don't have a stove around could you take these cans of meat and go and cook them on a stove ?\n"
-Quest.TurnInStory = "Thank you not  , *Takes the Cans Of Cooked Meat* I think you deserve some cold hard cash here take some from my hand not \n"
+Quest.Story = "Greetings good sir! I currently have some meat here but I don't have a stove around. Could you take these cans of meat and go and cook them on a stove?"
+Quest.TurnInStory = "Thank you! I think you deserve some cold hard cash. Here, take some from my hand!"
 Quest.Level = 1
 Quest.StartingItems = {}
 Quest.StartingItems["book_canofmeat"] = 1
@@ -71,7 +71,7 @@ Register.Quest(Quest)
 local Quest = {}
 Quest.Name = "quest_fortification"
 Quest.PrintName = "Fortification"
-Quest.Story = "We need to build some more fortifactions for the base. Go out and get us some wood. You can find it in boxes around the map."
+Quest.Story = "We need to build some more fortifictions for the base. Go out and get us some wood. You can find it in boxes around the map."
 Quest.Level = 1
 Quest.ObtainItems = {}
 Quest.ObtainItems["wood"] = 10
@@ -84,7 +84,7 @@ Register.Quest(Quest)
 local Quest = {}
 Quest.Name = "quest_zombieblood"
 Quest.PrintName = "Obtain Zombie Blood"
-Quest.Story = "The virus is spread and we need a anti virus! Obtain some blood so we can examine it and cure this virus."
+Quest.Story = "The virus is spreading and we need an anti-virus! Obtain some blood so we can examine it and cure this virus."
 Quest.Level = 3
 Quest.ObtainItems = {}
 Quest.ObtainItems["quest_zombieblood"] = 10
@@ -95,10 +95,12 @@ Quest.GainedItems["item_antivirus"] = 1
 Register.Quest(Quest)
 
 --Community made quests
+--TODO: replace stupid quests
+--TODO: replace because theres already a kill breen quest
 local Quest = {}
 Quest.Name = "quest_killbreen"
 Quest.PrintName = "Kill Dr. Breen"
-Quest.Story = "Dr. Breen is a pain in the ass for us rebels.  Kill him slowly so he suffers a terrible death in our hands."
+Quest.Story = "Dr. Breen is a pain in the ass for us rebels. Kill him slowly so he suffers a terrible death in our hands."
 Quest.Level = 40
 Quest.Kill = {}
 Quest.Kill["breen"] = 1
@@ -122,7 +124,7 @@ Register.Quest(Quest)
 local Quest = {}
 Quest.Name = "quest_cquest1"
 Quest.PrintName = "Stolen Money"
-Quest.Story = "Those ice zombies have been stealing my money and eating it for some reason. I need you to kill a few and get me 5 stolen stacks of money"
+Quest.Story = "Those ice zombies have been stealing my money and eating it for some reason. I need you to kill a few and get me 5 stolen stacks of money."
 Quest.Level = 10
 Quest.ObtainItems = {}
 Quest.ObtainItems ["quest_moneystack"] = 5
@@ -134,7 +136,7 @@ Register.Quest(Quest)
 local Quest = {}
 Quest.Name = "quest_cquest2"
 Quest.PrintName = "Stolen Money 2"
-Quest.Story = "Ice zombies stole some more of my money! get me 10 more money stacks!"
+Quest.Story = "Ice zombies stole some more of my money! Get me 10 more of my money stacks!"
 Quest.QuestNeeded = "quest_cquest1"
 Quest.Level = 10
 Quest.ObtainItems = {}
@@ -147,7 +149,7 @@ Register.Quest(Quest)
 local Quest = {}
 Quest.Name = "quest_detergentq"
 Quest.PrintName = "Detergent Cleanup"
-Quest.Story = "This detergent that the antlions ate is polluting our air and making us cough and get sick, we need you to kill some antlions pick it up and give it to us so we can sterilize it"
+Quest.Story = "This detergent that the antlions ate is polluting our air and making us cough and get sick. We need you to kill some antlions pick it up and give it to us so we can sterilize it."
 Quest.Level = 20
 Quest.ObtainItems = {}
 Quest.ObtainItems ["quest_detergent"] = 10

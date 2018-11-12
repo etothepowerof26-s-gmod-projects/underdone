@@ -1,12 +1,16 @@
 "underdone"
 {
-  "base"    "base"
-  "title"    "underdone"
-  "maps"    ""
-  "menusystem"  "1"
+	"base"        "base"
+	"title"       "underdone"
+	"version"     "GIT"
+	"description" "underdone RPG refactor for gmod13"
 
-  "settings"
-  {
-  }
+	"author_name" "Polkm, Zeni, Tewntysx, Q2F2"
+	"author_url"  "https://github.com/Zeni44/underdone"
 
+	"maps"        "^ud_"
+
+	"hide"        "0"
+	"menusystem"  "1"
+	"selectable"  "1"
 }

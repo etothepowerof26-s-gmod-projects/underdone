@@ -1,10 +1,10 @@
 local Player = FindMetaTable("Player")
 
-function Player:GetItemBuyPrice(strItem)
-	local tblItemTable = ItemTable(strItem)
-	if tblItemTable and tblItemTable.SellPrice then
-		local intBuyPrice = tblItemTable.SellPrice * 2.7
-		intBuyPrice = self:CallSkillHook("price_mod", intBuyPrice)
+function Player:GetItemBuyPrice(Item)
+	local item = ItemTable(strItem)
+	if item and item.SellPrice then
+		local BuyPrice = item.SellPrice * 2.7
+		BuyPrice = self:CallSkillHook("price_mod", BuyPrice)
 		return math.floor(intBuyPrice)
 	end
 end

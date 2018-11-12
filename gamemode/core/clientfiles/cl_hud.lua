@@ -2,61 +2,66 @@ GM.ConVarShowHUD = CreateClientConVar("ud_showhud", 1, true, false)
 GM.ConVarShowCrossHair = CreateClientConVar("ud_showcrosshair", 1, true, false)
 GM.ConVarCrossHairProngs = CreateClientConVar("ud_crosshairprongs", 4, true, false)
 GM.PlayerHUDBarWidth = 300
-local intCrossHairAngle = 45
-local function fncGetAnglesCos(intAngle, intSize)
-	return math.cos(math.rad(intAngle)) * intSize
+local CrossHairAngle = 45
+local function GetAnglesCos(Angle, Size)
+	return math.cos(math.rad(Angle)) * Size
 end
-local function fncGetAnglesSin(intAngle, intSize)
-	return math.sin(math.rad(intAngle)) * intSize
+local function GetAnglesSin(Angle, Size)
+	return math.sin(math.rad(Angle)) * Size
 end
-local function fncDrawAngleLine(intPosX, intPosY, intAngle, intSize)
-	surface.DrawLine(intPosX, intPosY, intPosX + fncGetAnglesCos(intAngle, intSize), intPosY + fncGetAnglesSin(intAngle, intSize))
+local function DrawAngleLine(PosX, PosY, Angle, Size)
+	surface.DrawLine(PosX, PosY, PosX + GetAnglesCos(Angle, Size), PosY + GetAnglesSin(Angle, Size))
 end
 
 local squad_leader = Material("icon16/star.png")
-
+local done         = Material("icon16/accept.png")
 
 function GM:HUDPaint()
 	if not GAMEMODE.ConVarShowHUD:GetBool() then return end
 	self.PlayerBox = jdraw.NewPanel()
-	if LocalPlayer():IsMelee() or not IsValid(LocalPlayer():GetActiveWeapon()) then
-		self.PlayerBox:SetDemensions(10, ScrH() - 55, GAMEMODE.PlayerHUDBarWidth, 45)
+
+	local wep = LocalPlayer():GetActiveWeapon()
+	local drawAmmo = not LocalPlayer():IsMelee() and IsValid(wep) and wep.Primary and wep.Primary.ClipSize > 0
+
+	if not drawAmmo then
+		self.PlayerBox:SetDimensions(10, ScrH() - 55, GAMEMODE.PlayerHUDBarWidth, 45)
 	else
-		self.PlayerBox:SetDemensions(10, ScrH() - 73, GAMEMODE.PlayerHUDBarWidth, 63)
+		self.PlayerBox:SetDimensions(10, ScrH() - 73, GAMEMODE.PlayerHUDBarWidth, 63)
 	end
-	self.PlayerBox:SetStyle(4, clrTan)
-	self.PlayerBox:SetBoarder(1, clrDrakGray)
+	self.PlayerBox:SetStyle(4, Tan)
+	self.PlayerBox:SetBorder(1, DrakGray)
 	self:DrawSkillPoints()
 	jdraw.DrawPanel(self.PlayerBox)
 
 	self:DrawHealthBar()
 	self:DrawLevelBar()
-	if not LocalPlayer():IsMelee() and IsValid(LocalPlayer():GetActiveWeapon()) then self:DrawAmmoBar() end
+
+	if drawAmmo then self:DrawAmmoBar() end
 
 	self:DrawQuestToDoList()
-	local intYOffset = self.PlayerBox.Position.Y
-	if LocalPlayer():GetNWInt("SkillPoints") > 0 then intYOffset = intYOffset - 25 end
+	local YOffset = self.PlayerBox.Position.Y
+	if LocalPlayer():GetNWInt("SkillPoints") > 0 then YOffset = YOffset - 25 end
 	self:DrawSquadMembers(10, -1)
 
 	if GAMEMODE.ConVarShowCrossHair:GetBool() then
-		local intSize = 4
-		local intLines = GAMEMODE.ConVarCrossHairProngs:GetInt()
-		local intRate = 0
-		local intX = ScrW() / 2.0
-		local intY = LocalPlayer():GetEyeTraceNoCursor().HitPos:ToScreen().y
-		surface.SetDrawColor(clrGreen)
-		intCrossHairAngle = intCrossHairAngle + intRate
-		for i = 0, (intLines - 1) do
-			fncDrawAngleLine(intX, intY, intCrossHairAngle + ((i / intLines) * 360), intSize)
+		local Size = 4
+		local Lines = GAMEMODE.ConVarCrossHairProngs:GetInt()
+		local Rate = 0
+		local X = ScrW() / 2.0
+		local Y = LocalPlayer():GetEyeTraceNoCursor().HitPos:ToScreen().y
+		surface.SetDrawColor(Green)
+		CrossHairAngle = CrossHairAngle + Rate
+		for i = 0, (Lines - 1) do
+			DrawAngleLine(X, Y, CrossHairAngle + ((i / Lines) * 360), Size)
 		end
 	end
 	if not LocalPlayer():Alive() then
 		surface.SetDrawColor(50, 50, 50, 200)
-		local intDrawBoxY = ScrH() * 0.1
-		surface.DrawRect(0, intDrawBoxY, ScrW(), 100)
+		local DrawBoxY = ScrH() * 0.1
+		surface.DrawRect(0, DrawBoxY, ScrW(), 100)
 		surface.SetDrawColor(10, 10, 10, 150)
-		surface.DrawRect(0, intDrawBoxY, ScrW(), 20)
-		surface.DrawRect(0, intDrawBoxY + 100 - 20, ScrW(), 20)
+		surface.DrawRect(0, DrawBoxY, ScrW(), 20)
+		surface.DrawRect(0, DrawBoxY + 100 - 20, ScrW(), 20)
 		if not LocalPlayer().Respawning then
 			LocalPlayer().Respawning = true
 			for i = 1, 10 do
@@ -64,54 +69,66 @@ function GM:HUDPaint()
 			end
 			timer.Simple(10, function() LocalPlayer().Respawning = false end)
 		end
-		draw.DrawText("Respawn in: " .. (RespawnTime or 10) .. " Seconds", "ScoreboardDefaultTitle", ScrW() * 0.5, intDrawBoxY + 35, clrWhite, 1, 1)
+		draw.DrawText("Respawn in: " .. (RespawnTime or 10) .. " Seconds", "ScoreboardDefaultTitle", ScrW() * 0.5, DrawBoxY + 35, White, 1, 1)
 	end
 end
 
 function GM:DrawQuestToDoList()
-	local intYOffset = 20
-	local intPadding = 13
-	local intQuestNumber = 0
+	local YOffset = 200
+	local Padding = 13
+	local QuestNumber = 0
+	local NameColour = White
 	if not LocalPlayer().Data then return end
-	for strQuest, tblInfo in pairs(LocalPlayer().Data.Quests or {}) do
-		if LocalPlayer():GetQuest(strQuest) and not LocalPlayer():HasCompletedQuest(strQuest) then
-			local tblQuestTable = QuestTable(strQuest)
-			local intXOffset = ScrW() - 200
-			if intQuestNumber == 0 then
-				draw.SimpleTextOutlined("Quest Todo list", "Trebuchet24", intXOffset - 20, intYOffset, clrWhite, 0, 1, 1, clrDrakGray)
-				intYOffset = intYOffset + intPadding + 7
-			end
-			draw.SimpleTextOutlined(tblQuestTable.PrintName, "Trebuchet22", intXOffset, intYOffset, clrWhite, 0, 1, 1, clrDrakGray)
-			intYOffset = intYOffset + intPadding + 5
-			intXOffset = intXOffset + 20
-			for strNPC, intAmount in pairs(tblInfo.Kills or {}) do
-				if not NPCTable(strNPC) then return end
-				if intAmount < tblQuestTable.Kill[strNPC] then
-					draw.SimpleTextOutlined("Kill " .. NPCTable(strNPC).PrintName .. ": " .. intAmount .. "/" .. tblQuestTable.Kill[strNPC], "Trebuchet18", intXOffset, intYOffset, clrWhite, 0, 1, 1, clrDrakGray)
-					intYOffset = intYOffset + intPadding
+	for Quest, Info in pairs(LocalPlayer().Data.Quests or {}) do
+		if LocalPlayer():GetQuest(Quest) and not LocalPlayer():HasCompletedQuest(Quest) then
+			local QuestTable = QuestTable(Quest)
+			local XOffset = ScrW() - 200
+			if QuestTable.Level then
+				if LocalPlayer():GetLevel() > QuestTable.Level then
+					NameColour = Blue
 				end
-				for _, NPC in pairs(ents.FindByClass("npc_"..strNPC)) do
-					if not NPC.HasWayPoint and not LocalPlayer():CanTurnInQuest(strQuest) then
-						NPC.HasWayPoint = true
-						local vPoint = NPC:GetPos()
-						WayPoint = EffectData()
-						WayPoint:SetStart( vPoint )
-						WayPoint:SetOrigin( vPoint )
-						WayPoint:SetEntity(NPC)
-						WayPoint:SetScale( 1 )
-						util.Effect( "selection_ring", WayPoint )
+			end
+			if LocalPlayer():CanTurnInQuest(Quest) then
+				surface.SetDrawColor(255, 255, 255, 255)
+				surface.SetMaterial(Material("gui/accept"))
+				surface.DrawTexturedRect(XOffset - 20, YOffset - 8, 16, 16)
+			end
+			draw.SimpleTextOutlined(QuestTable.PrintName, "Trebuchet20", XOffset, YOffset, NameColour, 0, 1, 1, DrakGray)
+			YOffset = YOffset + Padding + 5
+			XOffset = XOffset + 20
+			for NPC, Amount in pairs(Info.Kills or {}) do
+				if !NPCTable(NPC) then return end
+				draw.SimpleTextOutlined(".", "Trebuchet20", XOffset - 8, YOffset - 5, white, 0, 1, 1, DrakGray)
+				if Amount < QuestTable.Kill[NPC] then
+					draw.SimpleTextOutlined("Kill " .. NPCTable(NPC).PrintName .. " (" .. Amount .. "/" .. QuestTable.Kill[NPC] .. ")", "Trebuchet18", XOffset, YOffset, White, 0, 1, 1, DrakGray)
+					YOffset = YOffset + Padding
+					for _, NPC in pairs(ents.FindByClass("npc_" .. NPC)) do
+						if not NPC.HasWayPoint and not LocalPlayer():CanTurnInQuest(Quest) then
+							NPC.HasWayPoint = true
+							local vPoint = NPC:GetPos()
+							WayPoint = EffectData()
+							WayPoint:SetStart( vPoint )
+							WayPoint:SetOrigin( vPoint )
+							WayPoint:SetEntity(NPC)
+							WayPoint:SetScale( 1 )
+							util.Effect( "selection_ring", WayPoint )
+						end
 					end
+				else
+					draw.SimpleTextOutlined("Kill " .. NPCTable(NPC).PrintName .. " (" .. QuestTable.Kill[NPC] .. "/" .. QuestTable.Kill[NPC] .. ")", "Trebuchet18", XOffset, YOffset, White, 0, 1, 1, DrakGray)
+					YOffset = YOffset + Padding
 				end
 			end
-			for strItem, intAmountNeeded in pairs(tblQuestTable.ObtainItems or {}) do
-				local intItemsGot = LocalPlayer():GetItem(strItem) or 0
-				local tblItemTable = ItemTable(strItem)
-				if intItemsGot < intAmountNeeded then
-					draw.SimpleTextOutlined(tblItemTable.PrintName .. ": " .. intItemsGot .. "/" .. intAmountNeeded, "Trebuchet18", intXOffset, intYOffset, clrWhite, 0, 1, 1, clrDrakGray)
-					intYOffset = intYOffset + intPadding
+			for Item, AmountNeeded in pairs(QuestTable.ObtainItems or {}) do
+				local ItemsGot = LocalPlayer():GetItem(Item) or 0
+				local ItemTable = ItemTable(Item)
+				draw.SimpleTextOutlined(".", "Trebuchet20", XOffset - 8, YOffset - 5, white, 0, 1, 1, DrakGray)
+				if ItemsGot < AmountNeeded then
+					draw.SimpleTextOutlined(ItemTable.PrintName .. " (" .. ItemsGot .. "/" .. AmountNeeded .. ")", "Trebuchet18", XOffset, YOffset, White, 0, 1, 1, DrakGray)
+					YOffset = YOffset + Padding
 					for _,prop in pairs(ents.FindByClass("prop_physics")) do
-						if IsValid(prop) and tblItemTable.Model == prop:GetModel() then
-							if not prop.HasWayPoint and not LocalPlayer():CanTurnInQuest(strQuest) then
+						if IsValid(prop) and ItemTable.Model == prop:GetModel() then
+							if not prop.HasWayPoint and not LocalPlayer():CanTurnInQuest(Quest) then
 								prop.HasWayPoint = true
 								local vPoint = prop:GetPos()
 								WayPoint = EffectData()
@@ -123,94 +140,93 @@ function GM:DrawQuestToDoList()
 							end
 						end
 					end
+				else
+					draw.SimpleTextOutlined(ItemTable.PrintName .. " (" .. AmountNeeded .. "/" .. AmountNeeded .. ")", "Trebuchet18", XOffset, YOffset, White, 0, 1, 1, DrakGray)
+					YOffset = YOffset + Padding
 				end
 			end
-			if LocalPlayer():CanTurnInQuest(strQuest) then
-				draw.SimpleTextOutlined("Done return to npc", "Trebuchet18", intXOffset, intYOffset, clrWhite, 0, 1, 1, clrDrakGray)
-				intYOffset = intYOffset + intPadding
-			end
-			intYOffset = intYOffset + 10
-			intQuestNumber = intQuestNumber + 1
+			YOffset = YOffset + 10
+			QuestNumber = QuestNumber + 1
 		end
 	end
 end
 
-function GM:DrawSquadMembers(intYOffset, intDirection)
-	intDirection = intDirection or 1
-	local intPadding = 40
-	local intKey = 0
+function GM:DrawSquadMembers(YOffset, Direction)
+	Direction = Direction or 1
+	local Padding = 40
+	local Key = 0
 	if #(LocalPlayer().Squad or {}) <= 1 then return end
-	for key, plySquadMate in pairs(LocalPlayer().Squad or {}) do
-		if not IsValid(plySquadMate) then LocalPlayer().Squad[key] = nil end
-		if IsValid(plySquadMate) and plySquadMate ~= LocalPlayer() then
-			if plySquadMate ~= LocalPlayer() then
-				self:DrawSquadHealthBar(plySquadMate)
+	for key, SquadMate in pairs(LocalPlayer().Squad or {}) do
+		if not IsValid(SquadMate) then LocalPlayer().Squad[key] = nil end
+		if IsValid(SquadMate) and SquadMate ~= LocalPlayer() then
+			if SquadMate ~= LocalPlayer() then
+				self:DrawSquadHealthBar(SquadMate)
 			end
-			jdraw.QuickDrawPanel(clrTan, 10, intYOffset - (intKey * intPadding * intDirection), 250, intPadding - 5)
-			draw.SimpleTextOutlined(plySquadMate:Nick() .. " lv." .. plySquadMate:GetLevel(), "Trebuchet18", 15, intYOffset - (intKey * intPadding * intDirection), clrDrakGray, 0, 0, 0, clrDrakGray)
-			jdraw.DrawHealthBar(plySquadMate:Health(), plySquadMate:GetNWInt("MaxHealth"), 15, intYOffset - ((intKey) * intPadding * intDirection) + 17, 250 - 10, 13)
-			if plySquadMate == LocalPlayer():GetNWEntity("SquadLeader") then
-				jdraw.DrawIcon(squad_leader, 3, intYOffset - 5 - (intKey * intPadding * intDirection), 16)
+			jdraw.QuickDrawPanel(Tan, 10, YOffset - (Key * Padding * Direction), 250, Padding - 5)
+			draw.SimpleTextOutlined(SquadMate:Nick() .. " lv." .. SquadMate:GetLevel(), "Trebuchet18", 15, YOffset - (Key * Padding * Direction), DrakGray, 0, 0, 0, DrakGray)
+			jdraw.DrawHealthBar(SquadMate:Health(), SquadMate:GetNWInt("MaxHealth"), 15, YOffset - ((Key) * Padding * Direction) + 17, 250 - 10, 13)
+			if SquadMate == LocalPlayer():GetNWEntity("SquadLeader") then
+				jdraw.DrawIcon(squad_leader, 3, YOffset - 5 - (Key * Padding * Direction), 16)
 			end
-			intKey = intKey + 1
+			Key = Key + 1
 		end
 	end
 end
 
-function GM:DrawSquadHealthBar(plySquadMate)
-	if plySquadMate:GetPos():Distance(LocalPlayer():GetPos()) < 500 then
-		local PosSquadPos = (plySquadMate:GetPos() + Vector(0, 0, 80)):ToScreen()
-		jdraw.DrawHealthBar(plySquadMate:Health(), plySquadMate:GetNWInt("MaxHealth"), PosSquadPos.x - (80 / 2), PosSquadPos.y + 8, 80, 11)
+function GM:DrawSquadHealthBar(SquadMate)
+	if SquadMate:GetPos():Distance(LocalPlayer():GetPos()) < 500 then
+		local PosSquadPos = (SquadMate:GetPos() + Vector(0, 0, 80)):ToScreen()
+		jdraw.DrawHealthBar(SquadMate:Health(), SquadMate:GetNWInt("MaxHealth"), PosSquadPos.x - (80 / 2), PosSquadPos.y + 8, 80, 11)
 	end
 end
 
 function GM:DrawSkillPoints()
 	if LocalPlayer():GetNWInt("SkillPoints") > 0 then
 		self.SkillBar = jdraw.NewProgressBar(self.PlayerBox, true)
-		self.SkillBar:SetDemensions(3, -21, 125, 23)
-		self.SkillBar:SetStyle(4, clrTan)
-		self.SkillBar:SetText("Default", "Unused SkillPoints " .. LocalPlayer():GetNWInt("SkillPoints"), clrDrakGray)
+		self.SkillBar:SetDimensions(3, -21, 125, 23)
+		self.SkillBar:SetStyle(4, Tan)
+		self.SkillBar:SetText("UiBold", "Unused SkillPoints " .. LocalPlayer():GetNWInt("SkillPoints"), DrakGray)
 		jdraw.DrawProgressBar(self.SkillBar)
 	end
 end
 
 function GM:DrawHealthBar()
-	local clrBarColor = clrGreen
+	local BarColor = Green
 	if LocalPlayer():GetStat("stat_maxhealth") then
-		if LocalPlayer():Health() <= (LocalPlayer():GetStat("stat_maxhealth") * 0.2) then clrBarColor = clrRed end
+		if LocalPlayer():Health() <= (LocalPlayer():GetStat("stat_maxhealth") * 0.2) then BarColor = Red end
 		self.HealthBar = jdraw.NewProgressBar(self.PlayerBox, true)
-		self.HealthBar:SetDemensions(3, 3, self.PlayerBox.Size.Width - 6, 20)
-		self.HealthBar:SetStyle(4, clrBarColor)
+		self.HealthBar:SetDimensions(3, 3, self.PlayerBox.Size.Width - 6, 20)
+		self.HealthBar:SetStyle(4, BarColor)
 		self.HealthBar:SetValue(LocalPlayer():Health(), LocalPlayer():GetStat("stat_maxhealth"))
-		self.HealthBar:SetText("Default", "Health " .. LocalPlayer():Health(), clrDrakGray)
+		self.HealthBar:SetText("UiBold", "Health " .. LocalPlayer():Health(), DrakGray)
 		jdraw.DrawProgressBar(self.HealthBar)
 	end
 end
 
 function GM:DrawLevelBar()
 	local playerlevel = tonumber(LocalPlayer():GetLevel()) or 0
-	local intCurrentLevelExp = toExp(playerlevel)
-	local intNextLevelExp = toExp(playerlevel + 1)
-	local clrBarColor = clrOrange
+	local CurrentLevelExp = toExp(playerlevel)
+	local NextLevelExp = toExp(playerlevel + 1)
+	local BarColor = Orange
 	self.LevelBar = jdraw.NewProgressBar(self.PlayerBox, true)
-	self.LevelBar:SetDemensions(3, self.HealthBar.Size.Height + 6, self.PlayerBox.Size.Width - 6, 15)
-	self.LevelBar:SetStyle(4, clrBarColor)
-	self.LevelBar:SetValue(LocalPlayer():GetNWInt("exp") - intCurrentLevelExp, intNextLevelExp - intCurrentLevelExp)
-	self.LevelBar:SetText("Default", "Level " .. LocalPlayer():GetLevel(), clrDrakGray)
+	self.LevelBar:SetDimensions(3, self.HealthBar.Size.Height + 6, self.PlayerBox.Size.Width - 6, 15)
+	self.LevelBar:SetStyle(4, BarColor)
+	self.LevelBar:SetValue(LocalPlayer():GetNWInt("exp") - CurrentLevelExp, NextLevelExp - CurrentLevelExp)
+	self.LevelBar:SetText("UiBold", "Level " .. LocalPlayer():GetLevel(), DrakGray)
 	jdraw.DrawProgressBar(self.LevelBar)
 end
 
 function GM:DrawAmmoBar()
-	local entActiveWeapon = LocalPlayer():GetActiveWeapon()
-	local intCurrentClip = entActiveWeapon:Clip1()
-	local tblWeaponTable = entActiveWeapon.WeaponTable or {}
-	local strAmmoType = tblWeaponTable.AmmoType or "none"
-	local clrBarColor = clrBlue
+	local ActiveWeapon = LocalPlayer():GetActiveWeapon()
+	local CurrentClip = ActiveWeapon:Clip1()
+	local WeaponTable = ActiveWeapon.WeaponTable or {}
+	local AmmoType = WeaponTable.AmmoType or "none"
+	local BarColor = Blue
 	self.AmmoBar = jdraw.NewProgressBar(self.PlayerBox, true)
-	self.AmmoBar:SetDemensions(3, self.HealthBar.Size.Height + self.LevelBar.Size.Height + 9, self.PlayerBox.Size.Width - 6, 15)
-	self.AmmoBar:SetStyle(4, clrBarColor)
-	self.AmmoBar:SetValue(intCurrentClip, tblWeaponTable.ClipSize or 1)
-	self.AmmoBar:SetText("Default", "Ammo " .. intCurrentClip .. "  " .. LocalPlayer():GetAmmoCount(strAmmoType), clrDrakGray)
+	self.AmmoBar:SetDimensions(3, self.HealthBar.Size.Height + self.LevelBar.Size.Height + 9, self.PlayerBox.Size.Width - 6, 15)
+	self.AmmoBar:SetStyle(4, BarColor)
+	self.AmmoBar:SetValue(CurrentClip, WeaponTable.ClipSize or 1)
+	self.AmmoBar:SetText("UiBold", "Ammo " .. CurrentClip .. "  " .. LocalPlayer():GetAmmoCount(AmmoType), DrakGray)
 	jdraw.DrawProgressBar(self.AmmoBar)
 end
 

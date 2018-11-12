@@ -1,20 +1,22 @@
-function GM:StartEvent(strEvent)
-	local tblEventTable = EventTable(strEvent)
-	for index, tblNPCAttack in pairs(tblEventTable.NPCAttack or {}) do
-		if not tblNPCAttack then return end
-		timer.Simple(tblNPCAttack.Spawntime, function() GAMEMODE:TimerSpawnNPC(tblNPCAttack) end)
+function GM:StartEvent(Event)
+	local EventTable = EventTable(Event)
+	assert(EventTable, "event doesn't exist")
+	
+	for index, NPCAttack in pairs(EventTable.NPCAttack or {}) do
+		if not NPCAttack then return end
+		timer.Simple(NPCAttack.Spawntime, function() GAMEMODE:TimerSpawnNPC(NPCAttack) end)
 	end
 end
 
-function GM:TimerSpawnNPC(tblNPCAttack)
-	if not tblNPCAttack then return end
-	local tblSpawnTable = {Postion = tblNPCAttack.Spawnpos, Level =  tblNPCAttack.Level or (tblNPCAttack.AmountSpawned or 1) }
-	if (tblNPCAttack.AmountSpawned or 0) < tblNPCAttack.Amount then
-		local NPC = self:CreateNPC(tblNPCAttack.Class, tblSpawnTable)
-		tblNPCAttack.AmountSpawned = (tblNPCAttack.AmountSpawned or 0) + 1
-		NPC:AttackPos(tblNPCAttack.Attackpos)
+function GM:TimerSpawnNPC(NPCAttack)
+	if not NPCAttack then return end
+	local SpawnTable = {Position = NPCAttack.Spawnpos, Level =  NPCAttack.Level or (NPCAttack.AmountSpawned or 1) }
+	if (NPCAttack.AmountSpawned or 0) < NPCAttack.Amount then
+		local NPC = self:CreateNPC(NPCAttack.Class, SpawnTable)
+		NPCAttack.AmountSpawned = (NPCAttack.AmountSpawned or 0) + 1
+		NPC:AttackPos(NPCAttack.Attackpos)
 		NPC.DontReturn = true
-		timer.Simple(tblNPCAttack.Spawntime, function() GAMEMODE:TimerSpawnNPC(tblNPCAttack) end)
+		timer.Simple(NPCAttack.Spawntime, function() GAMEMODE:TimerSpawnNPC(NPCAttack) end)
 	end
 end
 
@@ -33,13 +35,13 @@ function GM:TimeChecker()
 		if os.date("%w") == Event.Time.w and os.date("%H") == Event.Time.Start then
 			if os.date("%M") >= "50" and os.date("%S") == "00" then
 				local CountDown = 10 -(tonumber(os.date("%M")) - 50)
-				GAMEMODE:NotificateAll("Event " ..Event.PrintName.. " will begin in ".. CountDown .." Minutes")
+				GAMEMODE:NotifyAll("Event " ..Event.PrintName.. " will begin in ".. CountDown .." minutes")
 			end
 		end
 		if os.date("%w") == Event.Time.w and os.date("%H") == Event.Time.H and os.date("%M") < Event.Duration then
 			if GAMEMODE.EventHasStarted or table.Count(player.GetAll()) >= (Event.MinPlayers or 1) then return end
 			GAMEMODE.EventHasStarted = true
-			GAMEMODE:NotificateAll("Event " ..Event.PrintName.. " Has Begun!")
+			GAMEMODE:NotifyAll("Event " ..Event.PrintName.. " Has Begun!")
 			GAMEMODE:StartEvent(Event.Name)
 		end
 		if os.date("%w") == Event.Time.w and os.date("%H") == Event.Time.H then

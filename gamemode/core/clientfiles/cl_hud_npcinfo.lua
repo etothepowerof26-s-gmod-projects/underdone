@@ -1,50 +1,58 @@
-local strIcon = Material("icon16/emoticon_smile.png")
+local Icon = Material("icon16/emoticon_smile.png")
 
-local function DrawNPCIcon(entNPC, posNPCPos)
+local function DrawNPCIcon(NPC, NPCPos)
 	surface.SetDrawColor(255, 255, 255, 255)
-	surface.SetMaterial(strIcon)
-	surface.DrawTexturedRect(posNPCPos.x, posNPCPos.y - 25, 16, 16)
+	surface.SetMaterial(Icon)
+	surface.DrawTexturedRect(NPCPos.x - 8, NPCPos.y - 25 + 8, 16, 16)
 end
 
-local function DrawNameText(entNPC, posNPCPos, boolFriendly)
-	local tblNPCTable = NPCTable(entNPC:GetNWInt("npc"))
-	local intLevel = entNPC:GetNWInt("level")
-	local plylevel = math.Clamp(LocalPlayer():GetLevel(),0,9999)
-	local clrDrawColor = clrWhite
-	if intLevel < plylevel then clrDrawColor = clrGreen end
-	if intLevel > plylevel then clrDrawColor = clrRed end
-	if boolFriendly then clrDrawColor = clrWhite end
-	local strTitle = tblNPCTable.Title or ""
-	if tblNPCTable.Shop then
-		local tbl = ShopTable(tblNPCTable.Shop)
-		if tbl then
-			strTitle = tbl.PrintName
+local function DrawNameText(NPC, NPCPos, Friendly)
+	local NpcTable = NPCTable(NPC:GetNWInt("npc"))
+	if not NpcTable then return end
+
+	local Level = NPC:GetNWInt("level")
+	local PLevel = math.Clamp(LocalPlayer():GetLevel(),0,math.huge)
+	local DrawColor = White
+
+	if Level < PLevel then DrawColor = Green end
+	if Level > PLevel then DrawColor = Red   end
+	if Friendly then DrawColor = White end
+
+	local Title = NpcTable.Title or ""
+	if NpcTable.Shop then
+		local Shop = ShopTable(NpcTable.Shop)
+		if Shop then
+			Title = Shop.PrintName
 		end
 	end
-	draw.SimpleTextOutlined(strTitle, "Default", posNPCPos.x, posNPCPos.y - 20, clrDrawColor, 1, 1, 1, clrDrakGray)
-	local strDrawText = tblNPCTable.PrintName
-	if not boolFriendly and not entNPC:IsBuilding() then strDrawText = strDrawText .. " lv. " .. intLevel end
-	draw.SimpleTextOutlined(strDrawText, "Default", posNPCPos.x, posNPCPos.y - 10, clrDrawColor, 1, 1, 1, clrDrakGray)
-	if boolFriendly then
-		surface.SetFont("Default")
-		local wide1, high1 = surface.GetTextSize(strTitle)
-		local wide2, high2 = surface.GetTextSize(strDrawText)
-		posNPCPos.x = posNPCPos.x + (math.Max(wide1, wide2) / 2) + 5
-		DrawNPCIcon(entNPC, posNPCPos)
+	draw.SimpleTextOutlined(Title, "UiBold", NPCPos.x - 8, NPCPos.y - 20, DrawColor, 1, 1, 1, DrakGray)
+
+	local DrawText = NpcTable.PrintName
+	if not Friendly and not NPC:IsBuilding() then DrawText = DrawText .. " lv. " .. Level end
+
+	draw.SimpleTextOutlined(DrawText, "UiBold", NPCPos.x - 8, NPCPos.y - 10, DrawColor, 1, 1, 1, DrakGray)
+
+	if Friendly then
+		surface.SetFont("UiBold")
+		local wide1 = surface.GetTextSize(Title)
+		local wide2 = surface.GetTextSize(DrawText)
+		NPCPos.x = NPCPos.x + (math.Max(wide1, wide2) / 2) + 5
+		DrawNPCIcon(NPC, NPCPos)
 	end
 end
 
-local function DrawNPCHealthBar(entNPC, posNPCPos)
-	local clrBarColor = clrGreen
-	local intHealth = math.Clamp(entNPC:Health(),0,9999)
-	local intMaxHealth = entNPC:GetNWInt("MaxHealth")
-	if intHealth <= (intMaxHealth * 0.2) then clrBarColor = clrRed end
+local function DrawNPCHealthBar(NPC, NPCPos)
+	local BarColor = Green
+	local Health = math.Clamp(NPC:Health(),0,9999)
+	local MaxHealth = NPC:GetNWInt("MaxHealth")
+	if Health <= (MaxHealth * 0.2) then BarColor = Red end
+
 	local NpcHealthBar = jdraw.NewProgressBar()
-	NpcHealthBar:SetDemensions(posNPCPos.x  - (80 / 2), posNPCPos.y, 80, 11)
-	NpcHealthBar:SetStyle(4, clrBarColor)
-	NpcHealthBar:SetBoarder(1, clrDrakGray)
-	NpcHealthBar:SetText("Default", intHealth, clrDrakGray)
-	NpcHealthBar:SetValue(intHealth, intMaxHealth)
+	NpcHealthBar:SetDimensions(NPCPos.x  - (80 / 2), NPCPos.y, 80, 11)
+	NpcHealthBar:SetStyle(4, BarColor)
+	NpcHealthBar:SetBorder(1, DrakGray)
+	NpcHealthBar:SetText("UiBold", Health, DrakGray)
+	NpcHealthBar:SetValue(Health, MaxHealth)
 	jdraw.DrawProgressBar(NpcHealthBar)
 end
 
@@ -52,14 +60,14 @@ local function DrawNPCInfo()
 	for _, ent in pairs(ents.GetAll()) do
 		if IsValid(ent) and (ent:IsNPC() or ent:IsBuilding()) and ent:GetNWInt("level") > 0 then
 			if ent:GetPos():Distance(LocalPlayer():GetPos()) < 500 then
-				local tblNPCTable = NPCTable(ent:GetNWInt("npc"))
-				if not tblNPCTable then return end
-				local boolFriendly = tblNPCTable.Race == "human"
-				local posNPCPos = (ent:GetPos() + Vector(0, 0, 80)):ToScreen()
-				DrawNameText(ent, posNPCPos, boolFriendly)
-				if not boolFriendly then DrawNPCHealthBar(ent, posNPCPos) end
+				local NpcTable = NPCTable(ent:GetNWInt("npc"))
+				if not NpcTable then return end
+				local Friendly = NpcTable.Race == "human"
+				local NPCPos = (ent:GetPos() + Vector(0, 0, 80)):ToScreen()
+				DrawNameText(ent, NPCPos, Friendly)
+				if not Friendly then DrawNPCHealthBar(ent, NPCPos) end
 			end
 		end
 	end
 end
-hook.Add("HUDPaint", "DrawNPCInfo", DrawNPCInfo)
+hook.Add("HUDPaint", "UD_DrawNPCInfo", DrawNPCInfo)

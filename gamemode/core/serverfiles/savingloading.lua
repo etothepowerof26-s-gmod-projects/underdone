@@ -1,6 +1,7 @@
 local Player = FindMetaTable("Player")
 
 function Player:NewGame()
+	-- TODO: config?
 	self:SetNWInt("exp", 0)
 	self:AddItem("money", 100)
 	self:AddItem("item_smallammo_small", 3)
@@ -25,7 +26,6 @@ function Player:NewGame()
 	self:AddItem("armor_sheild_saw", 1)
 	]]
 	self:SaveGame()
-	print("New Game")
 end
 
 function Player:LoadGame()
@@ -41,33 +41,36 @@ function Player:LoadGame()
 	-- Load the player's game
 	local steamID = string.Replace(self:SteamID(), ":", "!")
 	if game.SinglePlayer() or steamID ~= "STEAM_ID_PENDING" then
-		local strFileName = "underdone/" .. steamID .. ".txt"
-		if file.Exists(strFileName, "DATA") then
-			local savedGameData = util.JSONToTable(util.Decompress(file.Read(strFileName)) or "")
+		local FileName = "underdone/" .. steamID .. ".txt"
+
+		if file.Exists(FileName, "DATA") then
+			local savedGameData = util.JSONToTable(util.Decompress(file.Read(FileName)) or "")
+
 			self:SetNWInt("exp", savedGameData.Exp or 0)
 			self:SetNWInt("SkillPoints", self:GetDeservedSkillPoints())
+
 			if savedGameData.Skills then
-				local tblAllSkillsTable = table.Copy(GAMEMODE.DataBase.Skills)
-				tblAllSkillsTable = table.ClearKeys(tblAllSkillsTable)
-				table.sort(tblAllSkillsTable, function(statA, statB) return statA.Tier < statB.Tier end)
-				for _, tblSkill in pairs(tblAllSkillsTable or {}) do
-					if self:CanHaveSkill(tblSkill.Name) and savedGameData.Skills[tblSkill.Name] then
-						self:BuySkill(tblSkill.Name, savedGameData.Skills[tblSkill.Name])
+				local AllSkillsTable = table.Copy(GAMEMODE.DataBase.Skills)
+				AllSkillsTable = table.ClearKeys(AllSkillsTable)
+				table.sort(AllSkillsTable, function(statA, statB) return statA.Tier < statB.Tier end)
+
+				for _, Skill in pairs(AllSkillsTable or {}) do
+					if self:CanHaveSkill(Skill.Name) and savedGameData.Skills[Skill.Name] then
+						self:BuySkill(Skill.Name, savedGameData.Skills[Skill.Name])
 					end
 				end
 			end
-			self:SetModel(savedGameData.Model or "models/player/Group01/male_02.mdl")
+
 			self.Data.Model = savedGameData.Model or "models/player/Group01/male_02.mdl"
-			if savedGameData.Usergroup then
-				self:SetUserGroup(savedGameData.Usergroup)
-			end
+			self:SetModel(savedGameData.Model or "models/player/Group01/male_02.mdl")
+
 			self:GiveItems(savedGameData.Inventory)
-			for strItem, intAmount in pairs(savedGameData.Bank or {}) do self:AddItemToBank(strItem, intAmount) end
+
+			for Item, Amount in pairs(savedGameData.Bank or {}) do self:AddItemToBank(Item, Amount) end
 			for slot, item in pairs(savedGameData.Paperdoll or {}) do self:UseItem(item) end
-			for strQuest, tblInfo in pairs(savedGameData.Quests or {}) do self:UpdateQuest(strQuest, tblInfo) end
-			for strFriends, tblInfo in pairs(savedGameData.Friends or {}) do self:AddFriend(strFriends, tblInfo.Blocked) end
-			for strBook, boolRead in pairs(savedGameData.Library or {}) do self:AddBookToLibrary(strBook) end
-			for strMaster, intExp in pairs(savedGameData.Masters or {}) do self:SetMaster(strMaster, intExp) end
+			for Quest, Info in pairs(savedGameData.Quests or {}) do self:UpdateQuest(Quest, Info) end
+			for Book, boolRead in pairs(savedGameData.Library or {}) do self:AddBookToLibrary(Book) end
+			for Master, intExp in pairs(savedGameData.Masters or {}) do self:SetMaster(Master, intExp) end
 		else
 			self:NewGame()
 		end
@@ -76,11 +79,12 @@ function Player:LoadGame()
 	-- Finish loading
 	self.Loaded = true
 	self:SetNWBool("Loaded", true)
-	hook.Call("UD_Hook_PlayerLoad", GAMEMODE, self)
+
+	hook.Run("UD_Hook_PlayerLoad", self)
 	for _, ply in pairs(player.GetAll()) do
 		if ply ~= self and ply.Data and ply.Data.Paperdoll then
 			for slot, item in pairs(ply.Data.Paperdoll) do
-				SendUsrMsg("UD_UpdatePapperDoll", self, {ply, slot, item})
+				SendNetworkMessage("UD_UpdatePaperDoll", self, {ply, slot, item})
 			end
 		end
 	end
@@ -90,37 +94,33 @@ function Player:SaveGame()
 	if not self.Loaded then return end
 	if GAMEMODE.StopSaving then return end
 	if not self.Data then return end
-	local tblSaveTable = table.Copy(self.Data)
-	tblSaveTable.Inventory = {}
-	--Polkm: Space saver loop
-	for strItem, intAmount in pairs(self.Data.Inventory or {}) do
-		if intAmount > 0 then tblSaveTable.Inventory[strItem] = intAmount end
+
+	local SaveTable = table.Copy(self.Data)
+	SaveTable.Inventory = {}
+	
+	for Item, Amount in pairs(self.Data.Inventory or {}) do
+		if Amount > 0 then SaveTable.Inventory[Item] = Amount end
 	end
-	tblSaveTable.Bank = {}
-	for strItem, intAmount in pairs(self.Data.Bank or {}) do
-		if intAmount > 0 then tblSaveTable.Bank[strItem] = intAmount end
+
+	SaveTable.Bank = {}
+	for Item, Amount in pairs(self.Data.Bank or {}) do
+		if Amount > 0 then SaveTable.Bank[Item] = Amount end
 	end
-	tblSaveTable.Quests = {}
-	for strQuest, tblInfo in pairs(self.Data.Quests or {}) do
-		if tblInfo.Done then
-			tblSaveTable.Quests[strQuest] = {Done = true}
+
+	SaveTable.Quests = {}
+	for Quest, Info in pairs(self.Data.Quests or {}) do
+		if Info.Done then
+			SaveTable.Quests[Quest] = {Done = true}
 		else
-			tblSaveTable.Quests[strQuest] = tblInfo
+			SaveTable.Quests[Quest] = Info
 		end
 	end
-	tblSaveTable.Friends = {}
-	for strFriends, tblInfo in pairs(self.Data.Friends or {}) do
-		if tblInfo.Blocked then
-			tblSaveTable.Friends[strFriends] = {Blocked = true}
-		else
-			tblSaveTable.Friends[strFriends] = {}
-		end
-	end
-	local strSteamID = string.Replace(self:SteamID(), ":", "!")
-	if strSteamID ~= "STEAM_ID_PENDING" then
-		local strFileName = "underdone/" .. strSteamID .. ".txt"
-		tblSaveTable.Exp = self:GetNWInt("exp")
-		file.Write(strFileName, util.Compress(util.TableToJSON(tblSaveTable)))
+
+	local SteamID = string.Replace(self:SteamID(), ":", "!")
+	if SteamID ~= "STEAM_ID_PENDING" then
+		local FileName = "underdone/" .. SteamID .. ".txt"
+		SaveTable.Exp = self:GetNWInt("exp")
+		file.Write(FileName, util.Compress(util.TableToJSON(SaveTable)))
 	end
 end
 

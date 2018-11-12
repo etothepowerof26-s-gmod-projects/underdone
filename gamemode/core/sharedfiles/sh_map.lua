@@ -14,14 +14,13 @@ function GM:RemoveSpawnPoint(intKey)
 		table.remove(GAMEMODE.MapEntities.NPCSpawnPoints, intKey)
 	end
 	if SERVER and game.SinglePlayer() and player.GetByID(1) and player.GetByID(1):IsValid() then
-		SendUsrMsg("UD_RemoveSpawnPoint", player.GetByID(1), {intKey})
+		SendNetworkMessage("UD_RemoveSpawnPoint", player.GetByID(1), {intKey})
 	end
 end
 function GM:UpdateSpawnPoint(intKey, vecPosition, angAngle, strNPC, intLevel, intSpawnTime)
-	local tblNPCTable = NPCTable(strNPC)
 	local tblToUpdateSpawn = GAMEMODE.MapEntities.NPCSpawnPoints[intKey]
 	if tblToUpdateSpawn then
-		tblToUpdateSpawn.Postion = vecPosition or tblToUpdateSpawn.Postion
+		tblToUpdateSpawn.Position = vecPosition or tblToUpdateSpawn.Position
 		tblToUpdateSpawn.Angle = angAngle or tblToUpdateSpawn.Angle or Angle(0, 0, 0)
 		tblToUpdateSpawn.NPC = strNPC or tblToUpdateSpawn.NPC or "zombie"
 		tblToUpdateSpawn.Level = intLevel or tblToUpdateSpawn.Level or 5
@@ -30,29 +29,33 @@ function GM:UpdateSpawnPoint(intKey, vecPosition, angAngle, strNPC, intLevel, in
 			tblToUpdateSpawn.Monster:SetAngles(tblToUpdateSpawn.Angle)
 		end
 		if SERVER and game.SinglePlayer() and IsValid(player.GetByID(1)) then
-			SendUsrMsg("UD_UpdateSpawnPoint", player.GetByID(1), {intKey, tblToUpdateSpawn.Postion, tblToUpdateSpawn.Angle, tblToUpdateSpawn.NPC, tblToUpdateSpawn.Level, tblToUpdateSpawn.SpawnTime})
+			SendNetworkMessage("UD_UpdateSpawnPoint", player.GetByID(1), {intKey, tblToUpdateSpawn.Position, tblToUpdateSpawn.Angle, tblToUpdateSpawn.NPC, tblToUpdateSpawn.Level, tblToUpdateSpawn.SpawnTime})
 		end
 	else
 		GAMEMODE:CreateSpawnPoint(vecPosition, angAngle, strNPC, intLevel, intSpawnTime)
 	end
 end
 
-function GM:CreateWorldProp(strModel, vecPostion, angAngle, entEntity, boolLoad)
+function GM:CreateWorldProp(strModel, vecPosition, angAngle, entEntity, boolLoad)
 	if SERVER then
 		local tblNewObject = {}
+
+		table.insert(self.MapEntities.WorldProps, tblNewObject)
+		local index = #self.MapEntities.WorldProps
+
 		tblNewObject.SpawnProp = function()
 			local entNewProp = ents.Create(GetPropClass(strModel))
 			tblNewObject.Entity = entNewProp
-			table.insert(self.MapEntities.WorldProps, tblNewObject)
-			self:UpdateWorldProp(#self.MapEntities.WorldProps, strModel, vecPostion, angAngle, entNewProp)
+			self:UpdateWorldProp(index, strModel, vecPosition, angAngle, entNewProp)
 			entNewProp:SetSkin(math.random(0, entNewProp:SkinCount()))
 			entNewProp:Spawn()
 		end
 		tblNewObject.SpawnProp()
+
 		return tblNewObject.Entity
 	elseif CLIENT then
 		table.insert(self.MapEntities.WorldProps, {Entity = entEntity})
-		self:UpdateWorldProp(#self.MapEntities.WorldProps, strModel, vecPostion, angAngle, entEntity)
+		self:UpdateWorldProp(#self.MapEntities.WorldProps, strModel, vecPosition, angAngle, entEntity)
 	end
 end
 function GM:RemoveWorldProp(intKey)
@@ -62,7 +65,7 @@ function GM:RemoveWorldProp(intKey)
 		table.remove(GAMEMODE.MapEntities.WorldProps, intKey)
 	end
 	if SERVER and game.SinglePlayer() and player.GetByID(1) and player.GetByID(1):IsValid() then
-		SendUsrMsg("UD_RemoveWorldProp", player.GetByID(1), {intKey})
+		SendNetworkMessage("UD_RemoveWorldProp", player.GetByID(1), {intKey})
 	end
 end
 function GM:UpdateWorldProp(intKey, strModel, vecPosition, angAngle, entEntity, boolLoad)
@@ -81,11 +84,11 @@ function GM:UpdateWorldProp(intKey, strModel, vecPosition, angAngle, entEntity, 
 			entProp:SetKeyValue("spawnflags", 8)
 			entProp.ObjectKey = intKey
 			if game.SinglePlayer() and player.GetByID(1) and player.GetByID(1):IsValid() then
-				SendUsrMsg("UD_UpdateWorldProp", player.GetByID(1), {intKey, entProp:GetModel(), entProp:GetPos(), entProp:GetAngles(), entProp})
+				SendNetworkMessage("UD_UpdateWorldProp", player.GetByID(1), {intKey, entProp:GetModel(), entProp:GetPos(), entProp:GetAngles(), entProp})
 			end
 		end
 		tblToUpdateProp.Model = entProp:GetModel()
-		tblToUpdateProp.Postion = entProp:GetPos()
+		tblToUpdateProp.Position = entProp:GetPos()
 		tblToUpdateProp.Angle = entProp:GetAngles()
 	else
 		GAMEMODE:CreateWorldProp(strModel, vecPosition, angAngle, entEntity)
@@ -98,10 +101,10 @@ if SERVER then
 		if not file.Exists(strFileName, "DATA") then return end
 		local tblDecodedTable = util.JSONToTable(file.Read(strFileName))
 		for _, SpawnPoint in pairs(tblDecodedTable.NPCSpawnPoints or {}) do
-			GAMEMODE:CreateSpawnPoint(SpawnPoint.Postion, SpawnPoint.Angle or Angle(0, 90, 0), SpawnPoint.NPC, SpawnPoint.Level, SpawnPoint.SpawnTime)
+			GAMEMODE:CreateSpawnPoint(SpawnPoint.Position, SpawnPoint.Angle or Angle(0, 90, 0), SpawnPoint.NPC, SpawnPoint.Level, SpawnPoint.SpawnTime)
 		end
 		for k, WorldProp in pairs(tblDecodedTable.WorldProps or {}) do
-			timer.Simple(0.05 * k, function() GAMEMODE:CreateWorldProp(WorldProp.Model, WorldProp.Postion, WorldProp.Angle, nil, true) end)
+			timer.Simple(0.05 * k, function() GAMEMODE:CreateWorldProp(WorldProp.Model, WorldProp.Position, WorldProp.Angle, nil, true) end)
 		end
 	end
 	hook.Add("Initialize", "LoadMapObjects", function() GAMEMODE:LoadMapObjects() end)
@@ -137,13 +140,13 @@ if SERVER then
 		if not tblNPCTable then return end
 		if tblNPCTable.SpawnName == "npc_turret_floor" then return end
 		local entNewMonster = ents.Create(tblNPCTable.SpawnName)
-		entNewMonster:SetPos(tblSpawnPoint.Postion)
+		entNewMonster:SetPos(tblSpawnPoint.Position)
 		entNewMonster:SetAngles(tblSpawnPoint.Angle or Angle(0, 90, 0))
 		entNewMonster:SetKeyValue("spawnflags","512")
 		entNewMonster:DrawShadow(false)
 		if tblNPCTable.Weapon then
-			entNewMonster:Give(tblNPCTable.Weapon )
-			entNewMonster:SetKeyValue( "additionalequipment", tblNPCTable.Weapon)
+			entNewMonster:Give(tblNPCTable.Weapon)
+			entNewMonster:SetKeyValue("additionalequipment", tblNPCTable.Weapon)
 			entNewMonster:SetKeyValue("spawnflags","8192")
 		end
 		if tblNPCTable.Accuracy then
@@ -157,11 +160,11 @@ if SERVER then
 			local g = tblNPCTable.Color[2]
 			local b = tblNPCTable.Color[3]
 			local a = tblNPCTable.Color[4]
-			entNewMonster:SetColor(r,g,b,a)
+			entNewMonster:SetColor(Color(r,g,b,a))
 		end
 		entNewMonster:Spawn()
 		if tblNPCTable.DeathDistance then
-			for _, ent in pairs(ents.FindInSphere( tblSpawnPoint.Postion, tblNPCTable.DeathDistance )) do
+			for _, ent in pairs(ents.FindInSphere( tblSpawnPoint.Position, tblNPCTable.DeathDistance )) do
 				if IsValid(ent) and ent:IsPlayer() then
 					ent:Kill()
 				end
@@ -178,7 +181,7 @@ if SERVER then
 			entNewMonster.Resistance = tblNPCTable.Resistance
 		end
 		entNewMonster.Name = tblNPCTable.Name
-		entNewMonster.Position = tblSpawnPoint.Postion
+		entNewMonster.Position = tblSpawnPoint.Position
 		entNewMonster.Race = tblNPCTable.Race
 		entNewMonster.Invincible = tblNPCTable.Invincible
 		entNewMonster.Shop = tblNPCTable.Shop
@@ -208,10 +211,8 @@ if SERVER then
 				else
 					if not ent.Invincible then entNewMonster:AddEntityRelationship(ent, GAMEMODE.RelationHate, 99) end
 					if not entNewMonster.Invincible and ent:IsNPC() then ent:AddEntityRelationship(entNewMonster, GAMEMODE.RelationHate, 99)  end
-					if ent:IsPlayer() and not GAMEMODE.EventHasStarted then
-						if intLevel < ent:GetLevel() then
-							entNewMonster:AddEntityRelationship(ent, GAMEMODE.RelationNeutral, 99)
-						end
+					if ent:IsPlayer() and not GAMEMODE.EventHasStarted and intLevel < ent:GetLevel() then
+						entNewMonster:AddEntityRelationship(ent, GAMEMODE.RelationNeutral, 99)
 					end
 				end
 			end
@@ -221,7 +222,7 @@ if SERVER then
 	end
 
 	if game.SinglePlayer() then
-		function OnPlayerSpawnMapEditor(ply)
+		local function OnPlayerSpawnMapEditor(ply)
 			for key, spawnPoint in pairs(GAMEMODE.MapEntities.NPCSpawnPoints) do
 				GAMEMODE:UpdateSpawnPoint(key)
 			end
@@ -231,7 +232,7 @@ if SERVER then
 				end)
 			end
 		end
-		hook.Add("PlayerSpawn", "OnPlayerSpawnMapEditor", OnPlayerSpawnMapEditor)
+		hook.Add("PlayerSpawn", "UD_OnPlayerSpawnMapEditor", OnPlayerSpawnMapEditor)
 
 		concommand.Add("UD_Dev_EditMap_CreateSpawnPoint", function(ply, command, args)
 			if not ply:IsAdmin() or not ply:IsPlayer() then return end
@@ -251,7 +252,7 @@ if SERVER then
 		concommand.Add("UD_Dev_EditMap_CreateWorldProp", function(ply, command, args)
 			if not ply:IsAdmin() or not ply:IsPlayer() then return end
 			local trcEyeTrace = ply:GetEyeTraceNoCursor()
-			local entNewEnt = GAMEMODE:CreateWorldProp(nil, trcEyeTrace.HitPos)
+			GAMEMODE:CreateWorldProp(nil, trcEyeTrace.HitPos)
 		end)
 		concommand.Add("UD_Dev_EditMap_RemoveWorldProp", function(ply, command, args)
 			if not ply:IsAdmin() or not ply:IsPlayer() then return end
@@ -261,9 +262,9 @@ if SERVER then
 			if not ply:IsAdmin() or not ply:IsPlayer() then return end
 			local tblPropTable = GAMEMODE.MapEntities.WorldProps[tonumber(args[1])]
 			if args[1] and tblPropTable then
-				local vecNewPostion = tblPropTable.Postion + VectortizeString(args[3])
+				local vecNewPosition = tblPropTable.Position + VectortizeString(args[3])
 				local vecNewAngle = tblPropTable.Angle + Angle(0, tonumber(args[4]), 0)
-				GAMEMODE:UpdateWorldProp(tonumber(args[1]), args[2], vecNewPostion, vecNewAngle)
+				GAMEMODE:UpdateWorldProp(tonumber(args[1]), args[2], vecNewPosition, vecNewAngle)
 			end
 		end)
 
@@ -272,25 +273,22 @@ if SERVER then
 			GAMEMODE:SaveMapObjects()
 		end)
 	end
-end
-
-if CLIENT then
-	if game.SinglePlayer() then
-		usermessage.Hook("UD_UpdateSpawnPoint", function(usrMsg)
-			GAMEMODE:UpdateSpawnPoint(usrMsg:ReadLong(), usrMsg:ReadVector(), usrMsg:ReadAngle(), usrMsg:ReadString(), usrMsg:ReadLong(), usrMsg:ReadLong())
-			GAMEMODE.MapEditor.UpatePanel()
-		end)
-		usermessage.Hook("UD_RemoveSpawnPoint", function(usrMsg)
-			GAMEMODE:RemoveSpawnPoint(usrMsg:ReadLong())
-			GAMEMODE.MapEditor.UpatePanel()
-		end)
-		usermessage.Hook("UD_UpdateWorldProp", function(usrMsg)
-			GAMEMODE:UpdateWorldProp(usrMsg:ReadLong(), usrMsg:ReadString(), usrMsg:ReadVector(), usrMsg:ReadAngle(), usrMsg:ReadEntity())
-			GAMEMODE.MapEditor.UpatePanel()
-		end)
-		usermessage.Hook("UD_RemoveWorldProp", function(usrMsg)
-			GAMEMODE:RemoveWorldProp(usrMsg:ReadLong())
-			GAMEMODE.MapEditor.UpatePanel()
-		end)
-	end
+elseif CLIENT and game.SinglePlayer() then
+	
+	net.Receive("UD_UpdateSpawnPoint", function()
+		GAMEMODE:UpdateSpawnPoint(net.ReadInt(16), net.ReadVector(), net.ReadAngle(), net.ReadString(), net.ReadInt(16), net.ReadInt(16))
+		GAMEMODE.MapEditor.UpatePanel()
+	end)
+	net.Receive("UD_RemoveSpawnPoint", function()
+		GAMEMODE:RemoveSpawnPoint(net.ReadInt(16))
+		GAMEMODE.MapEditor.UpatePanel()
+	end)
+	net.Receive("UD_UpdateWorldProp", function()
+		GAMEMODE:UpdateWorldProp(net.ReadInt(16), net.ReadString(), net.ReadVector(), net.ReadAngle(), net.ReadEntity())
+		GAMEMODE.MapEditor.UpatePanel()
+	end)
+	net.Receive("UD_RemoveWorldProp", function()
+		GAMEMODE:RemoveWorldProp(net.ReadInt(16))
+		GAMEMODE.MapEditor.UpatePanel()
+	end)
 end

@@ -19,7 +19,7 @@ function Player:AddItemTrade(strItem, intAmount)
 		local intNewTotal = (self.Data.Trade[strItem] or 0) + intAmount
 		self.Data.Trade[strItem] = math.Clamp(intNewTotal, 0, intNewTotal)
 		if SERVER then
-			SendUsrMsg("UD_UpdateTradeItem", self, {strItem, intAmount})
+			SendNetworkMessage("UD_UpdateTradeItem", self, {strItem, intAmount})
 		end
 		if CLIENT then
 			if GAMEMODE.TradeMenu then GAMEMODE.TradeMenu:LoadTrade() end
@@ -30,7 +30,7 @@ function Player:AddItemTrade(strItem, intAmount)
 end
 
 if CLIENT then
-	usermessage.Hook("UD_UpdateTradeItem", function(usrMsg)
-		LocalPlayer():AddItemTrade(usrMsg:ReadString(), usrMsg:ReadLong())
+	net.Receive("UD_UpdateTradeItem", function()
+		LocalPlayer():AddItemTrade(net.ReadString(), net.ReadInt(16))
 	end)
 end

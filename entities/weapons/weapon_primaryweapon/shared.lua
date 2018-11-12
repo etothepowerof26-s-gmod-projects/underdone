@@ -21,7 +21,7 @@ function SWEP:SetWeapon(tblWeapon)
 	if tblWeapon then
 		self.WeaponTable = tblWeapon
 		self:SetNWString("item", self.WeaponTable.Name)
-		self:SetWeaponHoldType(self.WeaponTable.HoldType)
+		self:SetHoldType(self.WeaponTable.HoldType)
 		return true
 	end
 	return false
@@ -46,11 +46,12 @@ function SWEP:Reload()
 	if strAmmoType ~= "none" and self:Clip1() < self.WeaponTable.ClipSize and intCurrentAmmo > 0 then
 		self:SetNWBool("reloading", true)
 		self:SetNextPrimaryFire(CurTime() + self.WeaponTable.ReloadTime)
-		if (game.SinglePlayer() and SERVER) or (!game.SinglePlayer() and CLIENT) then
+		if (game.SinglePlayer() and SERVER) or (not game.SinglePlayer() and CLIENT) then
 			if self.WeaponTable.ReloadSound then self:EmitSound(self.WeaponTable.ReloadSound) end
 		end
+		self.Owner:DoReloadEvent()
 		timer.Simple(self.WeaponTable.ReloadTime, function()
-			if not self or not self.Owner or not self.Owner:Alive() then return end
+			if not self or not IsValid(self.Owner) or not self.Owner:Alive() then return end
 			self.Owner:RemoveAmmo(self.WeaponTable.ClipSize - self:Clip1(), self.WeaponTable.AmmoType)
 			self:SetClip1(math.Clamp(self.WeaponTable.ClipSize, 0, self:Clip1() + intCurrentAmmo))
 			self:SetNWBool("reloading", false)
@@ -74,11 +75,16 @@ function SWEP:SecondaryAttack()
 end
 
 function SWEP:WeaponAttack()
-	if SERVER then 
-		self.Owner:RestartGesture(self.Owner:Weapon_TranslateActivity(ACT_HL2MP_GESTURE_RANGE_ATTACK))
+
+	local isMelee = self.WeaponTable.Melee
+
+	if isMelee then
+		self.Owner:DoAnimationEvent(ACT_HL2MP_GESTURE_RANGE_ATTACK_MELEE)
+	else
+		self.Owner:DoAttackEvent()
 	end
+
 	if self.WeaponTable then
-		local isMelee = self.WeaponTable.Melee
 		local intRange = self.Owner:GetEyeTrace().HitPos:Distance(self.Owner:GetEyeTrace().StartPos)
 		local intMaxRange = 4000
 		if isMelee then intMaxRange = 70 end
@@ -105,23 +111,12 @@ function SWEP:WeaponAttack()
 			self:SetClip1(self:Clip1() - 1)
 		end
 		local intFireRate = self:GetFireRate(self.WeaponTable.FireRate)
-		if CLIENT and not isMelee and CurTime() >= (self.NextBulletEffect or 0) then
-			self.Owner:MuzzleFlash()
-			local strEffect = "ShellEject"
-			if self.WeaponTable.AmmoType == "buckshot" then strEffect = "ShotgunShellEject" end
-			local effectdata = EffectData()
-			effectdata:SetOrigin(GAMEMODE.PapperDollEnts[self.Owner:EntIndex()]["slot_primaryweapon"]:GetPos())
-			effectdata:SetAngles(GAMEMODE.PapperDollEnts[self.Owner:EntIndex()]["slot_primaryweapon"]:GetAngles() + Angle(0, 90, 0))
-			effectdata:SetEntity(self)
-			effectdata:SetMagnitude(1)
-			effectdata:SetScale(1)
-			util.Effect(strEffect, effectdata)
-			self.NextBulletEffect = CurTime() + (1 / intFireRate)
-		end
+		if not intFireRate then return end
+	
 		if SERVER then
 			self.Owner:SlowDown((1 / intFireRate))
 		end
-		if (game.SinglePlayer() and SERVER) or (!game.SinglePlayer() and CLIENT) and self.WeaponTable.Sound then
+		if (game.SinglePlayer() and SERVER) or (not game.SinglePlayer() and CLIENT) and self.WeaponTable.Sound then
 			self:EmitSound(self.WeaponTable.Sound)
 		end
 		self:SetNextPrimaryFire(CurTime() + (1 / intFireRate))

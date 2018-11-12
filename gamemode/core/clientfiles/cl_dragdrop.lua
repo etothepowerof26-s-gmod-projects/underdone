@@ -34,11 +34,11 @@ function GM:DragDropGUIMouseReleased(mousecode)
 		if GAMEMODE.DraggingPanel.DoDropItem and GAMEMODE.DraggingPanel.FromInventory then
 			GAMEMODE.DraggingPanel.DoDropItem()
 		elseif GAMEMODE.DraggingPanel.FromHotBar then
-			for intKey, tblBoundInfo in pairs(GAMEMODE.HotBarBoundKeys or {}) do
-				if tblBoundInfo.Panel == GAMEMODE.DraggingPanel then
-					tblBoundInfo.Panel:SetItem(nil, intKey, "none")
-					tblBoundInfo.Panel:SetAlpha(255)
-					GAMEMODE.HotBarBoundKeys[intKey] = {Panel = nil, Item = nil}
+			for Key, BoundInfo in pairs(GAMEMODE.HotBarBoundKeys or {}) do
+				if BoundInfo.Panel == GAMEMODE.DraggingPanel then
+					BoundInfo.Panel:SetItem(nil, Key, "none")
+					BoundInfo.Panel:SetAlpha(255)
+					GAMEMODE.HotBarBoundKeys[Key] = {Panel = nil, Item = nil}
 				end
 			end
 		end
@@ -47,13 +47,13 @@ function GM:DragDropGUIMouseReleased(mousecode)
 end
 hook.Add("GUIMouseReleased", "DragDropGUIMouseReleased", function() GAMEMODE:DragDropGUIMouseReleased() end)
 
-function GM:AddHoverObject(pnlNewHoverObject, pnlParentObject)
-	if not pnlNewHoverObject.IsGhost then
-		pnlNewHoverObject.OnCursorEntered = function()
-			GAMEMODE.HoveredIcon = pnlParentObject or pnlNewHoverObject
-			if pnlNewHoverObject.OnHover then pnlNewHoverObject.OnHover() end
+function GM:AddHoverObject(NewHoverObject, ParentObject)
+	if not NewHoverObject.IsGhost then
+		NewHoverObject.OnCursorEntered = function()
+			GAMEMODE.HoveredIcon = ParentObject or NewHoverObject
+			if NewHoverObject.OnHover then NewHoverObject.OnHover() end
 		end
-		pnlNewHoverObject.OnCursorExited = function()
+		NewHoverObject.OnCursorExited = function()
 			GAMEMODE.HoveredIcon = nil
 		end
 	end

@@ -3,28 +3,28 @@ PANEL = {}
 
 function PANEL:Init()
 	self.Frame = CreateGenericFrame("Npc Dialog", true, true)
-	self.Frame.btnClose.DoClick = function(pnlPanel)
+	self.Frame.CloseButton.DoClick = function(Panel)
 		GAMEMODE.Dialog.Frame:Close()
 		GAMEMODE.Dialog = nil
 	end
 	self.Frame:MakePopup()
 	self.TextList = CreateGenericList(self.Frame, 5, false, true)
-	self.Dialog = CreateGenericLabel(nil, nil, "", clrDrakGray)
+	self.Dialog = CreateGenericLabel(nil, nil, "", DrakGray)
 	self.TextList:AddItem(self.Dialog)
 	self:PerformLayout()
 end
 
-function PANEL:Button(strTextLeft, strTextRight, LeftButtonClick, RightButtonClick)
-	self.LeftButton = CreateGenericButton(self.Frame, strTextLeft or "")
+function PANEL:Button(TextLeft, TextRight, LeftButtonClick, RightButtonClick)
+	self.LeftButton = CreateGenericButton(self.Frame, TextLeft or "")
 	self.LeftButton:SetSize((self:GetWide() / 2) - 5,20)
 	self.LeftButton:SetPos(5, self:GetTall() - (self.LeftButton:GetTall() + 5))
-	self.LeftButton.DoClick = function(pnlPanel)
+	self.LeftButton.DoClick = function(Panel)
 		self:LeftButtonClick()
 	end
-	self.RightButton = CreateGenericButton(self.Frame, strTextRight or "")
+	self.RightButton = CreateGenericButton(self.Frame, TextRight or "")
 	self.RightButton:SetSize((self:GetWide() / 2) - 5,20)
 	self.RightButton:SetPos(self:GetWide() - (self.RightButton:GetWide() + 5), self:GetTall() - (self.RightButton:GetTall() + 5))
-	self.RightButton.DoClick = function(pnlPanel)
+	self.RightButton.DoClick = function(Panel)
 		self:RightButtonClick()
 	end
 end
@@ -36,8 +36,8 @@ function PANEL:PerformLayout()
 	self.TextList:SetSize(self.Frame:GetWide() - 10, self.Frame:GetTall() - 30)
 end
 
-function PANEL:UpdateDialog(strText)
-	self.Dialog:SetText(strText or "")
+function PANEL:UpdateDialog(Text)
+	self.Dialog:SetText(Text or "")
 end
 vgui.Register("npcdialog", PANEL, "Panel")
 

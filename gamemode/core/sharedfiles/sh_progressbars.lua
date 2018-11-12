@@ -10,9 +10,9 @@ if CLIENT then
 		local intRunningHieght = intStartingY
 		for strNocification, tblTimeTable in pairs(tblProgressBars or {}) do
 			local tblProgressBar = jdraw.NewProgressBar()
-			tblProgressBar:SetDemensions(intStartingX, intRunningHieght, intBarWidth, intBarHieght)
+			tblProgressBar:SetDimensions(intStartingX, intRunningHieght, intBarWidth, intBarHieght)
 			tblProgressBar:SetStyle(4, clrGreen)
-			tblProgressBar:SetBoarder(1, clrDrakGray)
+			tblProgressBar:SetBorder(1, clrDrakGray)
 			tblProgressBar:SetValue(tblTimeTable.Running, tblTimeTable.Starting)
 			tblProgressBar:SetText("Default", strNocification, clrDrakGray)
 			jdraw.DrawProgressBar(tblProgressBar)

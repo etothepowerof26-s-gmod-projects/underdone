@@ -13,7 +13,7 @@ function Player:SetSkill(strSkill, intAmount)
 			if tblSkillTable.OnSet then
 				tblSkillTable:OnSet(self, intAmount, intOldSkill)
 			end
-			SendUsrMsg("UD_UpdateSkills", self, {strSkill, intAmount})
+			SendNetworkMessage("UD_UpdateSkills", self, {strSkill, intAmount})
 		end
 		if CLIENT then
 			if GAMEMODE.MainMenu then GAMEMODE.MainMenu.CharacterTab:LoadSkills() end
@@ -61,17 +61,17 @@ function Player:CallSkillHook(strHook, ...)
 	for strSkill, intSkillLevel in pairs(self.Data.Skills or {}) do
 		local tblSkillTable = SkillTable(strSkill)
 		if self:GetSkill(strSkill) > 0 and tblSkillTable.Hooks and tblSkillTable.Hooks[strHook] then
-			tblReturnTable = {tblSkillTable.Hooks[strHook](self, self:GetSkill(strSkill), table.Split(tblReturnTable))}
+			tblReturnTable = {tblSkillTable.Hooks[strHook](self, self:GetSkill(strSkill), unpack(tblReturnTable))}
 		end
 	end
-	return table.Split(tblReturnTable)
+	return unpack(tblReturnTable)
 end
 
 if SERVER then
 	hook.Add("UD_Hook_PlayerLevelUp", "PlayerLevelUp_SkillPoints", function(plyPlayer, intLevels)
 		plyPlayer:SetNWInt("SkillPoints", plyPlayer:GetNWInt("SkillPoints") + (intSkillPointsPerLevel * intLevels))
 	end)
-	
+
 	function Player:BuySkill(strSkill, intAmount)
 		local tblSkillTable = SkillTable(strSkill)
 		if not tblSkillTable then return false end
@@ -88,7 +88,7 @@ if SERVER then
 	concommand.Add("UD_BuySkill", function(ply, command, args) ply:BuySkill(args[1]) end)
 end
 if CLIENT then
-	usermessage.Hook("UD_UpdateSkills", function(usrMsg)
-		LocalPlayer():SetSkill(usrMsg:ReadString(), usrMsg:ReadLong())
+	net.Receive("UD_UpdateSkills", function()
+		LocalPlayer():SetSkill(net.ReadString(), net.ReadInt(16))
 	end)
 end

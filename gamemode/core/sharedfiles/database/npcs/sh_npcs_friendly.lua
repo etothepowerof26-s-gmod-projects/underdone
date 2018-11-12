@@ -1,27 +1,27 @@
-local function QuickNPC(strName, strPrintName, strSpawnName, strRace, intDistance, strModel)
+local function QuickNPC(Name, PrintName, SpawnName, Race, Distance, Model)
 	local NPC = {}
-	NPC.Name = strName
-	NPC.PrintName = strPrintName
-	NPC.SpawnName = strSpawnName
-	NPC.Race = strRace
-	NPC.DistanceRetreat = intDistance
-	NPC.Model = strModel
+	NPC.Name = Name
+	NPC.PrintName = PrintName
+	NPC.SpawnName = SpawnName
+	NPC.Race = Race
+	NPC.DistanceRetreat = Distance
+	NPC.Model = Model
 	return NPC
 end
-local function AddBool(Table, strFrozen, strInvincible, strIdle)
-		Table.Frozen = strFrozen
-		Table.Invincible = strInvincible
-		Table.Idle = strIdle
+local function AddBool(Table, IsFrozen, IsInvincible, IsIdle)
+		Table.Frozen = IsFrozen
+		Table.Invincible = IsInvincible
+		Table.Idle = IsIdle
 	return Table
 end
-local function AddMultiplier(Table, strHealth, strDamage)
-	Table.HealthPerLevel = strHealth
-	Table.DamagePerLevel = strDamage
+local function AddMultiplier(Table, Health, Damage)
+	Table.HealthPerLevel = Health
+	Table.DamagePerLevel = Damage
 	return Table
 end
-local function AddDrop(Table, strName, strChance, strMin, strMax,strDefaultChance)
+local function AddDrop(Table, Name, Chance, Min, Max,strDefaultChance)
 	Table.Drops = Table.Drops or {}
-	Table.Drops[strName] = {Chance = strChance, Min = strMin, Max = strMax}
+	Table.Drops[Name] = {Chance = Chance, Min = Min, Max = Max}
 	return Table
 end
 
@@ -53,7 +53,7 @@ Register.NPC(NPC)
 
 local NPC = QuickNPC("shop_melee", "Patrick", "npc_breen", "human", nil, "models/Humans/Group03/Male_05.mdl")
 NPC = AddBool(NPC, false, true, true)
-NPC.Shop = "shop_weapons"
+NPC.Shop = "shop_melee"
 NPC.DeathDistance = 14
 Register.NPC(NPC)
 
@@ -109,7 +109,7 @@ NPC.Quest = {"quest_killcombinethumper", "quest_arsenalupgrade", "quest_killcomb
 NPC.DeathDistance = 14
 Register.NPC(NPC)
 
-local NPC = QuickNPC("quest_charple", "Some Burnt Guy", "npc_charple", "human", nil, "models/player/charple01.mdl")
+local NPC = QuickNPC("quest_charple", "Some Burnt Guy", "npc_citizen", "human", nil, "models/player/charple.mdl")
 NPC = AddBool(NPC, false, true, true)
 NPC.Quest = { "quest_cquest1", "quest_cquest2", "quest_detergentq"}
 NPC.Deathdistance = 14
