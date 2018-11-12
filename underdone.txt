@@ -5,8 +5,8 @@
 	"version"     "GIT"
 	"description" "underdone RPG refactor for gmod13"
 
-	"author_name" "Polkm, Zeni, Tewntysx, Q2F2"
-	"author_url"  "https://github.com/Zeni44/underdone"
+	"author_name" "Polkm, Zeni, twentysix and Q2F2"
+	"author_url"  "https://github.com/Etothepowerof26/underdone"
 
 	"maps"        "^ud_"
 
