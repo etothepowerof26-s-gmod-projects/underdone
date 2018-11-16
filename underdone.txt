@@ -1,9 +1,9 @@
 "underdone"
 {
 	"base"        "base"
-	"title"       "underdone"
+	"title"       "Underdone Legacy"
 	"version"     "GIT"
-	"description" "underdone RPG refactor for gmod13"
+	"description" "gmod10 underdone RPG refactor for gmod13"
 
 	"author_name" "Polkm, Zeni, twentysix and Q2F2"
 	"author_url"  "https://github.com/Etothepowerof26/underdone"
