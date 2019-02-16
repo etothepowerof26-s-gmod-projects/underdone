@@ -95,10 +95,3 @@ do
 		end
 	end)
 end
-
-do
-	timer.Simple(0, function()
-		net.Start("UD_FullyLoaded")
-		net.SendToServer()
-	end)
-end
