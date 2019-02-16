@@ -4,6 +4,7 @@ AddCSLuaFile("cl_init.lua")
 include("shared.lua")
 include("core/sharedfiles/database/items/sh_items_base.lua")
 include("core/sh_resource.lua")
+resource.AddFile("maps/ud_rebellland_beta_02b.bsp")
 
 --Add network strings
 local NWStrings = {
