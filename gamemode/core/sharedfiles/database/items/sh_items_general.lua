@@ -31,7 +31,7 @@ Item.Weight = 1
 Item.Stackable = true
 Register.Item(Item)
 
-local Item = QuickCreateItemTable(BaseFood, "item_Chinese_box", "Chinese Box", "A Chinese Box of Chinese Noodles.", "icons/junk_metalcan1")
+local Item = QuickCreateItemTable(BaseFood, "item_chinese_box", "Chinese Box", "A Chinese Box of Chinese Noodles.", "icons/junk_metalcan1")
 Item.Model = "models/Gibs/wood_gib01d.mdl"
 Item.SellPrice = 40
 Item.Weight = 1

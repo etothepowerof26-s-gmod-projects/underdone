@@ -3,8 +3,9 @@ PANEL = {}
 
 function PANEL:Init()
 	self.Frame = CreateGenericFrame("Book", true, true)
-	self.Frame.CloseButton.DoClick = function(Panel)
-		GAMEMODE.ReadMenu.Frame:Close()
+	self.Frame.InternalClose = self.Frame.Close
+	self.Frame.Close = function()
+		GAMEMODE.ReadMenu.Frame:InternalClose()
 		GAMEMODE.ReadMenu = nil
 	end
 	self.Frame:MakePopup()

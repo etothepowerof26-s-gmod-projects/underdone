@@ -2,21 +2,15 @@ GM.AppearanceMenu = nil
 PANEL = {}
 
 function PANEL:Init()
-	self.Frame = CreateGenericFrame("Appearance Menu", false, false)
+	self.Frame = CreateGenericFrame("Appearance Menu", false, true)
 
 	self.LeftList = CreateGenericList(self.Frame, 10, 1, 0)
 	self.RightList = CreateGenericList(self.Frame, 1, 1, 0)
-
-	self.Frame.CloseButton = vgui.Create("DButton", self.Frame)
-	self.Frame.CloseButton:SetFont("Marlett")
-	self.Frame.CloseButton:SetText("r")
-	self.Frame.CloseButton.DoClick = function()
-		GAMEMODE.AppearanceMenu.Frame:Close()
+	
+	self.Frame.InternalClose = self.Frame.Close
+	self.Frame.Close = function()
+		GAMEMODE.AppearanceMenu.Frame:InternalClose()
 		GAMEMODE.AppearanceMenu = nil
-	end
-
-	self.Frame.CloseButton.Paint = function(w, h)
-		jdraw.QuickDrawPanel(Gray, 20,20, w - 1, h - 1)
 	end
 
 	self.ViewPlayerModel = vgui.Create( "DModelPanel" )
@@ -47,7 +41,6 @@ end
 function PANEL:PerformLayout()
 	self.Frame:SetPos(self:GetPos())
 	self.Frame:SetSize(self:GetSize())
-	self.Frame.CloseButton:SetPos(self.Frame:GetWide() - 5, 0)
 
 	self.LeftList:SetPos(5, 25)
 	self.LeftList:SetSize((self.Frame:GetWide() /2) - 10, self.Frame:GetTall() - 30)

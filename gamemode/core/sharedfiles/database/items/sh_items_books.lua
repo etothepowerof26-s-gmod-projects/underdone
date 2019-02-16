@@ -44,12 +44,12 @@ Item.SellPrice = 200
 Item.Weight = 1
 Register.Item(Item)
 
-local Item = QuickCreateItemTable(BaseBook, "book_chineesebox", "Craft Chineese Box", "Basic Crafting", "icons/item_book1")
+local Item = QuickCreateItemTable(BaseBook, "book_chinesebox", "Craft Chinese Box", "Basic Crafting", "icons/item_book1")
 Item.Model = "models/props_lab/binderblue.mdl"
 if SERVER then Item.Story = "Learn to craft a chineese box!" end
 Item.SaveInLibrary = true
 Item.GainRecipes = {}
-Item.GainRecipes[1] = "recipe_package_chineesebox"
+Item.GainRecipes[1] = "recipe_package_chinesebox"
 Item.SellPrice = 200
 Item.Weight = 1
 Register.Item(Item)

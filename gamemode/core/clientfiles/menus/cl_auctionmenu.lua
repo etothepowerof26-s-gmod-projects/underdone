@@ -2,7 +2,7 @@ GM.AuctionMenu = nil
 PANEL = {}
 
 function PANEL:Init()
-	self.Frame = CreateGenericFrame("", false, false)
+	self.Frame = CreateGenericFrame("", false, true)
 	self.Frame.Paint = function() end
 
 	self.TabSheet = CreateGenericTabPanel(self.Frame)
@@ -10,17 +10,12 @@ function PANEL:Init()
 	self.PlayerAuctions = self.TabSheet:NewTab("Your Auctions", "selfauctions", "gui/arrow_up", "See your own auctions")
 	self.PickUpAuction = self.TabSheet:NewTab("Pick up Auctions", "pickupauctionstab", "gui/arrow_up", "Pick up auctions here.")
 
-	self.Frame.CloseButton = vgui.Create("DButton", self.Frame)
-	self.Frame.CloseButton:SetFont("Marlett")
-	self.Frame.CloseButton:SetText("r")
-	self.Frame.CloseButton.DoClick = function()
-		GAMEMODE.AuctionMenu.Frame:Close()
+	self.Frame.InternalClose = self.Frame.Close
+	self.Frame.Close = function()
+		GAMEMODE.AuctionMenu.Frame:InternalClose()
 		GAMEMODE.AuctionMenu = nil
 	end
 
-	self.Frame.CloseButton.Paint = function(w, h)
-		jdraw.QuickDrawPanel(Gray, 0, 0, w - 1, h - 1)
-	end
 	self.Frame:MakePopup()
 	self:PerformLayout()
 end
@@ -28,7 +23,6 @@ end
 function PANEL:PerformLayout()
 	self.Frame:SetPos(self:GetPos())
 	self.Frame:SetSize(self:GetSize())
-	self.Frame.CloseButton:SetPos(self.Frame:GetWide() - 5, 10)
 
 	self.TabSheet:SetPos(5, 5)
 	self.TabSheet:SetSize(self.Frame:GetWide() - 10, self.Frame:GetTall() - 10)

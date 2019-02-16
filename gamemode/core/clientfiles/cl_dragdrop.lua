@@ -48,6 +48,10 @@ end
 hook.Add("GUIMouseReleased", "DragDropGUIMouseReleased", function() GAMEMODE:DragDropGUIMouseReleased() end)
 
 function GM:AddHoverObject(NewHoverObject, ParentObject)
+	if not NewHoverObject then
+		return
+	end
+	
 	if not NewHoverObject.IsGhost then
 		NewHoverObject.OnCursorEntered = function()
 			GAMEMODE.HoveredIcon = ParentObject or NewHoverObject

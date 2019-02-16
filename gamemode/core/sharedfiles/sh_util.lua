@@ -1,13 +1,17 @@
--- This code is a mess but its basicly a dump for useful functions we cant live with out.
+-- This code is a mess but its basicly a dump for useful functions we cant live with out. (yeH)
 local Entity = FindMetaTable("Entity")
 local Player = FindMetaTable("Player")
 
-function toExp(Level)
-	return math.floor(math.pow(math.max(0, tonumber(Level) or 0), 2))
+function toExp(level)
+	local exp = tonumber(level) or 0
+	if exp <= 1 then exp = 0 end
+	return math.floor(math.pow(exp * 6, 2))
 end
 
-function toLevel(Exp)
-	return math.floor(math.Clamp(math.sqrt(tonumber(Exp) or 0) / 6, 1, Level))
+function toLevel(exp)
+	if not exp then return end
+	local level = math.sqrt(tonumber(exp) or 0)
+	return math.floor(math.Clamp(level / 6, 1, level))
 end
 
 function Entity:GetLevel()
@@ -53,8 +57,8 @@ function VectortizeString(VectorString)
 end
 
 function GetFlushToGround(entEntity)
-	local Trace  = {}
-	Trace.start  = entEntity:GetPos()
+	local Trace	= {}
+	Trace.start	= entEntity:GetPos()
 	Trace.endpos = entEntity:GetPos() + (entEntity:GetAngles():Up() * -500)
 	Trace.filter = entEntity
 	local NewTrace = util.TraceLine(Trace)
@@ -228,15 +232,16 @@ if CLIENT then
 		NewFrame:SetDraggable(Draggable)
 		NewFrame:ShowCloseButton(Close)
 
-		if Close then
-			NewFrame.Close:SetFont("Marlett")
-			NewFrame.Close:SetText("r")
-			NewFrame.Close:SetColor(Color(200, 200, 200, 255))
-			NewFrame.Close.Paint = function() end
+		-- this errors
+		--[[if Close then
+			NewFrame.CloseButton:SetFont("Marlett")
+			NewFrame.CloseButton:SetText("r")
+			NewFrame.CloseButton:SetColor(Color(200, 200, 200, 255))
+			NewFrame.CloseButton.Paint = function() end
 
 			NewFrame.Maxim:SetVisible(false)
 			NewFrame.Minim:SetVisible(false)
-		end
+		end]]
 
 		local PaintPanel = jdraw.NewPanel()
 		NewFrame.PaintPanel = PaintPanel

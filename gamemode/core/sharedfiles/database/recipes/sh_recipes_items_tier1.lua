@@ -34,7 +34,7 @@ Recipe.RequiredMasters["master_culinary"] = 1
 Register.Recipe(Recipe)
 
 local Recipe = {}
-Recipe.Name = "recipe_package_chineesebox"
+Recipe.Name = "recipe_package_chinesebox"
 Recipe.PrintName = "Chinese Box"
 Recipe.NearFire = false
 Recipe.MakeTime = 5
@@ -43,7 +43,7 @@ Recipe.Chance = 100
 Recipe.Ingredients = {}
 Recipe.Ingredients["item_cardboard"] = 2
 Recipe.Products = {}
-Recipe.Products["item_chineese_box"] = 1
+Recipe.Products["item_chinese_box"] = 1
 Recipe.RequiredMasters = {}
 Recipe.RequiredMasters["master_crafting"] = 1
 Register.Recipe(Recipe)

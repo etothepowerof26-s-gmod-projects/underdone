@@ -37,8 +37,9 @@ function GM.MapEditor.OpenMapEditor()
 	MapEditorFrame:SetPos(50, 50)
 	MapEditorFrame:SetSize(375, 450)
 	MapEditorFrame:MakePopup()
-	MapEditorFrame.Close.DoClick = function()
-		MapEditorFrame:Close()
+	MapEditorFrame.InternalClose = MapEditorFrame.Close
+	MapEditorFrame.Close = function()
+		MapEditorFrame:InternalClose()
 		GAMEMODE.MapEditor.Open = false
 	end
 

@@ -12,10 +12,10 @@ if CLIENT then
 			local wide, high = surface.GetTextSize(Notification)
 			local NotifPanel = jdraw.NewPanel()
 			NotifPanel:SetDimensions(ScrW() - (wide + 40), yOffset, wide + 30, Height)
-			NotifPanel:SetStyle(4, clrTan)
-			NotifPanel:SetBorder(1, clrDrakGray)
+			NotifPanel:SetStyle(4, Tan)
+			NotifPanel:SetBorder(1, DrakGray)
 			jdraw.DrawPanel(NotifPanel)
-			draw.SimpleText(Notification, "MenuLarge", NotifPanel.Position.X + Height, NotifPanel.Position.Y + 3, clrDrakGray, 0, 3)
+			draw.SimpleText(Notification, "MenuLarge", NotifPanel.Position.X + Height, NotifPanel.Position.Y + 3, DrakGray, 0, 3)
 			yOffset = yOffset - Height - Spacing
 		end
 	end

@@ -8,8 +8,9 @@ PANEL.ItemRow = 7
 
 function PANEL:Init()
 	self.Frame = CreateGenericFrame("Bank Menu", false, true)
-	self.Frame.CloseButton.DoClick = function()
-		GAMEMODE.BankMenu.Frame:Close()
+	self.Frame.InternalClose = self.Frame.Close
+	self.Frame.Close = function()
+		GAMEMODE.BankMenu.Frame:InternalClose()
 		GAMEMODE.BankMenu = nil
 	end
 	self.Frame:MakePopup()

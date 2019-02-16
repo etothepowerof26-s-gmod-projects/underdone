@@ -81,10 +81,10 @@ function GM:DrawQuestToDoList()
 	if not LocalPlayer().Data then return end
 	for Quest, Info in pairs(LocalPlayer().Data.Quests or {}) do
 		if LocalPlayer():GetQuest(Quest) and not LocalPlayer():HasCompletedQuest(Quest) then
-			local QuestTable = QuestTable(Quest)
+			local quest = QuestTable(Quest)
 			local XOffset = ScrW() - 200
-			if QuestTable.Level then
-				if LocalPlayer():GetLevel() > QuestTable.Level then
+			if quest.Level then
+				if LocalPlayer():GetLevel() > quest.Level then
 					NameColour = Blue
 				end
 			end
@@ -93,14 +93,14 @@ function GM:DrawQuestToDoList()
 				surface.SetMaterial(Material("gui/accept"))
 				surface.DrawTexturedRect(XOffset - 20, YOffset - 8, 16, 16)
 			end
-			draw.SimpleTextOutlined(QuestTable.PrintName, "Trebuchet20", XOffset, YOffset, NameColour, 0, 1, 1, DrakGray)
+			draw.SimpleTextOutlined(quest.PrintName, "Trebuchet20", XOffset, YOffset, NameColour, 0, 1, 1, DrakGray)
 			YOffset = YOffset + Padding + 5
 			XOffset = XOffset + 20
 			for NPC, Amount in pairs(Info.Kills or {}) do
 				if !NPCTable(NPC) then return end
 				draw.SimpleTextOutlined(".", "Trebuchet20", XOffset - 8, YOffset - 5, white, 0, 1, 1, DrakGray)
-				if Amount < QuestTable.Kill[NPC] then
-					draw.SimpleTextOutlined("Kill " .. NPCTable(NPC).PrintName .. " (" .. Amount .. "/" .. QuestTable.Kill[NPC] .. ")", "Trebuchet18", XOffset, YOffset, White, 0, 1, 1, DrakGray)
+				if Amount < quest.Kill[NPC] then
+					draw.SimpleTextOutlined("Kill " .. NPCTable(NPC).PrintName .. " (" .. Amount .. "/" .. quest.Kill[NPC] .. ")", "Trebuchet18", XOffset, YOffset, White, 0, 1, 1, DrakGray)
 					YOffset = YOffset + Padding
 					for _, NPC in pairs(ents.FindByClass("npc_" .. NPC)) do
 						if not NPC.HasWayPoint and not LocalPlayer():CanTurnInQuest(Quest) then
@@ -115,19 +115,20 @@ function GM:DrawQuestToDoList()
 						end
 					end
 				else
-					draw.SimpleTextOutlined("Kill " .. NPCTable(NPC).PrintName .. " (" .. QuestTable.Kill[NPC] .. "/" .. QuestTable.Kill[NPC] .. ")", "Trebuchet18", XOffset, YOffset, White, 0, 1, 1, DrakGray)
+					draw.SimpleTextOutlined("Kill " .. NPCTable(NPC).PrintName .. " (" .. quest.Kill[NPC] .. "/" .. quest.Kill[NPC] .. ")", "Trebuchet18", XOffset, YOffset, White, 0, 1, 1, DrakGray)
 					YOffset = YOffset + Padding
 				end
 			end
-			for Item, AmountNeeded in pairs(QuestTable.ObtainItems or {}) do
+			for Item, AmountNeeded in pairs(quest.ObtainItems or {}) do
 				local ItemsGot = LocalPlayer():GetItem(Item) or 0
-				local ItemTable = ItemTable(Item)
+				local item = ItemTable(Item)
+				if not item then continue end
 				draw.SimpleTextOutlined(".", "Trebuchet20", XOffset - 8, YOffset - 5, white, 0, 1, 1, DrakGray)
 				if ItemsGot < AmountNeeded then
-					draw.SimpleTextOutlined(ItemTable.PrintName .. " (" .. ItemsGot .. "/" .. AmountNeeded .. ")", "Trebuchet18", XOffset, YOffset, White, 0, 1, 1, DrakGray)
+					draw.SimpleTextOutlined(item.PrintName .. " (" .. ItemsGot .. "/" .. AmountNeeded .. ")", "Trebuchet18", XOffset, YOffset, White, 0, 1, 1, DrakGray)
 					YOffset = YOffset + Padding
 					for _,prop in pairs(ents.FindByClass("prop_physics")) do
-						if IsValid(prop) and ItemTable.Model == prop:GetModel() then
+						if IsValid(prop) and item.Model == prop:GetModel() then
 							if not prop.HasWayPoint and not LocalPlayer():CanTurnInQuest(Quest) then
 								prop.HasWayPoint = true
 								local vPoint = prop:GetPos()
@@ -141,7 +142,7 @@ function GM:DrawQuestToDoList()
 						end
 					end
 				else
-					draw.SimpleTextOutlined(ItemTable.PrintName .. " (" .. AmountNeeded .. "/" .. AmountNeeded .. ")", "Trebuchet18", XOffset, YOffset, White, 0, 1, 1, DrakGray)
+					draw.SimpleTextOutlined(item.PrintName .. " (" .. AmountNeeded .. "/" .. AmountNeeded .. ")", "Trebuchet18", XOffset, YOffset, White, 0, 1, 1, DrakGray)
 					YOffset = YOffset + Padding
 				end
 			end

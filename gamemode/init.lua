@@ -23,7 +23,8 @@ local NWStrings = {
 	"UD_UpdateInvites",
 	"UD_UpdateSquadTable",
 	"UD_UpdateSkills",
-	"UD_UpdateStats"
+	"UD_UpdateStats",
+	"UD_FullyLoaded"
 }
 
 for _,v in ipairs(NWStrings) do
@@ -31,12 +32,20 @@ for _,v in ipairs(NWStrings) do
 end
 
 function GM:PlayerInitialSpawn(ply)
-	timer.Simple(3, function() -- TODO: needs to be networked or something
+	--[[timer.Simple(3, function() -- TODO: needs to be networked or something
 		if not IsValid(ply) then return end
 
 		ply:LoadGame()
-	end)
+	end)]]
 end
+
+net.Receive("UD_FullyLoaded", function(len, ply)
+	if not ply.HasLoadedIntoTheGame then
+		ply:LoadGame()
+		
+		ply.HasLoadedIntoTheGame = true
+	end
+end)
 
 -- TODO: likely not needed, shouldn't be called with playerclass?
 -- honestly, most of the data should be moved to a playerclass

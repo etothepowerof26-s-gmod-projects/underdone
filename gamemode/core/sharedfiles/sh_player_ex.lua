@@ -150,42 +150,46 @@ if SERVER then
 		end
 	end
 
-	local Complements = {}
-	--TODO: table.insert or stay same?
-	Complements[#Complements + 1] = "Holy_Shit_Your_Cool"
-	Complements[#Complements + 1] = "Nice_Man!"
-	Complements[#Complements + 1] = "You_Are_Epic!"
-	Complements[#Complements + 1] = "I_Wish_I_Was_As_Cool_As_You!"
-	Complements[#Complements + 1] = "I_Jizzed!"
-	Complements[#Complements + 1] = "Gratz!"
-	Complements[#Complements + 1] = "I_Just_Shat_My_Pants!"
-	Complements[#Complements + 1] = "Call_Me!"
-	Complements[#Complements + 1] = "You_Should_Model!"
-	Complements[#Complements + 1] = "God_Damn_I_Love_You!"
-	Complements[#Complements + 1] = "You_Make_Me_Hot"
-	Complements[#Complements + 1] = "I_Wish_I_Could_Touch_You"
-	Complements[#Complements + 1] = "You_Now_With_10%_More_Cowbell"
-	Complements[#Complements + 1] = "My_Girlfriend_Left_Me_For_You"
-	Complements[#Complements + 1] = "Lets_Make_Party"
-	local Colors = {}
-	Colors[1] = "purple"
-	Colors[2] = "blue"
-	Colors[3] = "orange"
-	Colors[4] = "red"
-	Colors[5] = "green"
-	Colors[6] = "white"
-	function Player:GiveExp(intAmount, boolShowExp)
+	local Complements = {
+		"Holy_Shit_Your_Cool",
+		"Nice_Man!",
+		"You_Are_Epic!",
+		"I_Wish_I_Was_As_Cool_As_You!",
+		"I_Jizzed!",
+		"Gratz!",
+		"I_Just_Shat_My_Pants!",
+		"Call_Me!",
+		"You_Should_Model!",
+		"God_Damn_I_Love_You!",
+		"You_Make_Me_Hot",
+		"I_Wish_I_Could_Touch_You",
+		"You_Now_With_10%_More_Cowbell",
+		"My_Girlfriend_Left_Me_For_You",
+		"Lets_Make_Party"
+	}
+	
+	local Colors = {
+		"purple",
+		"blue",
+		"orange",
+		"red",
+		"green",
+		"white"
+	}
+	
+	function Player:GiveExp(amount, boolShowExp)
 		local PlayerExp = tonumber(self:GetNWInt("exp")) or 0
 		local intCurrentExp = PlayerExp
 		local intPreExpLevel = self:GetLevel()
-		local intAmount = tonumber(intAmount)
-		if intCurrentExp + intAmount >= 0 then
-			local intTotal = math.Clamp(intCurrentExp + intAmount, toExp(intPreExpLevel), intCurrentExp + intAmount)
+		amount = tonumber(amount)
+		if intCurrentExp + amount >= 0 then
+			local intTotal = math.Clamp(intCurrentExp + amount, toExp(intPreExpLevel), intCurrentExp + amount)
 			self:SetNWInt("exp", tonumber(intTotal))
 			if boolShowExp then
-				self:CreateIndicator("+_" .. intAmount .. "_Exp", self:GetPos() + Vector(0, 0, 70), "green")
+				self:CreateIndicator("+_" .. amount .. "_Exp", self:GetPos() + Vector(0, 0, 70), "green")
 			end
 			local intPostExpLevel = self:GetLevel()
+			
 			if intPreExpLevel < intPostExpLevel then
 				hook.Call("UD_Hook_PlayerLevelUp", GAMEMODE, self, intPostExpLevel - intPreExpLevel)
 				self:SetHealth(self:GetMaximumHealth())
@@ -213,7 +217,7 @@ if SERVER then
 		end
 	end
 
-	local function PlayerAdjustDamage(entVictim, dmg) --entInflictor, entAttacker, intAmount, tblDamageInfo)
+	local function PlayerAdjustDamage(entVictim, dmg) --entInflictor, entAttacker, amount, tblDamageInfo)
 		if not entVictim:IsPlayer() then return end
 		local entAttacker = dmg:GetAttacker()
 		if not entAttacker:IsPlayer() and entAttacker:GetOwner():IsPlayer() then

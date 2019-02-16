@@ -9,7 +9,7 @@ if CLIENT then
 		for _, tblInfo in pairs(tblIndacators) do
 			local posIndicatorPos = tblInfo.Position:ToScreen()
 			local clrDrawColor = tblInfo.Color
-			local clrDrawColorBorder = Color(clrDrakGray.r, clrDrakGray.g, clrDrakGray.b, clrDrawColor.a)
+			local clrDrawColorBorder = Color(DrakGray.r, DrakGray.g, DrakGray.b, clrDrawColor.a)
 			draw.SimpleTextOutlined(tblInfo.String, "Trebuchet24", posIndicatorPos.x, posIndicatorPos.y, clrDrawColor, 1, 1, 1, clrDrawColorBorder)
 			tblInfo.Color.a = math.Clamp(tblInfo.Color.a - intFadeRate, 0, 255) --Apply Fade
 			tblInfo.Velocity.z = tblInfo.Velocity.z - intGravity --Apply Gravity
