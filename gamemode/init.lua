@@ -6,7 +6,7 @@ include("core/sharedfiles/database/items/sh_items_base.lua")
 include("core/sh_resource.lua")
 resource.AddFile("maps/ud_rebellland_beta_02b.bsp")
 
---Add network strings
+-- Add network strings
 local NWStrings = {
 	"UD_UpdateItem",
 	"UD_UpdateBankItem",
